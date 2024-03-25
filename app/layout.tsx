@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "We The People Wear",
-  description: "We The People Wear",
+  description: "Graphic T-Shirts con diseños positivos, modernos e inspiradores",
 };
 
 export default function RootLayout({
