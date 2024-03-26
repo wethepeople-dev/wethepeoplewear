@@ -3,6 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import { useState } from "react";
+import bgImage from "../public/camisas2.png";
+
 
 import Autoplay from "embla-carousel-autoplay"
 import { type CarouselApi } from "@/components/ui/carousel"
@@ -22,7 +24,7 @@ export default function Home() {
   const [showMenu, setShowMenu] = useState(false);
 
   const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: false })
+    Autoplay({ delay: 3000, stopOnInteraction: false })
   )
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
@@ -42,9 +44,21 @@ export default function Home() {
   }, [api])
 
   const images = [
-    "/camisas1.png",
-    "/camisas2.png",
-    "/camisas3.png",
+    {
+      url: "/carousel/camisas.png",
+      title: '"Coolest t-shirts in town"',
+      description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
+    },
+    {
+      url: "/carousel/collectif.jpg",
+      title: "Encuéntranos en tienda",
+      description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
+    },
+    {
+      url: "/carousel/espalda.png",
+      title: "Coolest T-Shirts in Town",
+      description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
+    },
   ];
 
   return (
@@ -64,9 +78,8 @@ export default function Home() {
       <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/documents/05115e13-7514-43df-b976-c0a17daa288d.jpg?token=Lk5kXZK3ALqlzpLulLg8PLZ420lDZ7oa9obmyVmJHHY&height=320&width=320&expires=33247408942" />
 
 
-
       {/* NAVBAR */}
-      <nav className="dark:bg-gray-900">
+      <nav className="">
         <div className="relative">
 
           {/* For large screens */}
@@ -80,19 +93,19 @@ export default function Home() {
               <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8">
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
+                  <a href="#" className="dark:text-white text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
                     Conócenos
                   </a>
                 </li>
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
+                  <a href="#" className="dark:text-white text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
                     Catálogo
                   </a>
                 </li>
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
+                  <a href="#" className="dark:text-white text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
                     Blog
                   </a>
                 </li>
@@ -177,7 +190,7 @@ export default function Home() {
               <ul className="flex flex-col space-y-6">
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
+                  <a href="#" className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
                     Conócenos
                     <div>
                       <svg className="fill-stroke text-black dark:text-white" width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -188,7 +201,7 @@ export default function Home() {
                 </li>
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
+                  <a href="#" className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
                     Catálogo
                     <div>
                       <svg className="fill-stroke text-black dark:text-white" width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -199,7 +212,7 @@ export default function Home() {
                 </li>
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
+                  <a href="#" className="dark:text-white flex items-center justify-between hover:underline text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800">
                     Blog
                     <div>
                       <svg className="fill-stroke text-black dark:text-white" width={12} height={12} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -217,7 +230,7 @@ export default function Home() {
               <ul className="flex flex-col space-y-8 bg-gray-50 w-full py-10 p-4 dark:bg-gray-800">
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white text-gray-800 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
+                  <a href="#" className="dark:text-white text-gray-800 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
                     <div>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -228,7 +241,7 @@ export default function Home() {
                 </li>
 
                 <li>
-                  <a href="javascript:void(0)" className="dark:text-white text-gray-800 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
+                  <a href="#" className="dark:text-white text-gray-800 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-gray-800 hover:underline">
                     <div>
                       <svg className="fill-stroke" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -253,28 +266,61 @@ export default function Home() {
         </div>
       </nav>
 
-      <div className="w-full">
+      <div className="h-50 mx-auto">
         <Carousel
           plugins={[plugin.current]}
           onMouseEnter={plugin.current.stop}
           onMouseLeave={plugin.current.reset}
           setApi={setApi}
+          className="bg-slate-200"
         >
           <CarouselContent>
             {images.map((image, index) => (
-              <CarouselItem key={index}>
-                <img src={image} className="w-full" alt={`Slide ${index + 1}`} />
+              <CarouselItem
+                key={index}
+                className="bg-center bg-no-repeat bg-blend-multiply bg-neutral-500 bg-cover"
+                style={{
+                  backgroundImage: `url(${image.url})`,
+                  // backgroundSize: "cover",
+                  // backgroundPosition: "center",
+                  // backgroundAttachment: "fixed",
+                  // opacity: "0.5",
+                  height: "50vh",
+                }}>
+                {/* <img src={image} className="w-full" alt={`Slide ${index + 1}`} /> */}
+                {/* <div className="px-4 mx-auto max-w-screen-xl text-center flex flex-col items-center justify-center h-full">
+                  <h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none text-white">
+                    Expertos en soluciones <span className="text-slate-400">legales</span> e <span className="text-slate-400">inmobiliarias</span>
+                  </h1>
+                  <p className="text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
+                    Nos diferenciamos en estrategias y soluciones de diagnóstico inmobiliario para ayudar a los clientes en situaciones personales y problemáticas de negocio.
+                  </p>
+                </div> */}
+                <div className="px-4 mx-auto max-w-screen-xl text-center flex flex-col items-center justify-center h-full">
+                  <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col  mb-5 sm:mb-10">
+                    <h1 className="text-4xl lg:text-5xl xl:text-6xl text-center font-black text-gray-100">
+                      {image.title}
+                    </h1>
+                    {/* <p className="mt-5 sm:mt-10 lg:w-10/12 text-gray-400 font-normal text-center text-sm sm:text-lg">
+                      {image.description}
+                    </p> */}
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <button className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azulito-100 bg-azulito-100 transition duration-150 ease-in-out hover:bg-indigo-600 lg:text-xl lg:font-bold  rounded text-white px-4 sm:px-10 border border-azulito-100 py-2 sm:py-4 text-sm">Get Started</button>
+                    <button className="ml-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azulito-100 bg-transparent transition duration-150 ease-in-out hover:border-indigo-600 lg:text-xl lg:font-bold  hover:text-indigo-600 rounded border border-azulito-100 text-azulito-100 px-4 sm:px-10 py-2 sm:py-4 text-sm">Live Demo</button>
+                  </div>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          {/* <CarouselPrevious />
-          <CarouselNext /> */}
+          {/* <CarouselNext />
+          <CarouselPrevious /> */}
         </Carousel>
         <div className="flex justify-center mt-4">
           {images.map((_, index) => (
             <span
               key={index}
-              className={`w-3 h-3 mx-1 md:w-4 md:h-4 md:mx-2 rounded-full ${index === current - 1 ? "bg-indigo-500" : "bg-gray-400"
+              className={`w-3 h-3 mx-1 md:w-4 md:h-4 md:mx-2 rounded-full ${index === current - 1 ? "bg-azulito-100" : "bg-gray-400"
                 }`}
             ></span>
           ))}
