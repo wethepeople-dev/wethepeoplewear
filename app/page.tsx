@@ -42,7 +42,7 @@ export default function Home() {
 
   const images = [
     {
-      url: "/carousel/camisas.png",
+      url: "/carousel/rack.jpg",
       title: '"Coolest t-shirts in town"',
       description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
     },
@@ -79,7 +79,7 @@ export default function Home() {
       <Navbar />
 
       {/* CAROUSEL */}
-      <div className="mx-auto w-screen">
+      {/* <div className="mx-auto w-screen">
         <Carousel
           plugins={[plugin.current]}
           onMouseEnter={plugin.current.stop}
@@ -100,23 +100,14 @@ export default function Home() {
                   // opacity: "0.5",
                   height: "50vh",
                 }}>
-                {/* <img src={image} className="w-full" alt={`Slide ${index + 1}`} /> */}
-                {/* <div className="px-4 mx-auto max-w-screen-xl text-center flex flex-col items-center justify-center h-full">
-                  <h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-none text-white">
-                    Expertos en soluciones <span className="text-slate-400">legales</span> e <span className="text-slate-400">inmobiliarias</span>
-                  </h1>
-                  <p className="text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
-                    Nos diferenciamos en estrategias y soluciones de diagnóstico inmobiliario para ayudar a los clientes en situaciones personales y problemáticas de negocio.
-                  </p>
-                </div> */}
                 <div className="px-4 mx-auto max-w-screen-xl text-center flex flex-col items-center justify-center h-full">
                   <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col  mb-5 sm:mb-10">
                     <h1 className="text-4xl lg:text-5xl xl:text-6xl text-center font-black text-gray-100">
                       {image.title}
                     </h1>
-                    {/* <p className="mt-5 sm:mt-10 lg:w-10/12 text-gray-400 font-normal text-center text-sm sm:text-lg">
+                    <p className="mt-5 sm:mt-10 lg:w-10/12 text-gray-400 font-normal text-center text-sm sm:text-lg">
                       {image.description}
-                    </p> */}
+                    </p>
                   </div>
                   <div className="flex justify-center items-center">
                     <button className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azulito-100 bg-azulito-100 transition duration-150 ease-in-out hover:bg-indigo-600 lg:text-xl lg:font-bold  rounded text-white px-4 sm:px-10 border border-azulito-100 py-2 sm:py-4 text-sm">Get Started</button>
@@ -126,8 +117,6 @@ export default function Home() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          {/* <CarouselNext />
-          <CarouselPrevious /> */}
         </Carousel>
         <div className="flex justify-center mt-4">
           {images.map((_, index) => (
@@ -137,6 +126,36 @@ export default function Home() {
                 }`}
             ></span>
           ))}
+        </div>
+      </div> */}
+
+
+      {/* section */}
+      <div style={{ height: '90vh' }}>
+        <div className="mx-auto flex justify-center items-center h-full flex-col md:flex-row">
+
+          {/* Left Side */}
+          <div className="flex flex-col justify-center items-center px-7 py-10 md:w-1/2">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-azulito-100 mb-4 uppercase text-center">
+              welcome to your local t-shirt shop
+            </h1>
+            <p className="text-lg mb-8 text-center">
+              En We The People Wear buscamos inspirarte a perseguir tus sueños y elevamos tu estilo con las mejores T-Shirts. ¡Encuentra el diseño perfecto para ti!
+            </p>
+            <button type="button" className="text-black text-xl border-2 border-black bg-amarillito-100 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-500 font-medium rounded-full px-5 py-3 text-center inline-flex items-center">
+              Ver catálogo
+              <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+              </svg>
+            </button>
+
+          </div>
+
+          {/* Right Side */}
+          <div className="w-screen md:w-1/2 bg-slate-200 h-full relative">
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/carousel/rack.jpg)' }}></div>
+          </div>
+
         </div>
       </div>
 

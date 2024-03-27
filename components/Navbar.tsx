@@ -15,70 +15,28 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-const links = [
-    {
-        name: 'Conócenos',
-        href: '/conocenos',
-    },
-    {
-        name: 'Servicios',
-        href: '/servicios',
-    },
-    {
-        name: 'Administración',
-        href: '/administracion',
-    },
-    {
-        name: 'Estrategias',
-        href: '/estrategias',
-    },
-];
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
 
 export default function Navbar() {
 
     const [searchInput, setSearchInput] = useState(true);
     const [showMenu, setShowMenu] = useState(false);
 
-    const components: { title: string; href: string; description: string }[] = [
-        {
-            title: "Alert Dialog",
-            href: "/docs/primitives/alert-dialog",
-            description:
-                "A modal dialog that interrupts the user with important content and expects a response.",
-        },
-        {
-            title: "Hover Card",
-            href: "/docs/primitives/hover-card",
-            description:
-                "For sighted users to preview content available behind a link.",
-        },
-        {
-            title: "Progress",
-            href: "/docs/primitives/progress",
-            description:
-                "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-        },
-        {
-            title: "Scroll-area",
-            href: "/docs/primitives/scroll-area",
-            description: "Visually or semantically separates content.",
-        },
-        {
-            title: "Tabs",
-            href: "/docs/primitives/tabs",
-            description:
-                "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-        },
-        {
-            title: "Tooltip",
-            href: "/docs/primitives/tooltip",
-            description:
-                "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-        },
-    ]
-
     return (
-        <nav className="">
+        <nav className="border-b">
             <div className="relative">
 
                 {/* For large screens */}
@@ -111,19 +69,30 @@ export default function Navbar() {
 
                             <NavigationMenu>
                                 <NavigationMenuList>
+
+                                    {/* conocenos */}
                                     <NavigationMenuItem>
-                                        <NavigationMenuTrigger>Conócenos</NavigationMenuTrigger>
+                                        <Link href="/conocenos" legacyBehavior passHref>
+                                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                                Conócenos
+                                            </NavigationMenuLink>
+                                        </Link>
+                                    </NavigationMenuItem>
+
+                                    {/* catalogo */}
+                                    <NavigationMenuItem>
+                                        <NavigationMenuTrigger>Catálogo</NavigationMenuTrigger>
                                         <NavigationMenuContent>
                                             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                                                 <li className="row-span-3">
                                                     <NavigationMenuLink asChild>
                                                         <a
                                                             className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                                                            href="/"
+                                                            href="/catalogo"
                                                         >
                                                             {/* <Icons.logo className="h-6 w-6" /> */}
                                                             <div className="mb-2 mt-4 text-lg font-medium">
-                                                                shadcn/ui
+                                                                Colecciones
                                                             </div>
                                                             <p className="text-sm leading-tight text-muted-foreground">
                                                                 Beautifully designed components that you can copy and
@@ -133,48 +102,37 @@ export default function Navbar() {
                                                         </a>
                                                     </NavigationMenuLink>
                                                 </li>
-                                                <ListItem href="/docs" title="Introduction">
-                                                    Re-usable components built using Radix UI and Tailwind CSS.
+                                                <ListItem href="/catalogo" title="Nuevos Lanzamientos">
+                                                    Explora lo más reciente en nuestro catálogo.
                                                 </ListItem>
-                                                <ListItem href="/docs/installation" title="Installation">
-                                                    How to install dependencies and structure your app.
+                                                <ListItem href="/catalogo" title="Lo más vendido">
+                                                    Descubre los productos más populares.
                                                 </ListItem>
-                                                <ListItem href="/docs/primitives/typography" title="Typography">
-                                                    Styles for headings, paragraphs, lists...etc
+                                                <ListItem href="/catalogo" title="Todos los productos">
+                                                    Explora todos nuestros productos.
                                                 </ListItem>
                                             </ul>
                                         </NavigationMenuContent>
                                     </NavigationMenuItem>
+
+                                    {/* blog */}
                                     <NavigationMenuItem>
-                                        <NavigationMenuTrigger>Catálogo</NavigationMenuTrigger>
-                                        <NavigationMenuContent>
-                                            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                                                {components.map((component) => (
-                                                    <ListItem
-                                                        key={component.title}
-                                                        title={component.title}
-                                                        href={component.href}
-                                                    >
-                                                        {component.description}
-                                                    </ListItem>
-                                                ))}
-                                            </ul>
-                                        </NavigationMenuContent>
-                                    </NavigationMenuItem>
-                                    <NavigationMenuItem>
-                                        <Link href="/docs" legacyBehavior passHref>
+                                        <Link href="/blog" legacyBehavior passHref>
                                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                                 Blog
                                             </NavigationMenuLink>
                                         </Link>
                                     </NavigationMenuItem>
+
+                                    {/* contacto */}
                                     <NavigationMenuItem>
-                                        <Link href="/docs" legacyBehavior passHref>
+                                        <Link href="/contacto" legacyBehavior passHref>
                                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                                 Contacto
                                             </NavigationMenuLink>
                                         </Link>
                                     </NavigationMenuItem>
+
                                 </NavigationMenuList>
                             </NavigationMenu>
 
@@ -194,35 +152,82 @@ export default function Navbar() {
 
                             <div className="hidden md:flex items-center space-x-4 xl:space-x-8">
 
-                                <button aria-label="view favourites" className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800">
-                                    <svg className="fill-stroke" width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M20.8401 4.60987C20.3294 4.09888 19.7229 3.69352 19.0555 3.41696C18.388 3.14039 17.6726 2.99805 16.9501 2.99805C16.2276 2.99805 15.5122 3.14039 14.8448 3.41696C14.1773 3.69352 13.5709 4.09888 13.0601 4.60987L12.0001 5.66987L10.9401 4.60987C9.90843 3.57818 8.50915 2.99858 7.05012 2.99858C5.59109 2.99858 4.19181 3.57818 3.16012 4.60987C2.12843 5.64156 1.54883 7.04084 1.54883 8.49987C1.54883 9.95891 2.12843 11.3582 3.16012 12.3899L4.22012 13.4499L12.0001 21.2299L19.7801 13.4499L20.8401 12.3899C21.3511 11.8791 21.7565 11.2727 22.033 10.6052C22.3096 9.93777 22.4519 9.22236 22.4519 8.49987C22.4519 7.77738 22.3096 7.06198 22.033 6.39452C21.7565 5.72706 21.3511 5.12063 20.8401 4.60987V4.60987Z"
-                                            stroke="currentColor"
-                                            strokeWidth="1.5"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                </button>
+                                <NavigationMenu>
+                                    <NavigationMenuList>
 
-                                <button aria-label="go to cart" className="text-gray-800 dark:hover:text-gray-300 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-800">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                    </svg>
-                                </button>
+                                        {/* wishlist grande */}
+                                        <NavigationMenuItem>
+                                            <Link href="/wishlist" legacyBehavior passHref>
+                                                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                                    <svg className="fill-stroke" width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M20.8401 4.60987C20.3294 4.09888 19.7229 3.69352 19.0555 3.41696C18.388 3.14039 17.6726 2.99805 16.9501 2.99805C16.2276 2.99805 15.5122 3.14039 14.8448 3.41696C14.1773 3.69352 13.5709 4.09888 13.0601 4.60987L12.0001 5.66987L10.9401 4.60987C9.90843 3.57818 8.50915 2.99858 7.05012 2.99858C5.59109 2.99858 4.19181 3.57818 3.16012 4.60987C2.12843 5.64156 1.54883 7.04084 1.54883 8.49987C1.54883 9.95891 2.12843 11.3582 3.16012 12.3899L4.22012 13.4499L12.0001 21.2299L19.7801 13.4499L20.8401 12.3899C21.3511 11.8791 21.7565 11.2727 22.033 10.6052C22.3096 9.93777 22.4519 9.22236 22.4519 8.49987C22.4519 7.77738 22.3096 7.06198 22.033 6.39452C21.7565 5.72706 21.3511 5.12063 20.8401 4.60987V4.60987Z"
+                                                            stroke="currentColor"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                    </svg>
+                                                </NavigationMenuLink>
+                                            </Link>
+                                        </NavigationMenuItem>
+
+                                        {/* carrito grande */}
+                                        <NavigationMenuItem>
+                                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer")}>
+                                                <Sheet>
+                                                    <SheetTrigger asChild>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                                        </svg>
+                                                    </SheetTrigger>
+                                                    <SheetContent>
+                                                        <SheetHeader>
+                                                            <SheetTitle>Edit profile</SheetTitle>
+                                                            <SheetDescription>
+                                                                Make changes to your profile here. Click save when you're done.
+                                                            </SheetDescription>
+                                                        </SheetHeader>
+                                                        <div className="grid gap-4 py-4">
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <Label htmlFor="name" className="text-right">
+                                                                    Name
+                                                                </Label>
+                                                                <Input id="name" value="Pedro Duarte" className="col-span-3" />
+                                                            </div>
+                                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                                <Label htmlFor="username" className="text-right">
+                                                                    Username
+                                                                </Label>
+                                                                <Input id="username" value="@peduarte" className="col-span-3" />
+                                                            </div>
+                                                        </div>
+                                                        <SheetFooter>
+                                                            <SheetClose asChild>
+                                                                <Button type="submit">Save changes</Button>
+                                                            </SheetClose>
+                                                        </SheetFooter>
+                                                    </SheetContent>
+                                                </Sheet>
+                                            </NavigationMenuLink>
+                                        </NavigationMenuItem>
+
+                                    </NavigationMenuList>
+                                </NavigationMenu>
 
                             </div>
 
-                            <div className="flex lg:hidden">
+                            <div className="flex md:hidden">
 
-                                <button aria-label="open menu" onClick={() => setShowMenu(true)} className="text-black dark:text-white dark:hover:text-gray-300 md:hidden focus:outline-none focus:ring-2 rounded focus:ring-gray-600">
-                                    <svg className="fill-stroke" width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M10 12H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M6 18H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </button>
+                                <NavigationMenu>
+                                    <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer border")} onClick={() => setShowMenu(true)}>
+                                        <svg className="fill-stroke" width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4 6H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M10 12H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M6 18H20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </NavigationMenuLink>
+                                </NavigationMenu>
 
                             </div>
                         </div>
