@@ -13,7 +13,7 @@ export default function NotFound() {
 
                 <div className="flex flex-1 items-center justify-center">
                     <div className="mx-auto max-w-xl px-4 text-center">
-                        <h1 className="text-9xl font-extrabold text-gray-500 opacity-50">404</h1>
+                        <h1 className="md:text-9xl text-7xl font-extrabold text-gray-500 opacity-50">404</h1>
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                             Lo sentimos
                         </h1>

@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/navigation-menu"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+
+import clsx from "clsx";
 
 import {
     Sheet,
@@ -42,7 +42,9 @@ export default function Navbar() {
 
     const [searchInput, setSearchInput] = useState(true);
     const [showMenu, setShowMenu] = useState(false);
-    const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false)
+    const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+
+    const pathname = usePathname();
 
     return (
         <nav className="border-b">
@@ -52,10 +54,12 @@ export default function Navbar() {
                 <div className="md:px-6 py-4">
                     <div className="container mx-auto flex items-center justify-between">
 
+                        {/* logo */}
                         <Link href={'/'} className="md:w-2/12 cursor-pointer text-gray-800" aria-label="We the people logo">
                             <img src="/logos/LOGO_NEGRO.png" className="h-9" alt="We the people logo" />
                         </Link>
 
+                        {/* middle part */}
                         <ul className="hidden w-8/12 md:flex items-center justify-center space-x-8">
 
                             <NavigationMenu>
@@ -64,7 +68,7 @@ export default function Navbar() {
                                     {/* conocenos */}
                                     <NavigationMenuItem>
                                         <Link href="/conocenos" legacyBehavior passHref>
-                                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), pathname == '/conocenos' ? "bg-gray-100" : "")}>
                                                 Conócenos
                                             </NavigationMenuLink>
                                         </Link>
@@ -72,7 +76,7 @@ export default function Navbar() {
 
                                     {/* catalogo */}
                                     <NavigationMenuItem>
-                                        <NavigationMenuTrigger>Catálogo</NavigationMenuTrigger>
+                                        <NavigationMenuTrigger className={pathname == '/catalogo' ? "bg-gray-100" : ""}>Catálogo</NavigationMenuTrigger>
                                         <NavigationMenuContent>
                                             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                                                 <li className="row-span-3">
@@ -109,7 +113,7 @@ export default function Navbar() {
                                     {/* blog */}
                                     <NavigationMenuItem>
                                         <Link href="/blog" legacyBehavior passHref>
-                                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), pathname == '/blog' ? "bg-gray-100" : "")}>
                                                 Blog
                                             </NavigationMenuLink>
                                         </Link>
@@ -118,7 +122,7 @@ export default function Navbar() {
                                     {/* contacto */}
                                     <NavigationMenuItem>
                                         <Link href="/contacto" legacyBehavior passHref>
-                                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), pathname == '/contacto' ? "bg-gray-100" : "")}>
                                                 Contacto
                                             </NavigationMenuLink>
                                         </Link>
@@ -129,17 +133,8 @@ export default function Navbar() {
 
                         </ul>
 
+                        {/* right part */}
                         <div className="md:w-2/12 justify-end flex items-center space-x-4 xl:space-x-8">
-
-                            {/* <div className="hidden lg:flex items-center">
-                    <button onClick={() => setSearchInput(!searchInput)} aria-label="search items" className="text-gray-800focus:outline-none focus:ring-gray-800">
-                      <svg className="fill-stroke" width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 11C5 15.4183 8.58172 19 13 19C17.4183 19 21 15.4183 21 11C21 6.58172 17.4183 3 13 3C8.58172 3 5 6.58172 5 11Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M2.99961 20.9999L7.34961 16.6499" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
-                    <input id="searchInput" type="text" placeholder="search" className={` ${searchInput ? "hidden" : ""} text-sm text-gray-600 rounded ml-1 border border-transparent focus:outline-none focus:border-gray-400 px-1`} />
-                  </div> */}
 
                             <div className="hidden md:flex items-center space-x-4 xl:space-x-8">
 
@@ -147,7 +142,7 @@ export default function Navbar() {
                                     <NavigationMenuList>
 
                                         {/* wishlist grande */}
-                                        <NavigationMenuItem>
+                                        {/* <NavigationMenuItem>
                                             <Link href="/wishlist" legacyBehavior passHref>
                                                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                                     <svg className="fill-stroke" width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -161,47 +156,47 @@ export default function Navbar() {
                                                     </svg>
                                                 </NavigationMenuLink>
                                             </Link>
-                                        </NavigationMenuItem>
+                                        </NavigationMenuItem> */}
 
                                         {/* carrito grande */}
-                                        <NavigationMenuItem>
-                                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer")}>
-                                                <Sheet>
-                                                    <SheetTrigger asChild>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                        <Sheet>
+                                            <NavigationMenuItem>
+                                                <SheetTrigger asChild>
+                                                    <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer")}>
+                                                        {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                                        </svg>
-                                                    </SheetTrigger>
-                                                    <SheetContent>
-                                                        <SheetHeader>
-                                                            <SheetTitle>Edit profile</SheetTitle>
-                                                            <SheetDescription>
-                                                                Make changes to your profile here. Click save when youre done.
-                                                            </SheetDescription>
-                                                        </SheetHeader>
-                                                        <div className="grid gap-4 py-4">
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <Label htmlFor="name" className="text-right">
-                                                                    Name
-                                                                </Label>
-                                                                <Input id="name" value="Pedro Duarte" className="col-span-3" />
-                                                            </div>
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <Label htmlFor="username" className="text-right">
-                                                                    Username
-                                                                </Label>
-                                                                <Input id="username" value="@peduarte" className="col-span-3" />
-                                                            </div>
-                                                        </div>
-                                                        <SheetFooter>
-                                                            <SheetClose asChild>
-                                                                <Button type="submit">Save changes</Button>
-                                                            </SheetClose>
-                                                        </SheetFooter>
-                                                    </SheetContent>
-                                                </Sheet>
-                                            </NavigationMenuLink>
-                                        </NavigationMenuItem>
+                                                        </svg> */}
+                                                        <span className='mr-2'>$0.00</span>
+                                                        <span className="relative inline-block">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                                            </svg>
+                                                            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 transform translate-x-1/2 -translate-y-1/2 bg-gray-500 rounded-full">
+                                                                0
+                                                            </span>
+                                                        </span>
+                                                    </NavigationMenuLink>
+                                                </SheetTrigger>
+                                                <SheetContent>
+                                                    <SheetHeader>
+                                                        <SheetTitle>Carrito</SheetTitle>
+                                                        <SheetDescription>
+                                                            Revisa los productos que has agregado al carrito.
+                                                        </SheetDescription>
+                                                    </SheetHeader>
+                                                    <div className="grid gap-4 py-4">
+                                                        <p>Producto #1</p>
+                                                        <p>Producto #2</p>
+                                                        <p>Producto #3</p>
+                                                    </div>
+                                                    <SheetFooter>
+                                                        <SheetClose asChild>
+                                                            <Button type="submit">Save changes</Button>
+                                                        </SheetClose>
+                                                    </SheetFooter>
+                                                </SheetContent>
+                                            </NavigationMenuItem>
+                                        </Sheet>
 
                                     </NavigationMenuList>
                                 </NavigationMenu>
@@ -211,45 +206,42 @@ export default function Navbar() {
                             <div className="flex md:hidden">
 
                                 <NavigationMenu>
-                                    <NavigationMenuList>
+                                    <NavigationMenuList className='space-x-2'>
 
                                         {/* carrito pequeño */}
-                                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer")}>
-                                            <Sheet>
-                                                <SheetTrigger asChild>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                                    </svg>
-                                                </SheetTrigger>
-                                                <SheetContent>
-                                                    <SheetHeader>
-                                                        <SheetTitle>Edit profile</SheetTitle>
-                                                        <SheetDescription>
-                                                            Make changes to your profile here. Click save when youre done.
-                                                        </SheetDescription>
-                                                    </SheetHeader>
-                                                    <div className="grid gap-4 py-4">
-                                                        <div className="grid grid-cols-4 items-center gap-4">
-                                                            <Label htmlFor="name" className="text-right">
-                                                                Name
-                                                            </Label>
-                                                            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-                                                        </div>
-                                                        <div className="grid grid-cols-4 items-center gap-4">
-                                                            <Label htmlFor="username" className="text-right">
-                                                                Username
-                                                            </Label>
-                                                            <Input id="username" value="@peduarte" className="col-span-3" />
-                                                        </div>
-                                                    </div>
-                                                    <SheetFooter>
-                                                        <SheetClose asChild>
-                                                            <Button type="submit">Save changes</Button>
-                                                        </SheetClose>
-                                                    </SheetFooter>
-                                                </SheetContent>
-                                            </Sheet>
-                                        </NavigationMenuLink>
+                                        <Sheet>
+                                            <SheetTrigger asChild>
+                                                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer")}>
+                                                    <span className='mr-2'>$0.00</span>
+                                                    <span className="relative inline-block">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                                        </svg>
+                                                        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 transform translate-x-1/2 -translate-y-1/2 bg-gray-500 rounded-full">
+                                                            0
+                                                        </span>
+                                                    </span>
+                                                </NavigationMenuLink>
+                                            </SheetTrigger>
+                                            <SheetContent>
+                                                <SheetHeader>
+                                                    <SheetTitle>Carrito</SheetTitle>
+                                                    <SheetDescription>
+                                                        Revisa los productos que has agregado al carrito.
+                                                    </SheetDescription>
+                                                </SheetHeader>
+                                                <div className="grid gap-4 py-4">
+                                                    <p>Producto #1</p>
+                                                    <p>Producto #2</p>
+                                                    <p>Producto #3</p>
+                                                </div>
+                                                <SheetFooter>
+                                                    <SheetClose asChild>
+                                                        <Button type="submit">Save changes</Button>
+                                                    </SheetClose>
+                                                </SheetFooter>
+                                            </SheetContent>
+                                        </Sheet>
 
                                         {/* hamburger button */}
                                         <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer border")} onClick={() => setShowMenu(true)}>
@@ -271,17 +263,8 @@ export default function Navbar() {
                 {/* SMALL screens */}
                 <div id="mobile-menu" className={`${showMenu ? "flex" : "hidden"} absolute z-10 inset-0 md:hidden bg-white flex-col h-screen w-full`}>
 
+                    {/* top */}
                     <div className="flex items-center justify-between border-b border-gray-200 py-5 px-6">
-
-                        {/* <div className="flex items-center space-x-3">
-                  <div>
-                    <svg className="fill-stroke text-gray-800 " width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M18.9984 18.9999L14.6484 14.6499" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                  <input type="text" placeholder="Search for products" className="text-sm text-gray-600 placeholder-gray-600 focus:outline-none" />
-                </div> */}
 
                         {/* logo */}
                         <Link href={'/'} className="md:w-2/12 cursor-pointer text-gray-800" aria-label="We the people logo">
@@ -298,6 +281,7 @@ export default function Navbar() {
 
                     </div>
 
+                    {/* links */}
                     <div className="mt-4 p-4">
 
                         <ul className="flex flex-col space-y-2">
@@ -416,6 +400,8 @@ export default function Navbar() {
 
                     </div>
 
+
+                    {/* bottom */}
                     <div className="h-full flex items-end">
                         <ul className="flex flex-col space-y-4 bg-gray-50 w-full py-5 pb-10 p-4">
 
@@ -427,12 +413,12 @@ export default function Navbar() {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                                         </svg>
                                     </div>
-                                    <p className="text-base">Cart</p>
+                                    <p className="text-base">Carrito</p>
                                 </a>
                             </li>
 
                             {/* Wishlist */}
-                            <li>
+                            {/* <li>
                                 <a href="#" className="text-gray-800 flex items-center space-x-2 focus:outline-none py-2 px-3 rounded hover:bg-gray-100 focus:bg-gray-300 focus:ring-gray-300">
                                     <div>
                                         <svg className="fill-stroke" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -447,7 +433,7 @@ export default function Navbar() {
                                     </div>
                                     <p className="text-base">Wishlist</p>
                                 </a>
-                            </li>
+                            </li> */}
 
                         </ul>
                     </div>
