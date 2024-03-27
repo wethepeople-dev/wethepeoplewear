@@ -136,13 +136,13 @@ export default function Home() {
 
           {/* Left Side */}
           <div className="flex flex-col justify-center items-center px-7 py-10 md:w-1/2">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-azulito-100 mb-4 uppercase text-center">
-              welcome to your local t-shirt shop
+            <h1 className="text-5xl md:text-4xl lg:text-6xl xl:text-7xl font-black text-azulito-100 mb-4 uppercase text-center">
+              welcome to <br className="hidden md:block" /> your local <br className="hidden md:block" /> t-shirt shop
             </h1>
-            <p className="text-lg mb-8 text-center">
+            <p className="text-lg mb-8 text-center lg:px-5">
               En We The People Wear buscamos inspirarte a perseguir tus sueños y elevamos tu estilo con las mejores T-Shirts. ¡Encuentra el diseño perfecto para ti!
             </p>
-            <button type="button" className="text-black text-xl border-2 border-black bg-amarillito-100 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-500 font-medium rounded-full px-5 py-3 text-center inline-flex items-center">
+            <button type="button" className="text-black text-xl border-2 border-black bg-amarillito-100 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-500 font-bold rounded-full px-5 py-3 text-center inline-flex items-center">
               Ver catálogo
               <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
@@ -153,7 +153,7 @@ export default function Home() {
 
           {/* Right Side */}
           <div className="w-screen md:w-1/2 bg-slate-200 h-full relative">
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/carousel/rack.jpg)' }}></div>
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/rack.jpg)' }}></div>
           </div>
 
         </div>
