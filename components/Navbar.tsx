@@ -283,6 +283,7 @@ export default function Navbar() {
                   <input type="text" placeholder="Search for products" className="text-sm text-gray-600 placeholder-gray-600 focus:outline-none" />
                 </div> */}
 
+                        {/* logo */}
                         <Link href={'/'} className="md:w-2/12 cursor-pointer text-gray-800" aria-label="We the people logo">
                             <img src="/logos/LOGO_NEGRO.png" className="h-9" alt="We the people logo" />
                         </Link>
@@ -303,7 +304,7 @@ export default function Navbar() {
 
                             {/* conocenos */}
                             <li>
-                                <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                <a href="/conocenos" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                     Conócenos
                                     <div>
                                         <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -333,7 +334,7 @@ export default function Navbar() {
                                 <CollapsibleContent className='p-3'>
 
                                     <li>
-                                        <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                             Colecciones
                                             <div>
                                                 <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -346,7 +347,7 @@ export default function Navbar() {
                                     <Separator />
 
                                     <li>
-                                        <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                             Nuevos lanzamientos
                                             <div>
                                                 <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -359,7 +360,7 @@ export default function Navbar() {
                                     <Separator />
 
                                     <li>
-                                        <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                             Lo más vendido
                                             <div>
                                                 <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -372,7 +373,7 @@ export default function Navbar() {
                                     <Separator />
 
                                     <li>
-                                        <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                             Todos los productos
                                             <div>
                                                 <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -389,7 +390,7 @@ export default function Navbar() {
 
                             {/* blog */}
                             <li>
-                                <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                <a href="blog" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                     Blog
                                     <div>
                                         <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -401,7 +402,7 @@ export default function Navbar() {
 
                             {/* contacto */}
                             <li>
-                                <a href="#" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
+                                <a href="contacto" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                     Contacto
                                     <div>
                                         <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
