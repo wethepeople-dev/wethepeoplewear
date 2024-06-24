@@ -223,7 +223,7 @@ export default function Home() {
             {/* opinion #1 */}
             <div className="md:mb-0 px-2 py-8 md:py-0">
               <div className="mb-6 flex justify-center">
-                <img src="/logos/lOGO_BLANCO.png"
+                <img src="/logos/LOGO_BLANCO.png"
                   className="w-20" />
               </div>
               {/* <h6 className="mb-4 font-bold text-white">
@@ -273,7 +273,7 @@ export default function Home() {
             {/* opinion #2 */}
             <div className="md:mb-0 px-2 py-8 md:py-0">
               <div className="mb-6 flex justify-center">
-                <img src="/logos/lOGO_BLANCO.png"
+                <img src="/logos/LOGO_BLANCO.png"
                   className="w-20" />
               </div>
               {/* <h6 className="mb-4 font-bold text-white">
@@ -323,7 +323,7 @@ export default function Home() {
             {/* opinion #3 */}
             <div className="md:mb-0 px-2 py-8 md:py-0">
               <div className="mb-6 flex justify-center">
-                <img src="/logos/lOGO_BLANCO.png"
+                <img src="/logos/LOGO_BLANCO.png"
                   className="w-20" />
               </div>
               {/* <h6 className="mb-4 font-bold text-white">
