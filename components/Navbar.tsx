@@ -47,7 +47,7 @@ export default function Navbar() {
     const pathname = usePathname();
 
     return (
-        <nav className="border-b">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-lg">
             <div className="relative">
 
                 {/* For large screens */}

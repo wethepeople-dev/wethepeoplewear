@@ -19,6 +19,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { Separator } from "@/components/ui/separator";
+import Footer from "@/components/Footer";
 
 export default function Home() {
 
@@ -84,60 +85,9 @@ export default function Home() {
       {/* NAVBAR */}
       <Navbar />
 
-      {/* CAROUSEL */}
-      {/* <div className="mx-auto w-screen">
-        <Carousel
-          plugins={[plugin.current]}
-          onMouseEnter={plugin.current.stop}
-          onMouseLeave={plugin.current.reset}
-          setApi={setApi}
-          className="bg-slate-200"
-        >
-          <CarouselContent>
-            {images.map((image, index) => (
-              <CarouselItem
-                key={index}
-                className="bg-center bg-no-repeat bg-blend-multiply bg-neutral-500 bg-cover"
-                style={{
-                  backgroundImage: `url(${image.url})`,
-                  // backgroundSize: "cover",
-                  // backgroundPosition: "center",
-                  // backgroundAttachment: "fixed",
-                  // opacity: "0.5",
-                  height: "50vh",
-                }}>
-                <div className="px-4 mx-auto max-w-screen-xl text-center flex flex-col items-center justify-center h-full">
-                  <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col  mb-5 sm:mb-10">
-                    <h1 className="text-4xl lg:text-5xl xl:text-6xl text-center font-black text-gray-100">
-                      {image.title}
-                    </h1>
-                    <p className="mt-5 sm:mt-10 lg:w-10/12 text-gray-400 font-normal text-center text-sm sm:text-lg">
-                      {image.description}
-                    </p>
-                  </div>
-                  <div className="flex justify-center items-center">
-                    <button className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azulito-100 bg-azulito-100 transition duration-150 ease-in-out hover:bg-indigo-600 lg:text-xl lg:font-bold  rounded text-white px-4 sm:px-10 border border-azulito-100 py-2 sm:py-4 text-sm">Get Started</button>
-                    <button className="ml-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-azulito-100 bg-transparent transition duration-150 ease-in-out hover:border-indigo-600 lg:text-xl lg:font-bold  hover:text-indigo-600 rounded border border-azulito-100 text-azulito-100 px-4 sm:px-10 py-2 sm:py-4 text-sm">Live Demo</button>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
-        <div className="flex justify-center mt-4">
-          {images.map((_, index) => (
-            <span
-              key={index}
-              className={`w-3 h-3 mx-1 md:w-4 md:h-4 md:mx-2 rounded-full ${index === current - 1 ? "bg-azulito-100" : "bg-gray-400"
-                }`}
-            ></span>
-          ))}
-        </div>
-      </div> */}
-
 
       {/* FOTO y TEXTO */}
-      <div style={{ height: '92vh' }}>
+      <div style={{ height: '92vh' }} className="mt-16">
         <div className="mx-auto flex justify-center items-center h-full flex-col md:flex-row">
 
           {/* Left Side */}
@@ -145,7 +95,7 @@ export default function Home() {
             <h1 className="text-5xl md:text-4xl lg:text-6xl xl:text-7xl font-black text-azulito-100 mb-4 uppercase text-center">
               welcome to <br className="hidden md:block" /> your local <br className="hidden md:block" /> t-shirt shop
             </h1>
-            <p className="text-lg md:text-base lg:text-lg mb-8 text-center px-4 md:px-5 lg:px-10">
+            <p className="text-lg md:text-base lg:text-lg mb-8 text-center px-2 md:px-5 lg:px-10">
               En We The People Wear buscamos inspirarte a perseguir tus sueños y elevamos tu estilo con las mejores T-Shirts. ¡Encuentra el diseño perfecto para ti!
             </p>
             <Link href="/catalogo" className="text-black text-xl border-2 border-black bg-amarillito-100 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-500 font-bold rounded-full px-5 py-3 text-center inline-flex items-center">
@@ -178,7 +128,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="mb-2 text-2xl font-bold text-white">AUTENTICIDAD</h3>
-              <p className="text-gray-200 px-3">
+              <p className="text-gray-100 px-3">
                 Diseñamos nuestras camisetas desde cero, por lo que sus diseños con únicos.
               </p>
             </div>
@@ -193,7 +143,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="mb-2 text-2xl font-bold text-white">COMODIDAD</h3>
-              <p className="text-gray-200 px-3">
+              <p className="text-gray-100 px-3">
                 Nuestras camisetas 100% algodón son respirables, por lo que estarás cómodo todo el día.
               </p>
             </div>
@@ -208,7 +158,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="mb-2 text-2xl font-bold text-white">SIMPLEZA</h3>
-              <p className="text-gray-200 px-3">
+              <p className="text-gray-100 px-3">
                 ¿Nunca sabes qué ponerte? Una T-Shirt, un par de jeans, y ¡estás listo para conquistar el día!
               </p>
             </div>
@@ -217,7 +167,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sección de Productos */}
+      {/* Sección de Carrusel */}
       <section>
         <div className="container mx-auto flex flex-col items-center py-12 sm:py-24">
           <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col  mb-5 sm:mb-10">
@@ -261,6 +211,253 @@ export default function Home() {
           </Carousel>
         </div>
       </section>
+
+      {/* OPINIONES */}
+      <div className="md:py-10 mb-10 mx-auto px-6 bg-azulito-100">
+
+        <section className="text-center">
+
+          <div className="grid gap-x-6 md:grid-cols-3 lg:gap-x-12">
+
+
+            {/* opinion #1 */}
+            <div className="md:mb-0 px-2 py-8 md:py-0">
+              <div className="mb-6 flex justify-center">
+                <img src="/logos/lOGO_BLANCO.png"
+                  className="w-20" />
+              </div>
+              {/* <h6 className="mb-4 font-bold text-white">
+                Cliente
+              </h6> */}
+              <p className="mb-4 text-white">
+                “Wow!! Son lo máximo para usar a diario, literal me levanto y una t-shirt me soluciona todo el outfit”
+              </p>
+
+              <ul className="mb-0 flex justify-center">
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+              </ul>
+
+            </div>
+
+            <Separator className="md:hidden" />
+
+            {/* opinion #2 */}
+            <div className="md:mb-0 px-2 py-8 md:py-0">
+              <div className="mb-6 flex justify-center">
+                <img src="/logos/lOGO_BLANCO.png"
+                  className="w-20" />
+              </div>
+              {/* <h6 className="mb-4 font-bold text-white">
+                Cliente
+              </h6> */}
+              <p className="mb-4 text-white">
+                “Quedé impresionada con todos los detalles, desde el diseño de la camiseta hasta el empaque”
+              </p>
+
+              <ul className="mb-0 flex justify-center">
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+              </ul>
+
+            </div>
+
+            <Separator className="md:hidden" />
+
+            {/* opinion #3 */}
+            <div className="md:mb-0 px-2 py-8 md:py-0">
+              <div className="mb-6 flex justify-center">
+                <img src="/logos/lOGO_BLANCO.png"
+                  className="w-20" />
+              </div>
+              {/* <h6 className="mb-4 font-bold text-white">
+                Cliente
+              </h6> */}
+              <p className="mb-4 text-white">
+                “Nunca había tenido una camiseta tan diferente. Me encantaron todos los diseños”
+              </p>
+
+              <ul className="mb-0 flex justify-center">
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+                <li>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 96 960 960" className="w-7 text-amarillito-100">
+                    <path fill="currentColor"
+                      d="m233 976 65-281L80 506l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z" />
+                  </svg>
+                </li>
+              </ul>
+
+            </div>
+
+
+          </div>
+        </section>
+      </div>
+
+      {/* BESTSELLERS */}
+      <section className="w-full py-8 md:mb-16">
+
+        <div className="container mx-auto flex flex-col items-center mb-12">
+          <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col">
+            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-black text-amarillito-100 uppercase text-center">
+              MORE THAN YOUR AVERAGE T-SHIRT
+            </h1>
+          </div>
+        </div>
+
+        <div className="container px-4 md:px-6">
+
+          {/* title */}
+          <div className="flex items-center justify-between mb-6 md:mb-8 lg:mb-10">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">BEST SELLERS</h2>
+            <Link href="#" className="text-sm md:text-base font-medium text-primary hover:underline flex items-center" prefetch={false}>
+              View All
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5 ml-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </Link>
+          </div>
+
+          {/* grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+
+            {/* product 1 */}
+            <div className="group">
+              <Link href="#" className="block" prefetch={false}>
+                <img
+                  src="/camisas/artinourlives_negra_both.png"
+                  alt="Bestseller 1"
+                  width={400}
+                  height={400}
+                  className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
+                />
+                <div className="mt-4">
+                  <h3 className="text-lg md:text-xl font-semibold">Art In Our Lives</h3>
+                  <p className="text-base font-medium text-gray-600">$350.00 MXN</p>
+                </div>
+              </Link>
+            </div>
+
+            {/* product 2 */}
+            <div className="group">
+              <Link href="#" className="block" prefetch={false}>
+                <img
+                  src="/camisas/fearofbeingaverage_blanca_both.png"
+                  alt="Bestseller 2"
+                  width={400}
+                  height={400}
+                  className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
+                />
+                <div className="mt-4">
+                  <h3 className="text-lg md:text-xl font-semibold">Fear of Being Average</h3>
+                  <p className="text-base font-medium text-gray-600">$350.00 MXN</p>
+                </div>
+              </Link>
+            </div>
+
+            {/* product 3 */}
+            <div className="group">
+              <Link href="#" className="block" prefetch={false}>
+                <img
+                  src="/camisas/thefuture_gris_both.png"
+                  alt="Bestseller 3"
+                  width={400}
+                  height={400}
+                  className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
+                />
+                <div className="mt-4">
+                  <h3 className="text-lg md:text-xl font-semibold">The Future</h3>
+                  <p className="text-base font-medium text-gray-600">$350.00 MXN</p>
+                </div>
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <Footer />
+
 
     </main>
   );
