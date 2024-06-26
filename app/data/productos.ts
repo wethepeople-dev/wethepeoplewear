@@ -46,9 +46,9 @@ export const productos: Producto[] = [
         descripcion: "Una camiseta que te anima a creer en ti mismo.",
         colores: ["Gris"],
         variaciones: [
-            // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            { color: "Gris", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Blanco", precio: 420, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             // "Negro": ["https://example.com/images/believe-black-front.png", "https://example.com/images/believe-black-back.png"],
@@ -84,9 +84,9 @@ export const productos: Producto[] = [
         descripcion: "Una camiseta que te recuerda que el futuro está en tus manos.",
         colores: ["Gris", "Blanco"],
         variaciones: [
-            // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            { color: "Gris", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            { color: "Blanco", precio: 420, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             // "Negro": ["https://example.com/images/the-future-black-front.png", "https://example.com/images/the-future-black-back.png"],
@@ -103,9 +103,9 @@ export const productos: Producto[] = [
         descripcion: "Una camiseta que te recuerda que la felicidad viene desde dentro.",
         colores: ["Blanco"],
         variaciones: [
-            // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Gris", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            { color: "Blanco", precio: 400, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             // "Negro": ["https://example.com/images/happiness-from-within-black-front.png", "https://example.com/images/happiness-from-within-black-back.png"],
@@ -141,9 +141,9 @@ export const productos: Producto[] = [
         descripcion: "Una camiseta que te inspira a sobresalir y evitar la mediocridad.",
         colores: ["Gris", "Blanco"],
         variaciones: [
-            // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            { color: "Gris", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            { color: "Blanco", precio: 400, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             // "Negro": ["https://example.com/images/fear-of-being-average-black-front.png", "https://example.com/images/fear-of-being-average-black-back.png"],
@@ -160,9 +160,9 @@ export const productos: Producto[] = [
         descripcion: "Camiseta para aquellos que sueñan en grande.",
         colores: ["Negro", "Blanco"],
         variaciones: [
-            { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Gris", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            { color: "Blanco", precio: 400, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             "Negro": ["/camisas/clubofdreamers_negra_back.png", "/camisas/clubofdreamers_negra_both.png"],
@@ -198,9 +198,9 @@ export const productos: Producto[] = [
         descripcion: "Una camiseta que celebra el arte en nuestras vidas.",
         colores: ["Negro"],
         variaciones: [
-            { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Gris", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Blanco", precio: 420, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             "Negro": ["/camisas/artinourlives_negra_back.png", "/camisas/artinourlives_negra_both.png"],
@@ -236,9 +236,9 @@ export const productos: Producto[] = [
         descripcion: "Una camiseta que te motiva a soñar en grande.",
         colores: ["Blanco"],
         variaciones: [
-            // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Gris", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            { color: "Blanco", precio: 400, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             // "Negro": ["https://example.com/images/dream-big-black-front.png", "https://example.com/images/dream-big-black-back.png"],
@@ -255,9 +255,9 @@ export const productos: Producto[] = [
         descripcion: "Camiseta que te recuerda buscar lo positivo en la vida.",
         colores: ["Negro", "Blanco"],
         variaciones: [
-            { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Gris", precio: 420, tallas: ["S", "M", "L", "XL"] },
+            { color: "Blanco", precio: 420, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             "Negro": ["/camisas/seekthepositive_negra_back.png", "/camisas/seekthepositive_negra_front.png", "/camisas/seekthepositive_negra_both.png"],
@@ -293,9 +293,9 @@ export const productos: Producto[] = [
         descripcion: "Camiseta inspiradora para aquellos que siguen sus sueños.",
         colores: ["Negro"],
         variaciones: [
-            { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-            // { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
+            { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Gris", precio: 400, tallas: ["S", "M", "L", "XL"] },
+            // { color: "Blanco", precio: 400, tallas: ["S", "M", "L", "XL"] },
         ],
         fotos: {
             "Negro": ["/camisas/comeonkid_negra_back.png", "/camisas/comeonkid_negra_both.png"],
