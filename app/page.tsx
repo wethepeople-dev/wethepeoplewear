@@ -170,7 +170,7 @@ export default function Home() {
       {/* Sección de Carrusel */}
       <section>
         <div className="container mx-auto flex flex-col items-center py-12 sm:py-24">
-          <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col  mb-5 sm:mb-10">
+          <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col mb-5 sm:mb-10">
             <h1 className="text-5xl lg:text-6xl xl:text-7xl font-black text-amarillito-100 mb-4 uppercase text-center">
               always look efortlessly cool
             </h1>

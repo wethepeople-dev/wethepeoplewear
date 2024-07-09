@@ -111,13 +111,13 @@ export default function Navbar() {
                                     </NavigationMenuItem>
 
                                     {/* blog */}
-                                    <NavigationMenuItem>
+                                    {/* <NavigationMenuItem>
                                         <Link href="/blog" legacyBehavior passHref>
                                             <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), pathname == '/blog' ? "bg-gray-100" : "")}>
                                                 Blog
                                             </NavigationMenuLink>
                                         </Link>
-                                    </NavigationMenuItem>
+                                    </NavigationMenuItem> */}
 
                                     {/* contacto */}
                                     <NavigationMenuItem>
@@ -373,7 +373,7 @@ export default function Navbar() {
                             </Collapsible>
 
                             {/* blog */}
-                            <li>
+                            {/* <li>
                                 <a href="blog" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                     Blog
                                     <div>
@@ -382,7 +382,7 @@ export default function Navbar() {
                                         </svg>
                                     </div>
                                 </a>
-                            </li>
+                            </li> */}
 
                             {/* contacto */}
                             <li>
