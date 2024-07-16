@@ -12,45 +12,19 @@ export default function Conocenos() {
             {/* NAVBAR */}
             <Navbar />
 
-            {/* FOTO y TEXTO */}
-            {/* <div style={{ height: '92vh' }} className="mt-16 h-full">
-
-                <div className="mx-auto flex flex-col items-center bg-gray-100 py-8 pt-12 md:h-1/3">
-                    <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-azulito-100 uppercase text-center">
-                            bienvenido a <br />
-                            we the people wear
-                        </h1>
-                    </div>
+            {/* <div className="mx-auto flex flex-col items-center bg-gray-100 py-8 pt-12 md:h-1/3">
+                <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-azulito-100 uppercase text-center">
+                        bienvenido a <br />
+                        we the people wear
+                    </h1>
                 </div>
-
-                <div className="mx-auto flex justify-center items-center flex-col md:flex-row md:h-2/3 md:py-0 py-14">
-
-                    <div className="flex flex-col justify-center items-center px-7 md:w-2/3">
-                        <h1 className="text-3xl md:text-5xl font-black text-black text-center mb-4">
-                            Un poco de nuestra historia...
-                        </h1>
-                        <p className="text-xl lg:text-2xl text-center px-2 md:px-5 lg:px-10">
-                            ¡Hola! Mi nombre es Gaby y soy la fundadora de We The People Wear, una marca que nace a partir de mis dos pasiones, la moda y el diseño gráfico. La idea nace en el 2018, tras darme cuenta de la poca oferta de Graphic T-Shirts positivas, inspiradoras y modernas en el mercado. Con esto en mente, empieza mi aventura de emprendimiento, ¡acompáñame!
-                        </p>
-
-                    </div>
-
-                    <div className="w-full md:w-1/3 bg-slate-200 h-full relative hidden md:block">
-                        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/nosotros.png)' }}></div>
-                    </div>
-
-                </div>
-
-                <div className="h-screen">
-                    <img src="/nosotros_small.png" alt="gaby en el market" className="block md:hidden" />
-                </div>
-
             </div> */}
+
 
             <div className="mt-16">
 
-                {/* Top */}
+                {/* ANIMACION */}
                 <div className='containerr projects flex flex-col justify-between'>
                     <div className="overlay"></div>
                     <div></div>
@@ -58,19 +32,8 @@ export default function Conocenos() {
                     <h1 className="z-30 text-4xl text-white flecha-animation mb-10">↓</h1>
                 </div>
 
-                {/* <div className="mt-16 mx-auto flex flex-col items-center bg-gray-100 py-8 pt-12 md:h-1/3">
-                    <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-azulito-100 uppercase text-center">
-                            bienvenido a <br />
-                            we the people wear
-                        </h1>
-                    </div>
-                </div> */}
+                {/* <div className="relative isolate overflow-hidden bg-white px-6 pt-24 sm:pt-32 pb-20 lg:overflow-visible lg:px-0">
 
-                {/* nuestra historia */}
-                <div className="relative isolate overflow-hidden bg-white px-6 pt-24 sm:pt-32 pb-20 lg:overflow-visible lg:px-0">
-
-                    {/* fondo */}
                     <div className="absolute inset-0 -z-10 overflow-hidden">
                         <svg className="absolute left-[max(50%,25rem)] top-0 h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]" aria-hidden="true">
                             <defs>
@@ -87,7 +50,6 @@ export default function Conocenos() {
 
                     <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
 
-                        {/* texto */}
                         <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
                             <div className="lg:pr-4">
                                 <div className="lg:max-w-lg">
@@ -100,19 +62,18 @@ export default function Conocenos() {
                             </div>
                         </div>
 
-                        {/* imagen - big screen */}
                         <div className="hidden lg:block -ml-12 -mt-12 lg:p-12 p-10 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                             <img className="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" src="/nosotros2.png" alt=""></img>
                         </div>
 
-                        {/* imagen - small screen */}
                         <div className="block lg:hidden -ml-12 -mt-10 lg:p-12 p-10 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
                             <img className="w-[48rem] max-w-none rounded-xl bg-gray-900 shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem]" src="/nosotros3.png" alt=""></img>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
-                {/* <div className="mb-0 h-screen">
+                {/* NUESTRA HISTORIA */}
+                <div className="mb-0">
                     <div className="mx-auto flex flex-col md:flex-row justify-center items-center md:py-0 mt-12 md:mt-0">
 
                         <div className="flex flex-col justify-center items-center px-7 md:w-2/3">
@@ -131,7 +92,8 @@ export default function Conocenos() {
                             <img src="/nosotros.png" alt="rollos de camisas" className="w-full h-auto" />
                         </div>
                     </div>
-                </div> */}
+                </div>
+
             </div>
 
 
@@ -217,8 +179,8 @@ export default function Conocenos() {
                 </div>
             </section >
 
-            {/* FOTO y TEXTO */}
-            {/* <div className="mb-0">
+            {/* CLUB OF DREAMERS */}
+            <div className="mb-0">
                 <div className="mx-auto flex flex-col md:flex-row justify-center items-center md:h-2/3 md:py-0 mt-12 md:mt-0">
                     <div className="w-full md:w-1/3 bg-slate-200 h-full relative hidden md:block" style={{ height: '55vh' }}>
                         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/rollos.png)' }}></div>
@@ -237,10 +199,9 @@ export default function Conocenos() {
                         <img src="/rollos.png" alt="rollos de camisas" className="w-full h-auto" />
                     </div>
                 </div>
-            </div> */}
+            </div>
 
-
-            <section className="w-full py-24">
+            {/* <section className="w-full py-24">
                 <div className="container flex flex-col items-center justify-center space-y-8 px-4 md:px-6">
                     <div className="space-y-4 text-center">
                         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
@@ -258,7 +219,7 @@ export default function Conocenos() {
                         className="mx-auto aspect-[2/1] overflow-hidden rounded-xl object-cover"
                     />
                 </div>
-            </section>
+            </section> */}
 
 
             {/* FOOTER */}
