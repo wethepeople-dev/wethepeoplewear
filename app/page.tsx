@@ -389,7 +389,7 @@ export default function Home() {
           {/* title */}
           <div className="flex items-center justify-between mb-6 md:mb-8 lg:mb-10">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">BEST SELLERS</h2>
-            <Link href="#" className="text-sm md:text-base font-medium text-primary hover:underline flex items-center" prefetch={false}>
+            <Link href="/catalogo" className="text-sm md:text-base font-medium text-primary hover:underline flex items-center" prefetch={false}>
               View All
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5 ml-1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
