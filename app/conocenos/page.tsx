@@ -25,6 +25,7 @@ export default function Conocenos() {
             <div className="mt-16">
 
                 {/* ANIMACION */}
+                {/* https://codepen.io/cassandraPaige/pen/jOEMMyp */}
                 <div className='containerr projects flex flex-col justify-between'>
                     <div className="overlay"></div>
                     <div></div>

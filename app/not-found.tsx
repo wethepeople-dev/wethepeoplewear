@@ -1,6 +1,7 @@
 'use client'
 
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function NotFound() {
     return (
@@ -9,7 +10,7 @@ export default function NotFound() {
             {/* NAVBAR */}
             <Navbar />
 
-            <div className="flex flex-col bg-white" style={{ height: '60vh' }}>
+            <div className="mt-20 flex flex-col bg-white" style={{ height: '60vh' }}>
 
                 <div className="flex flex-1 items-center justify-center">
                     <div className="mx-auto max-w-xl px-4 text-center">
@@ -34,7 +35,9 @@ export default function NotFound() {
 
 
             {/* FOOTER */}
-            {/* <Footer /> */}
+            <div className="absolute bottom-0 w-screen hidden md:block">
+                <Footer />
+            </div>
 
         </main>
     );

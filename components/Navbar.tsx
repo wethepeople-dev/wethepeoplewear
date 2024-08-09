@@ -76,38 +76,11 @@ export default function Navbar() {
 
                                     {/* catalogo */}
                                     <NavigationMenuItem>
-                                        <NavigationMenuTrigger className={pathname == '/catalogo' ? "bg-gray-100" : ""}>Catálogo</NavigationMenuTrigger>
-                                        <NavigationMenuContent>
-                                            <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                                                <li className="row-span-3">
-                                                    <NavigationMenuLink asChild>
-                                                        <a
-                                                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                                                            href="/catalogo"
-                                                        >
-                                                            {/* <Icons.logo className="h-6 w-6" /> */}
-                                                            <div className="mb-2 mt-4 text-lg font-medium">
-                                                                Colecciones
-                                                            </div>
-                                                            <p className="text-sm leading-tight text-muted-foreground">
-                                                                Beautifully designed components that you can copy and
-                                                                paste into your apps. Accessible. Customizable. Open
-                                                                Source.
-                                                            </p>
-                                                        </a>
-                                                    </NavigationMenuLink>
-                                                </li>
-                                                <ListItem href="/catalogo" title="Nuevos Lanzamientos">
-                                                    Explora lo más reciente en nuestro catálogo.
-                                                </ListItem>
-                                                <ListItem href="/catalogo" title="Lo más vendido">
-                                                    Descubre los productos más populares.
-                                                </ListItem>
-                                                <ListItem href="/catalogo" title="Todos los productos">
-                                                    Explora todos nuestros productos.
-                                                </ListItem>
-                                            </ul>
-                                        </NavigationMenuContent>
+                                        <Link href="/catalogo" legacyBehavior passHref>
+                                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), pathname == '/catalogo' ? "bg-gray-100" : "")}>
+                                                Catálogo
+                                            </NavigationMenuLink>
+                                        </Link>
                                     </NavigationMenuItem>
 
                                     {/* blog */}
@@ -299,78 +272,16 @@ export default function Navbar() {
                             </li>
 
                             {/* catalogo */}
-                            <Collapsible open={isCollapsibleOpen} onOpenChange={setIsCollapsibleOpen}>
-                                <CollapsibleTrigger className='w-full flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300'>
+                            <li>
+                                <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 rounded text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
                                     Catálogo
                                     <div>
-                                        {isCollapsibleOpen ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width={14} height={14} className="fill-stroke text-black">
-                                                <path strokeLinecap="round" strokeLinejoin="round" stroke="currentColor" strokeWidth="1.5" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-
-                                        ) : (
-                                            <svg className="fill-stroke text-black" xmlns="http://www.w3.org/2000/svg" width={15} height={15} viewBox="0 0 12 12" fill="none">
-                                                <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        )}
+                                        <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
                                     </div>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className='p-3'>
-
-                                    <li>
-                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
-                                            Colecciones
-                                            <div>
-                                                <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <Separator />
-
-                                    <li>
-                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
-                                            Nuevos lanzamientos
-                                            <div>
-                                                <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <Separator />
-
-                                    <li>
-                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
-                                            Lo más vendido
-                                            <div>
-                                                <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <Separator />
-
-                                    <li>
-                                        <a href="/catalogo" className="flex items-center justify-between hover:bg-gray-100 py-2 px-3 text-base text-gray-800 focus:outline-none focus:bg-gray-300 focus:ring-gray-300">
-                                            Todos los productos
-                                            <div>
-                                                <svg className="fill-stroke text-black " width={15} height={15} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" strokeWidth="0.75" strokeLinecap="round" strokeLinejoin="round" />
-                                                </svg>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <Separator />
-
-                                </CollapsibleContent>
-                            </Collapsible>
+                                </a>
+                            </li>
 
                             {/* blog */}
                             {/* <li>

@@ -185,7 +185,7 @@ export default function Catalogo() {
                                 const selectedColor = selectedColors[producto.id] || producto.colores[0];
                                 return (
                                     <div key={producto.id} className="relative overflow-hidden border bg-background shadow-lg transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">
-                                        <Link href="#" prefetch={false}>
+                                        <Link href={`/catalogo/${producto.id}`} prefetch={false}>
                                             <span className="sr-only">View</span>
                                             <img src={producto.fotos[selectedColor][0]} alt={`${producto.nombre} - ${selectedColor}`} width={500} height={400} className={`object-cover w-full h-64 bg-gray-100`} />
                                         </Link>

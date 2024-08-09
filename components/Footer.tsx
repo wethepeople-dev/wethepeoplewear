@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
 
@@ -10,8 +11,8 @@ export default function Footer() {
 
                     {/* logo */}
                     <div className="mb-6 md:mb-0 md:pl-8">
-                        <a href="https://flowbite.com/" className="flex items-center">
-                            <img src="logos/LOGO_BLANCO.png" className="h-16" alt="FlowBite Logo" />
+                        <a className="flex items-center">
+                            <img src="/logos/LOGO_BLANCO.png" className="h-16" alt="Logo" />
                             {/* <span className="self-center text-2xl font-semibold whitespace-nowrap">Flowbite</span> */}
                         </a>
                     </div>
@@ -23,10 +24,10 @@ export default function Footer() {
                             <h2 className="mb-4 text-sm font-bold text-white uppercase">Shop</h2>
                             <ul className="text-gray-100 font-medium">
                                 <li className="mb-2">
-                                    <a href="#" className="hover:underline ">Bestsellers</a>
+                                    <Link href="/#bestsellers" className="hover:underline ">Bestsellers</Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline">Shop all</a>
+                                    <Link href="/catalogo" className="hover:underline">Shop all</Link>
                                 </li>
                             </ul>
                         </div>
@@ -36,10 +37,10 @@ export default function Footer() {
                             <h2 className="mb-4 text-sm font-bold text-white uppercase">Nosotros</h2>
                             <ul className="text-gray-100 font-medium">
                                 <li className="mb-2">
-                                    <a href="#" className="hover:underline">Nuestra historia</a>
+                                    <Link href="/conocenos" className="hover:underline">Nuestra historia</Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline">Puntos de vista</a>
+                                    <Link href="/contacto" className="hover:underline">Puntos de venta</Link>
                                 </li>
                             </ul>
                         </div>
@@ -49,14 +50,13 @@ export default function Footer() {
                             <h2 className="mb-4 text-sm font-bold text-white uppercase">Información</h2>
                             <ul className="text-gray-100 font-medium">
                                 <li className="mb-2">
-                                    <a href="#" className="hover:underline">FAQs</a>
+                                    <Link href="#" className="hover:underline">FAQs</Link>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline">Guía de tallas</a>
+                                    <Link href="#" className="hover:underline">Guía de tallas</Link>
                                 </li>
                             </ul>
                         </div>
-
 
                     </div>
                 </div>

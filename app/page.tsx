@@ -374,7 +374,7 @@ export default function Home() {
       </div>
 
       {/* BESTSELLERS */}
-      <section className="w-full py-8 md:mb-16">
+      <section className="w-full py-8 md:mb-16" id="bestsellers">
 
         <div className="container mx-auto flex flex-col items-center mb-12">
           <div className="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col">
