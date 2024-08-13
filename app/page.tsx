@@ -411,7 +411,7 @@ export default function Home() {
               <div key={producto.id} className="group">
                 <Link href={`/catalogo/${producto.id}`} className="block" prefetch={false}>
                   <img
-                    src={producto.fotos.Negro ? producto.fotos.Negro[0] : producto.fotos.Blanco ? producto.fotos.Blanco[0] : producto.fotos.Gris ? producto.fotos.Gris[0] : ''}
+                    src={producto.fotos.Negro ? producto.fotos.Negro[1] : producto.fotos.Blanco ? producto.fotos.Blanco[1] : producto.fotos.Gris ? producto.fotos.Gris[1] : ''}
                     alt="Bestseller"
                     width={400}
                     height={400}
