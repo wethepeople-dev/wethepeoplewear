@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { productos } from '@/app/data/productos';
-import { Producto, Variacion } from '@/app/data/productos';
+import { Producto, Variacion, productos } from '@/app/data/productos';
 import Modal from '@/components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useCart } from '@/lib/CartContext';
 import { formatCurrency } from '@/lib/utils';
+
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
 

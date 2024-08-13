@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
+import { productos } from "./data/productos";
 
 import Navbar from "@/components/Navbar";
 
@@ -66,6 +67,9 @@ export default function Home() {
       description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
     },
   ];
+
+  const bestsellerIds = [11, 1, 9]
+  const bestsellers = productos.filter(p => bestsellerIds.includes(p.id))
 
   return (
     <main className="flex min-h-screen flex-col">
@@ -402,57 +406,25 @@ export default function Home() {
           {/* grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
 
-            {/* time is now, chase your dreams y change the world */}
-            {/* product 1 */}
-            <div className="group">
-              <Link href="#" className="block" prefetch={false}>
-                <img
-                  src="/camisas/artinourlives_negra_both.png"
-                  alt="Bestseller 1"
-                  width={400}
-                  height={400}
-                  className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
-                />
-                <div className="mt-4">
-                  <h3 className="text-lg md:text-xl font-semibold">Art In Our Lives</h3>
-                  <p className="text-base font-medium text-gray-600">{formatCurrency(350)} MXN</p>
-                </div>
-              </Link>
-            </div>
+            {/* Bestsellers */}
+            {bestsellers.map(producto => (
+              <div key={producto.id} className="group">
+                <Link href={`/catalogo/${producto.id}`} className="block" prefetch={false}>
+                  <img
+                    src={producto.fotos.Negro ? producto.fotos.Negro[0] : producto.fotos.Blanco ? producto.fotos.Blanco[0] : producto.fotos.Gris ? producto.fotos.Gris[0] : ''}
+                    alt="Bestseller"
+                    width={400}
+                    height={400}
+                    className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
+                  />
+                  <div className="mt-4">
+                    <h3 className="text-lg md:text-xl font-semibold">{producto.nombre}</h3>
+                    <p className="text-base font-medium text-gray-600">{formatCurrency(producto.variaciones[0].precio)} MXN</p>
+                  </div>
+                </Link>
+              </div>
+            ))}
 
-            {/* product 2 */}
-            <div className="group">
-              <Link href="#" className="block" prefetch={false}>
-                <img
-                  src="/camisas/fearofbeingaverage_blanca_both.png"
-                  alt="Bestseller 2"
-                  width={400}
-                  height={400}
-                  className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
-                />
-                <div className="mt-4">
-                  <h3 className="text-lg md:text-xl font-semibold">Fear of Being Average</h3>
-                  <p className="text-base font-medium text-gray-600">{formatCurrency(350)} MXN</p>
-                </div>
-              </Link>
-            </div>
-
-            {/* product 3 */}
-            <div className="group">
-              <Link href="#" className="block" prefetch={false}>
-                <img
-                  src="/camisas/thefuture_gris_both.png"
-                  alt="Bestseller 3"
-                  width={400}
-                  height={400}
-                  className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
-                />
-                <div className="mt-4">
-                  <h3 className="text-lg md:text-xl font-semibold">The Future</h3>
-                  <p className="text-base font-medium text-gray-600">{formatCurrency(350)} MXN</p>
-                </div>
-              </Link>
-            </div>
 
           </div>
         </div>
