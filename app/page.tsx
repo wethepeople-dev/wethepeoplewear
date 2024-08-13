@@ -21,6 +21,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
 
+import { formatCurrency } from "@/lib/utils";
+
 export default function Home() {
 
   function convertToTwoDigits(num: number): string {
@@ -412,7 +414,7 @@ export default function Home() {
                 />
                 <div className="mt-4">
                   <h3 className="text-lg md:text-xl font-semibold">Art In Our Lives</h3>
-                  <p className="text-base font-medium text-gray-600">$350.00 MXN</p>
+                  <p className="text-base font-medium text-gray-600">{formatCurrency(350)} MXN</p>
                 </div>
               </Link>
             </div>
@@ -429,7 +431,7 @@ export default function Home() {
                 />
                 <div className="mt-4">
                   <h3 className="text-lg md:text-xl font-semibold">Fear of Being Average</h3>
-                  <p className="text-base font-medium text-gray-600">$350.00 MXN</p>
+                  <p className="text-base font-medium text-gray-600">{formatCurrency(350)} MXN</p>
                 </div>
               </Link>
             </div>
@@ -446,7 +448,7 @@ export default function Home() {
                 />
                 <div className="mt-4">
                   <h3 className="text-lg md:text-xl font-semibold">The Future</h3>
-                  <p className="text-base font-medium text-gray-600">$350.00 MXN</p>
+                  <p className="text-base font-medium text-gray-600">{formatCurrency(350)} MXN</p>
                 </div>
               </Link>
             </div>

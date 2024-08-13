@@ -8,6 +8,8 @@ import { productos } from '@/app/data/productos';
 import { Producto, Variacion } from '@/app/data/productos';
 import Modal from '@/components/Modal';
 
+import { formatCurrency } from '@/lib/utils';
+
 export default function SingleProduct({ params }: { params: { id: string } }) {
 
     const id = params.id;
@@ -16,6 +18,10 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     const [colorSeleccionado, setColorSeleccionado] = useState<string>('');
     const [tallaSeleccionada, setTallaSeleccionada] = useState<string>('');
     const [imagenSeleccionada, setImagenSeleccionada] = useState<string>('');
+    const [cantidad, setCantidad] = useState<number>(1);
+
+    const increment = () => setCantidad(cantidad + 1);
+    const decrement = () => setCantidad(cantidad - 1);
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const openModal = () => setIsModalOpen(true);
@@ -101,7 +107,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
                             {/* Regresar al catalogo */}
                             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                                <Link href="/catalogo" className="text-gray-500 hover:text-black flex items-center text-lg">
+                                <Link href="/catalogo" className="text-gray-500 hover:text-black flex items-center text-lg hover:underline">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" className="size-7 mr-2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
                                     </svg>
@@ -148,11 +154,13 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                                 {producto.descripcion}
                                             </p>
 
+                                            <hr className='my-4' />
+
                                             <div className="flex mb-4">
                                                 {/* precio */}
                                                 <div className="mr-4 text-lg">
                                                     <span className="font-bold text-gray-700">Precio: </span>
-                                                    <span className="text-gray-600">${producto.variaciones.find(variacion => variacion.color === colorSeleccionado)?.precio}</span>
+                                                    <span className="text-gray-600">{formatCurrency(producto.variaciones.find(variacion => variacion.color === colorSeleccionado)?.precio ?? 0)} MXN</span>
                                                 </div>
                                             </div>
 
@@ -181,12 +189,36 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                                             <button
                                                                 key={index}
                                                                 onClick={() => handleTallaChange(talla)}
-                                                                className={`w-16 h-16 border rounded-md flex items-center justify-center mx-2 my-1 text-gray-800 hover:bg-gray-200 ${tallaSeleccionada === talla ? 'bg-gray-200 border-4 border-blue-500' : ''}`}
+                                                                className={`w-16 h-16 border rounded-md flex items-center justify-center mr-4 my-1 text-gray-800 hover:bg-gray-200 ${tallaSeleccionada === talla ? 'bg-gray-200 border-4 border-blue-500' : ''}`}
                                                             >
                                                                 {talla}
                                                             </button>
                                                         ))
                                                     }
+                                                </div>
+                                            </div>
+
+                                            {/* Cantidad */}
+                                            <div className="mb-4 text-lg">
+                                                <p className="font-bold text-gray-700">Cantidad:</p>
+                                                <div className="relative flex items-center py-2">
+
+                                                    {/* decrement */}
+                                                    <button type="button" id="decrement-button" onClick={decrement} disabled={cantidad <= 1} data-input-counter-decrement="counter-input" className="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-10 w-10 focus:ring-gray-100 focus:ring-2 focus:outline-none">
+                                                        <svg className="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+                                                        </svg>
+                                                    </button>
+
+                                                    {/* number */}
+                                                    <input type="text" id="counter-input" data-input-counter className="flex-shrink-0 text-gray-900 border-0 bg-transparent text-lg mx-2 font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" placeholder="" value={cantidad} required />
+
+                                                    {/* increment */}
+                                                    <button type="button" id="increment-button" onClick={increment} disabled={cantidad >= 10} data-input-counter-increment="counter-input" className="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-10 w-10 focus:ring-gray-100 focus:ring-2 focus:outline-none">
+                                                        <svg className="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                             </div>
 
