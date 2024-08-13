@@ -23,6 +23,7 @@ export default function Catalogo() {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<string>('recent');
+    const [selectedColors, setSelectedColors] = useState<{ [key: number]: string }>({});
 
     const filteredProducts = productos
         .filter(producto => selectedCategory ? producto.categoriaId === selectedCategory : true)
@@ -44,8 +45,6 @@ export default function Catalogo() {
         }
         return 0;
     });
-
-    const [selectedColors, setSelectedColors] = useState<{ [key: number]: string }>({});
 
     const handleColorChange = (productId: number, color: string) => {
         setSelectedColors(prevState => ({

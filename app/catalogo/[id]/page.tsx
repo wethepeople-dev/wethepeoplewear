@@ -5,49 +5,47 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { productos } from '@/app/data/productos';
-import { Producto } from '@/app/data/productos';
+import { Producto, Variacion } from '@/app/data/productos';
+import Modal from '@/components/Modal';
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
 
     const id = params.id;
     const [producto, setProducto] = useState<Producto | null>(null);
     const [productoCargado, setProductoCargado] = useState<Boolean>(false);
+    const [colorSeleccionado, setColorSeleccionado] = useState<string>('');
+    const [tallaSeleccionada, setTallaSeleccionada] = useState<string>('');
+    const [imagenSeleccionada, setImagenSeleccionada] = useState<string>('');
+
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     useEffect(() => {
         const productoEncontrado = productos.find((p) => p.id === Number(id));
         if (productoEncontrado) {
             setProductoCargado(true);
             setProducto(productoEncontrado);
-            //     setCartImage(productoEncontrado.fotos[0]);
-            //     setCurrentImage(productoEncontrado.fotos[0]);
-            //     setTamanio(productoEncontrado.variaciones[0].tamanio);
-            //     setVariacion(productoEncontrado.variaciones[0]);
-            //     setProductName(productoEncontrado.nombre);
+            setColorSeleccionado(productoEncontrado.colores[0]);
+            setImagenSeleccionada(productoEncontrado.fotos[productoEncontrado.colores[0]][0]);
         } else {
             setProductoCargado(true);
             setProducto(null);
         }
     }, [id]);
 
-    // {
-    //     id: 1,
-    //     nombre: "Chase Your Dream",
-    //     categoriaId: 1,
-    //     categoriaNombre: "Graphic T-Shirts",
-    //     descripcion: "Una camiseta inspiradora que te recuerda perseguir tus sueños.",
-    //     colores: ["Blanco"],
-    //     variaciones: [
-    //         // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
-    //         // { color: "Gris", precio: 450, tallas: ["S", "M", "L", "XL"] },
-    //         { color: "Blanco", precio: 450, tallas: ["S", "M", "L", "XL"] },
-    //     ],
-    //     fotos: {
-    //         // "Negro": ["https://example.com/images/chase-your-dream-black-front.png", "https://example.com/images/chase-your-dream-black-back.png"],
-    //         // "Gris": ["https://example.com/images/chase-your-dream-grey-front.png", "https://example.com/images/chase-your-dream-grey-back.png"],
-    //         "Blanco": ["/camisas/chaseyourdream_blanca_back.png", "/camisas/chaseyourdream_blanca_both.png"]
-    //     },
-    //     releaseDate: "2024-06-20"
-    // }
+    const handleColorChange = (color: string) => {
+        setColorSeleccionado(color);
+        setImagenSeleccionada(producto?.fotos[color][0] || '');
+    };
+
+    const handleTallaChange = (talla: string) => {
+        setTallaSeleccionada(talla);
+    };
+
+    const handleImageChange = (image: string) => {
+        setImagenSeleccionada(image);
+    };
 
     return (
         <main className="flex min-h-screen flex-col">
@@ -101,6 +99,16 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
                         <>
 
+                            {/* Regresar al catalogo */}
+                            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <Link href="/catalogo" className="text-gray-500 hover:text-black flex items-center text-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" className="size-7 mr-2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
+                                    </svg>
+                                    Volver al catálogo
+                                </Link>
+                            </div>
+
                             {/* https://tailwindflex.com/@jaxstone/product-page-2 */}
                             <div className="py-8">
                                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,19 +117,22 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                         {/* izquierda */}
                                         <div className="md:flex-1 px-4">
 
-                                            {/* foto */}
-                                            <div className="h-[460px] rounded-lg bg-gray-300 mb-4">
-                                                <img className="w-full h-full object-cover" src="https://cdn.pixabay.com/photo/2020/05/22/17/53/mockup-5206355_960_720.jpg" alt="Product Image" />
+                                            {/* foto principal */}
+                                            <div className="md:h-[460px] rounded-lg bg-gray-300 mb-4">
+                                                <img className="w-full h-full md:object-cover object-contain" src={imagenSeleccionada} alt="Imagen del Producto" />
                                             </div>
 
-                                            {/* botones */}
-                                            <div className="flex -mx-2 mb-4">
-                                                <div className="w-1/2 px-2">
-                                                    <button className="w-full bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">Add to Cart</button>
-                                                </div>
-                                                <div className="w-1/2 px-2">
-                                                    <button className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-full font-bold hover:bg-gray-300">Add to Wishlist</button>
-                                                </div>
+                                            {/* miniaturas */}
+                                            <div className="grid grid-cols-4 gap-2 mb-4">
+                                                {producto.fotos[colorSeleccionado].map((foto, index) => (
+                                                    <img
+                                                        key={index}
+                                                        className={`cursor-pointer w-full h-24 object-cover rounded-lg border-2 ${imagenSeleccionada === foto ? 'border-black' : 'border-transparent'}`}
+                                                        src={foto}
+                                                        alt={`Thumbnail ${index + 1}`}
+                                                        onClick={() => handleImageChange(foto)}
+                                                    />
+                                                ))}
                                             </div>
 
                                         </div>
@@ -129,54 +140,80 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                         {/* derecha */}
                                         <div className="md:flex-1 px-4">
 
-                                            {/* titulo */}
-                                            <h2 className="text-2xl font-bold text-gray-800 mb-2">{producto.nombre}</h2>
+                                            {/* título */}
+                                            <h2 className="text-4xl font-bold text-gray-800 mb-2 mt-4 md:mt-0">{producto.nombre}</h2>
 
-                                            {/* descripcion */}
-                                            <p className="text-gray-600 text-sm mb-4">
+                                            {/* descripción */}
+                                            <p className="text-gray-600 text-lg mb-4">
                                                 {producto.descripcion}
                                             </p>
 
                                             <div className="flex mb-4">
                                                 {/* precio */}
-                                                <div className="mr-4">
+                                                <div className="mr-4 text-lg">
                                                     <span className="font-bold text-gray-700">Precio: </span>
-                                                    <span className="text-gray-600">${producto.variaciones[0].precio}</span>
+                                                    <span className="text-gray-600">${producto.variaciones.find(variacion => variacion.color === colorSeleccionado)?.precio}</span>
                                                 </div>
-                                                {/* <div>
-                                                    <span className="font-bold text-gray-700">Availability:</span>
-                                                    <span className="text-gray-600">In Stock</span>
-                                                </div> */}
                                             </div>
 
-                                            <div className="mb-4">
-                                                <span className="font-bold text-gray-700">Select Color:</span>
+                                            {/* selección de color */}
+                                            <div className="mb-4 text-lg">
+                                                <span className="font-bold text-gray-700">Selecciona Color:</span>
                                                 <div className="flex items-center mt-2">
-                                                    <button className="w-6 h-6 rounded-full bg-gray-800 mr-2"></button>
-                                                    <button className="w-6 h-6 rounded-full bg-red-500 mr-2"></button>
-                                                    <button className="w-6 h-6 rounded-full bg-blue-500 mr-2"></button>
-                                                    <button className="w-6 h-6 rounded-full bg-yellow-500 mr-2"></button>
+                                                    {producto.colores.map((color, index) => (
+                                                        <button
+                                                            key={index}
+                                                            onClick={() => handleColorChange(color)}
+                                                            className={`w-10 h-10 rounded-full mr-2 ${colorSeleccionado === color ? 'border-4 border-blue-500' : 'border border-gray-300'}`}
+                                                            style={{ backgroundColor: color.toLowerCase() === 'negro' ? 'black' : color.toLowerCase() === 'gris' ? 'gray' : color.toLowerCase() === 'blanco' ? 'white' : '' }}
+                                                        />
+                                                    ))}
                                                 </div>
                                             </div>
-                                            <div className="mb-4">
-                                                <span className="font-bold text-gray-700">Select Size:</span>
-                                                <div className="flex items-center mt-2">
-                                                    <button className="bg-gray-300 text-gray-700py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400">S</button>
-                                                    <button className="bg-gray-300 text-gray-700py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400">M</button>
-                                                    <button className="bg-gray-300 text-gray-700py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400">L</button>
-                                                    <button className="bg-gray-300 text-gray-700py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400">XL</button>
+
+                                            {/* selección de talla */}
+                                            <div className="mb-4 text-lg">
+                                                <span className="font-bold text-gray-700">Selecciona Talla:</span>
+                                                <div className="flex flex-wrap mt-2">
+                                                    {producto.variaciones
+                                                        .find(variacion => variacion.color === colorSeleccionado)
+                                                        ?.tallas.map((talla, index) => (
+                                                            <button
+                                                                key={index}
+                                                                onClick={() => handleTallaChange(talla)}
+                                                                className={`w-16 h-16 border rounded-md flex items-center justify-center mx-2 my-1 text-gray-800 hover:bg-gray-200 ${tallaSeleccionada === talla ? 'bg-gray-200 border-4 border-blue-500' : ''}`}
+                                                            >
+                                                                {talla}
+                                                            </button>
+                                                        ))
+                                                    }
                                                 </div>
                                             </div>
-                                            <div>
-                                                <span className="font-bold text-gray-700">Product Description:</span>
-                                                <p className="text-gray-600 text-sm mt-2">
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                                                    sed ante justo. Integer euismod libero id mauris malesuada tincidunt. Vivamus commodo nulla ut
-                                                    lorem rhoncus aliquet. Duis dapibus augue vel ipsum pretium, et venenatis sem blandit. Quisque
-                                                    ut erat vitae nisi ultrices placerat non eget velit. Integer ornare mi sed ipsum lacinia, non
-                                                    sagittis mauris blandit. Morbi fermentum libero vel nisl suscipit, nec tincidunt mi consectetur.
-                                                </p>
+
+                                            {/* botones */}
+                                            <div className="lg:flex lg:-mx-2 my-8 text-center text-lg">
+                                                <div className="lg:w-1/2 px-2">
+                                                    <button className="w-full bg-gray-900 text-white py-4 px-4 rounded-lg font-bold hover:bg-gray-800">
+                                                        Añadir al carrito
+                                                    </button>
+                                                </div>
+                                                <div className="lg:w-1/2 px-2">
+                                                    <button
+                                                        type="button"
+                                                        className="w-full lg:mt-0 mt-3 bg-gray-200 text-gray-800 py-4 px-4 rounded-lg font-bold hover:bg-gray-300"
+                                                        onClick={openModal}
+                                                    >
+                                                        Guía de tallas
+                                                    </button>
+                                                    <Modal
+                                                        isOpen={isModalOpen}
+                                                        onClose={closeModal}
+                                                        title={"Guía de tallas"}
+                                                        imageSrc={"/other/tallas.png"}
+                                                    />
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
