@@ -7,7 +7,10 @@ import Navbar from "@/components/Navbar";
 import { productos } from '@/app/data/productos';
 import { Producto, Variacion } from '@/app/data/productos';
 import Modal from '@/components/Modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+import { useCart } from '@/lib/CartContext';
 import { formatCurrency } from '@/lib/utils';
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
@@ -15,10 +18,14 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     const id = params.id;
     const [producto, setProducto] = useState<Producto | null>(null);
     const [productoCargado, setProductoCargado] = useState<Boolean>(false);
+    const [productName, setProductName] = useState<string>('');
     const [colorSeleccionado, setColorSeleccionado] = useState<string>('');
     const [tallaSeleccionada, setTallaSeleccionada] = useState<string>('');
     const [imagenSeleccionada, setImagenSeleccionada] = useState<string>('');
+    const [precio, setPrecio] = useState<number>(0);
     const [cantidad, setCantidad] = useState<number>(1);
+    const [warning, setWarning] = useState<Boolean>(false);
+    const [imageCart, setImageCart] = useState<string>('');
 
     const increment = () => setCantidad(cantidad + 1);
     const decrement = () => setCantidad(cantidad - 1);
@@ -32,8 +39,11 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
         if (productoEncontrado) {
             setProductoCargado(true);
             setProducto(productoEncontrado);
+            setProductName(productoEncontrado.nombre);
             setColorSeleccionado(productoEncontrado.colores[0]);
+            setPrecio(productoEncontrado.variaciones.find(variacion => variacion.color === productoEncontrado.colores[0])?.precio || 0);
             setImagenSeleccionada(productoEncontrado.fotos[productoEncontrado.colores[0]][0]);
+            setImageCart(productoEncontrado.fotos[productoEncontrado.colores[0]][0]);
         } else {
             setProductoCargado(true);
             setProducto(null);
@@ -43,6 +53,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     const handleColorChange = (color: string) => {
         setColorSeleccionado(color);
         setImagenSeleccionada(producto?.fotos[color][0] || '');
+        setImageCart(producto?.fotos[color][0] || '');
     };
 
     const handleTallaChange = (talla: string) => {
@@ -51,6 +62,36 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
     const handleImageChange = (image: string) => {
         setImagenSeleccionada(image);
+    };
+
+    const { addToCart } = useCart();
+
+    const handleAddToCart = () => {
+        if (!colorSeleccionado || !tallaSeleccionada) {
+            setWarning(true);
+            return;
+        }
+
+        addToCart({
+            productId: Number(id),
+            nombre: productName,
+            cantidad: cantidad,
+            foto: imageCart,
+            variacion: {
+                color: colorSeleccionado,
+                talla: tallaSeleccionada,
+                precio: precio,
+            }
+        });
+        toast.success('Producto agregado exitosamente', {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     };
 
     return (
@@ -156,8 +197,8 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
                                             <hr className='my-4' />
 
+                                            {/* precio */}
                                             <div className="flex mb-4">
-                                                {/* precio */}
                                                 <div className="mr-4 text-lg">
                                                     <span className="font-bold text-gray-700">Precio: </span>
                                                     <span className="text-gray-600">{formatCurrency(producto.variaciones.find(variacion => variacion.color === colorSeleccionado)?.precio ?? 0)} MXN</span>
@@ -222,10 +263,12 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                                 </div>
                                             </div>
 
+                                            {warning && <p className='text-lg text-red-600 italic'>Porfavor selecciona un color y una talla</p>}
+
                                             {/* botones */}
                                             <div className="lg:flex lg:-mx-2 my-8 text-center text-lg">
                                                 <div className="lg:w-1/2 px-2">
-                                                    <button className="w-full bg-gray-900 text-white py-4 px-4 rounded-lg font-bold hover:bg-gray-800">
+                                                    <button onClick={handleAddToCart} className="w-full bg-gray-900 text-white py-4 px-4 rounded-lg font-bold hover:bg-gray-600">
                                                         Añadir al carrito
                                                     </button>
                                                 </div>
@@ -244,6 +287,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                                         imageSrc={"/other/tallas.png"}
                                                     />
                                                 </div>
+                                                <ToastContainer />
                                             </div>
 
                                         </div>

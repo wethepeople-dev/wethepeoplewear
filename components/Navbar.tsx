@@ -15,9 +15,24 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 import { Button } from "@/components/ui/button"
 
 import clsx from "clsx";
+import { useCart } from '@/lib/CartContext';
+
+import { formatCurrency } from '@/lib/utils';
 
 import {
     Sheet,
@@ -30,13 +45,8 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-
-import { Separator } from "@/components/ui/separator"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Navbar() {
 
@@ -45,6 +55,27 @@ export default function Navbar() {
     const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
 
     const pathname = usePathname();
+    const { getCartQuantity, getTotal, getCart, emptyCart, removeCartItem } = useCart();
+    const cant = getCartQuantity();
+    const total = getTotal();
+    const cart = getCart();
+
+    const handleEmptyCart = () => {
+        emptyCart();
+        toast.success("Carrito vaciado", {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
+    };
+
+    const handleRemoveCartItem = (productId: number, talla: string, color: string) => () => {
+        removeCartItem(productId, talla, color);
+    }
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-lg">
@@ -139,13 +170,13 @@ export default function Navbar() {
                                                         {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                                                         </svg> */}
-                                                        <span className='mr-2'>$0.00</span>
+                                                        <span className='mr-2'>{formatCurrency(total)}</span>
                                                         <span className="relative inline-block">
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                                                             </svg>
                                                             <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 transform translate-x-1/2 -translate-y-1/2 bg-gray-500 rounded-full">
-                                                                0
+                                                                {cant}
                                                             </span>
                                                         </span>
                                                     </NavigationMenuLink>
@@ -158,15 +189,75 @@ export default function Navbar() {
                                                         </SheetDescription>
                                                     </SheetHeader>
                                                     <div className="grid gap-4 py-4">
-                                                        <p>Producto #1</p>
-                                                        <p>Producto #2</p>
-                                                        <p>Producto #3</p>
+
+                                                        <hr />
+
+                                                        {cart.length === 0 &&
+                                                            <>
+                                                                <p>No hay productos en el carrito</p>
+                                                                <SheetClose asChild>
+                                                                    <Link href={'/catalogo'} className='border border-gray-700 text-gray-700 hover:bg-gray-200 py-2 px-4 rounded-lg text-center font-medium'>
+                                                                        Ir al catálogo
+                                                                    </Link>
+                                                                </SheetClose>
+                                                            </>
+                                                        }
+
+
+                                                        {cart.length > 0 && cart.map((item, index) => (
+                                                            <>
+                                                                <div key={index} className="flex items-center justify-between">
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <div className="w-12 h-12 relative">
+                                                                            <Image src={item.foto} alt="product image" layout="fill" objectFit="cover" />
+                                                                        </div>
+                                                                        <div>
+                                                                            <p className='font-semibold'>{item.nombre}</p>
+                                                                            <p className='text-gray-700 text-sm'>{item.cantidad} x {formatCurrency(item.variacion.precio)}</p>
+                                                                            <p className='text-gray-700 text-sm'>{item.variacion.talla} - {item.variacion.color}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <Button className='bg-red-600 hover:bg-red-300' onClick={handleRemoveCartItem(item.productId, item.variacion.talla, item.variacion.color)}>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                                            </svg>
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                                <hr />
+                                                            </>
+                                                        ))}
                                                     </div>
-                                                    <SheetFooter>
-                                                        <SheetClose asChild>
-                                                            <Button type="submit">Save changes</Button>
-                                                        </SheetClose>
-                                                    </SheetFooter>
+
+                                                    {cart.length > 0 &&
+                                                        <SheetFooter>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button className='text-red-600 border border-red-600 bg-transparent hover:bg-red-100'>
+                                                                        Vaciar carrito
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>¿Vaciar carrito?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            Esta acción no se puede deshacer.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                        <AlertDialogAction className="bg-red-500" onClick={handleEmptyCart}>Vaciar</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                            <Button type="submit">
+                                                                Finalizar compra
+                                                            </Button>
+                                                        </SheetFooter>
+                                                    }
+                                                    <ToastContainer />
+
                                                 </SheetContent>
                                             </NavigationMenuItem>
                                         </Sheet>
@@ -185,13 +276,13 @@ export default function Navbar() {
                                         <Sheet>
                                             <SheetTrigger asChild>
                                                 <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "cursor-pointer")}>
-                                                    <span className='mr-2'>$0.00</span>
+                                                    <span className='mr-2'>{formatCurrency(total)}</span>
                                                     <span className="relative inline-block">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-1">
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                                                         </svg>
                                                         <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-gray-100 transform translate-x-1/2 -translate-y-1/2 bg-gray-500 rounded-full">
-                                                            0
+                                                            {cant}
                                                         </span>
                                                     </span>
                                                 </NavigationMenuLink>
@@ -204,15 +295,75 @@ export default function Navbar() {
                                                     </SheetDescription>
                                                 </SheetHeader>
                                                 <div className="grid gap-4 py-4">
-                                                    <p>Producto #1</p>
-                                                    <p>Producto #2</p>
-                                                    <p>Producto #3</p>
+
+                                                    <hr />
+
+                                                    {cart.length === 0 &&
+                                                        <>
+                                                            <p>No hay productos en el carrito</p>
+                                                            <SheetClose asChild>
+                                                                <Link href={'/catalogo'} className='border border-gray-700 text-gray-700 hover:bg-gray-200 py-2 rounded-lg text-center font-medium'>
+                                                                    Ir al catálogo
+                                                                </Link>
+                                                            </SheetClose>
+                                                        </>
+                                                    }
+
+                                                    {cart.length > 0 && cart.map((item, index) => (
+                                                        <>
+                                                            <div key={index} className="flex items-center justify-between">
+                                                                <div className="flex items-center space-x-2">
+                                                                    <div className="w-12 h-12 relative">
+                                                                        <Image src={item.foto} alt="product image" layout="fill" objectFit="cover" />
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className='font-semibold'>{item.nombre}</p>
+                                                                        <p className='text-gray-700 text-sm'>{item.cantidad} x {formatCurrency(item.variacion.precio)}</p>
+                                                                        <p className='text-gray-700 text-sm'>{item.variacion.talla} - {item.variacion.color}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <Button className='bg-red-600 hover:bg-red-300' onClick={handleRemoveCartItem(item.productId, item.variacion.talla, item.variacion.color)}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                                        </svg>
+                                                                    </Button>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                        </>
+                                                    ))}
+
                                                 </div>
-                                                <SheetFooter>
-                                                    <SheetClose asChild>
-                                                        <Button type="submit">Save changes</Button>
-                                                    </SheetClose>
-                                                </SheetFooter>
+
+                                                {cart.length > 0 &&
+                                                    <SheetFooter>
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button className='text-red-600 border border-red-600 bg-transparent hover:bg-red-100 mt-2'>
+                                                                    Vaciar carrito
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>¿Vaciar carrito?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        Esta acción no se puede deshacer.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                    <AlertDialogAction className="bg-red-500" onClick={handleEmptyCart}>Vaciar</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                        <Button type="submit">
+                                                            Finalizar compra
+                                                        </Button>
+                                                    </SheetFooter>
+                                                }
+                                                <ToastContainer />
+
                                             </SheetContent>
                                         </Sheet>
 

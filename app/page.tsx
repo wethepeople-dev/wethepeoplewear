@@ -402,6 +402,7 @@ export default function Home() {
           {/* grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
 
+            {/* time is now, chase your dreams y change the world */}
             {/* product 1 */}
             <div className="group">
               <Link href="#" className="block" prefetch={false}>
