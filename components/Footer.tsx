@@ -50,10 +50,10 @@ export default function Footer() {
                             <h2 className="mb-4 text-sm font-bold text-white uppercase">Información</h2>
                             <ul className="text-gray-100 font-medium">
                                 <li className="mb-2">
-                                    <Link href="#" className="hover:underline">FAQs</Link>
+                                    <Link href="/contacto#faqs" className="hover:underline">FAQs</Link>
                                 </li>
                                 <li>
-                                    <Link href="#" className="hover:underline">Guía de tallas</Link>
+                                    <Link href="/contacto#tallas" className="hover:underline">Guía de tallas</Link>
                                 </li>
                             </ul>
                         </div>

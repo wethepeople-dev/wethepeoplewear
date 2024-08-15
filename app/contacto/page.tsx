@@ -50,7 +50,7 @@ export default function Contacto() {
 
                     {/* redes sociales y forms */}
                     {/* https://readymadeui.com/tailwind-blocks/contact-form */}
-                    <div className="grid sm:grid-cols-2 items-start gap-16 p-4 mx-auto max-w-4xl bg-white py-8">
+                    <div className="grid sm:grid-cols-2 items-start gap-16 p-4 md:px-8 mx-auto max-w-4xl bg-white py-8">
 
                         {/* izquierda */}
                         <div>
@@ -61,7 +61,7 @@ export default function Contacto() {
                             </p>
 
                             {/* email */}
-                            <div className="mt-12">
+                            <div className="mt-10">
                                 <h2 className="text-gray-800 text-base font-bold">Email</h2>
                                 <ul className="mt-4">
                                     <li className="flex items-center">
@@ -82,7 +82,7 @@ export default function Contacto() {
                             </div>
 
                             {/* redes sociales */}
-                            <div className="mt-12">
+                            <div className="mt-10">
                                 <h2 className="text-gray-800 text-base font-bold">Redes sociales</h2>
 
                                 <ul className="flex mt-4 space-x-4">
@@ -137,7 +137,7 @@ export default function Contacto() {
                     </div>
 
                     {/* Sección de FAQs */}
-                    <section className="px-8 py-14">
+                    <section className="md:px-8 py-14" id="faqs">
                         <div className="container mx-auto">
                             <div className="mb-10 text-center ">
                                 <p
@@ -155,7 +155,7 @@ export default function Contacto() {
                             <Accordion type="single" collapsible className="max-w-3xl mx-auto">
                                 {faqs.map(({ title, desc }) => (
                                     <AccordionItem value={title} key={title}>
-                                        <AccordionTrigger color="blue-gray" className="pb-6 text-[20px] font-bold">{title}</AccordionTrigger>
+                                        <AccordionTrigger color="blue-gray" className="pb-6 md:text-[20px] text-[16px] text-left font-bold">{title}</AccordionTrigger>
                                         <AccordionContent className="border-t border-gray-200 py-8">
                                             <p className="font-normal text-base !text-gray-500">
                                                 {desc}
@@ -168,7 +168,7 @@ export default function Contacto() {
                     </section>
 
                     {/* Sección de Guía de Tallas */}
-                    <section className="flex flex-col items-center justify-center py-14">
+                    <section className="flex flex-col items-center justify-center py-14 md:px-8" id="tallas">
                         <div className="container mx-auto px-4 md:px-6 text-center">
                             <div className="mb-14 text-center ">
                                 <p

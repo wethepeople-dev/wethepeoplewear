@@ -15,6 +15,8 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -194,43 +196,90 @@ export default function Navbar() {
 
                                                         {cart.length === 0 &&
                                                             <>
-                                                                <p>No hay productos en el carrito</p>
-                                                                <SheetClose asChild>
-                                                                    <Link href={'/catalogo'} className='border border-gray-700 text-gray-700 hover:bg-gray-200 py-2 px-4 rounded-lg text-center font-medium'>
-                                                                        Ir al catálogo
-                                                                    </Link>
-                                                                </SheetClose>
+                                                                <>
+                                                                    <div className="flex flex-col bg-white" style={{ height: '70vh' }}>
+                                                                        <div className="flex flex-1 items-center justify-center">
+                                                                            <div className="mx-auto max-w-xl px-4 text-center">
+                                                                                <div className="flex justify-center items-center">
+                                                                                    <img className="w-32 h-32 mb-8 rounded-full object-cover"
+                                                                                        src="/logos/icon.png"
+                                                                                        alt="image empty states" />
+                                                                                </div>
+                                                                                <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                                                                                    Tu carrito esta vacío
+                                                                                </h1>
+
+                                                                                <p className="mt-2 text-gray-500">
+                                                                                    Descubre los productos que tenemos para ti.
+                                                                                </p>
+
+                                                                                <Link
+                                                                                    href="/catalogo"
+                                                                                    className="mt-6 inline-block rounded bg-azulito-100 px-5 py-3 text-sm font-medium text-white hover:bg-blue-400 hover:shadow-lg focus:outline-none focus:ring"
+                                                                                >
+                                                                                    Explorar productos
+                                                                                </Link>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </>
                                                             </>
                                                         }
 
 
-                                                        {cart.length > 0 && cart.map((item, index) => (
-                                                            <>
-                                                                <div key={index} className="flex items-center justify-between">
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <div className="w-12 h-12 relative">
-                                                                            <Image src={item.foto} alt="product image" layout="fill" objectFit="cover" />
+                                                        <ScrollArea className={cn("h-[55vh] mt-[-14px]", cart.length > 0 ? 'border-b' : '')}>
+                                                            {cart.length > 0 && cart.map((item, index) => (
+                                                                <>
+                                                                    <div key={index} className="flex items-center justify-between py-2 pr-3">
+                                                                        <div className="flex items-center space-x-2">
+                                                                            <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                                                                <img src={item.foto} alt={item.nombre} className="h-full w-full object-contain object-center" />
+                                                                            </div>
+                                                                            <div className='px-1'>
+                                                                                <p className='font-semibold'>{item.nombre}</p>
+                                                                                <p className='text-gray-700 text-sm'>{item.cantidad} x {formatCurrency(item.variacion.precio)}</p>
+                                                                                <p className='text-gray-700 text-sm'>{item.variacion.talla} - {item.variacion.color}</p>
+                                                                            </div>
                                                                         </div>
                                                                         <div>
-                                                                            <p className='font-semibold'>{item.nombre}</p>
-                                                                            <p className='text-gray-700 text-sm'>{item.cantidad} x {formatCurrency(item.variacion.precio)}</p>
-                                                                            <p className='text-gray-700 text-sm'>{item.variacion.talla} - {item.variacion.color}</p>
+                                                                            <Button className='bg-transparent text-red-600 border border-red-600 hover:bg-red-300 px-3' onClick={handleRemoveCartItem(item.productId, item.variacion.talla, item.variacion.color)}>
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
+                                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                                                </svg>
+                                                                            </Button>
                                                                         </div>
                                                                     </div>
-                                                                    <div>
-                                                                        <Button className='bg-red-600 hover:bg-red-300' onClick={handleRemoveCartItem(item.productId, item.variacion.talla, item.variacion.color)}>
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
-                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                                            </svg>
-                                                                        </Button>
-                                                                    </div>
+                                                                    <hr />
+                                                                </>
+                                                            ))}
+                                                        </ScrollArea>
+
+                                                        {cart.length > 0 &&
+                                                            <div className="px-4 pt-2 sm:px-6">
+                                                                <div className="flex justify-between text-base font-medium text-gray-900">
+                                                                    <p>Subtotal</p>
+                                                                    <p>{formatCurrency(total)} MXN</p>
                                                                 </div>
-                                                                <hr />
-                                                            </>
-                                                        ))}
+                                                                <p className="mt-1 text-sm text-gray-500 text-center">
+                                                                    Costo de envío calculados en el checkout.
+                                                                </p>
+                                                                <div className="mt-6">
+                                                                    <a href="/carrito" className="flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-azulito-100">Checkout</a>
+                                                                </div>
+                                                                <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                                                                    <p>
+                                                                        o &nbsp;
+                                                                        <Link href={'/catalogo'} className="font-medium text-gray-800 hover:text-azulito-100">
+                                                                            Sigue Comprando
+                                                                            <span aria-hidden="true"> &rarr;</span>
+                                                                        </Link>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        }
                                                     </div>
 
-                                                    {cart.length > 0 &&
+                                                    {/* {cart.length > 0 &&
                                                         <SheetFooter>
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
@@ -251,12 +300,14 @@ export default function Navbar() {
                                                                     </AlertDialogFooter>
                                                                 </AlertDialogContent>
                                                             </AlertDialog>
-                                                            <Button type="submit">
-                                                                Finalizar compra
-                                                            </Button>
+                                                            <Link href={'/carrito'}>
+                                                                <Button>
+                                                                    Finalizar compra
+                                                                </Button>
+                                                            </Link>
                                                         </SheetFooter>
                                                     }
-                                                    <ToastContainer />
+                                                    <ToastContainer /> */}
 
                                                 </SheetContent>
                                             </NavigationMenuItem>
@@ -290,9 +341,9 @@ export default function Navbar() {
                                             <SheetContent>
                                                 <SheetHeader>
                                                     <SheetTitle>Carrito</SheetTitle>
-                                                    <SheetDescription>
-                                                        Revisa los productos que has agregado al carrito.
-                                                    </SheetDescription>
+                                                    {/* <SheetDescription>
+                                                        Tus productos agregados.
+                                                    </SheetDescription> */}
                                                 </SheetHeader>
                                                 <div className="grid gap-4 py-4">
 
@@ -300,43 +351,90 @@ export default function Navbar() {
 
                                                     {cart.length === 0 &&
                                                         <>
-                                                            <p>No hay productos en el carrito</p>
-                                                            <SheetClose asChild>
-                                                                <Link href={'/catalogo'} className='border border-gray-700 text-gray-700 hover:bg-gray-200 py-2 rounded-lg text-center font-medium'>
-                                                                    Ir al catálogo
-                                                                </Link>
-                                                            </SheetClose>
+                                                            <>
+                                                                <div className="flex flex-col bg-white" style={{ height: '70vh' }}>
+                                                                    <div className="flex flex-1 items-center justify-center">
+                                                                        <div className="mx-auto max-w-xl px-4 text-center">
+                                                                            <div className="flex justify-center items-center">
+                                                                                <img className="w-32 h-32 mb-8 rounded-full object-cover"
+                                                                                    src="/logos/icon.png"
+                                                                                    alt="image empty states" />
+                                                                            </div>
+                                                                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                                                                                Tu carrito esta vacío
+                                                                            </h1>
+
+                                                                            <p className="mt-2 text-gray-500">
+                                                                                Descubre los productos que tenemos para ti.
+                                                                            </p>
+
+                                                                            <Link
+                                                                                href="/catalogo"
+                                                                                className="mt-6 inline-block rounded bg-azulito-100 px-5 py-3 text-sm font-medium text-white hover:bg-blue-400 hover:shadow-lg focus:outline-none focus:ring"
+                                                                            >
+                                                                                Explorar productos
+                                                                            </Link>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </>
                                                         </>
                                                     }
 
-                                                    {cart.length > 0 && cart.map((item, index) => (
-                                                        <>
-                                                            <div key={index} className="flex items-center justify-between">
-                                                                <div className="flex items-center space-x-2">
-                                                                    <div className="w-12 h-12 relative">
-                                                                        <Image src={item.foto} alt="product image" layout="fill" objectFit="cover" />
+                                                    <ScrollArea className={cn("h-[55vh] mt-[-14px]", cart.length > 0 ? 'border-b' : '')}>
+                                                        {cart.length > 0 && cart.map((item, index) => (
+                                                            <>
+                                                                <div key={index} className="flex items-center justify-between py-2 pr-3">
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                                                            <img src={item.foto} alt={item.nombre} className="h-full w-full object-contain object-center" />
+                                                                        </div>
+                                                                        <div className='px-1'>
+                                                                            <p className='font-semibold'>{item.nombre}</p>
+                                                                            <p className='text-gray-700 text-sm'>{item.cantidad} x {formatCurrency(item.variacion.precio)}</p>
+                                                                            <p className='text-gray-700 text-sm'>{item.variacion.talla} - {item.variacion.color}</p>
+                                                                        </div>
                                                                     </div>
                                                                     <div>
-                                                                        <p className='font-semibold'>{item.nombre}</p>
-                                                                        <p className='text-gray-700 text-sm'>{item.cantidad} x {formatCurrency(item.variacion.precio)}</p>
-                                                                        <p className='text-gray-700 text-sm'>{item.variacion.talla} - {item.variacion.color}</p>
+                                                                        <Button className='bg-transparent text-red-600 border border-red-600 hover:bg-red-300 px-3' onClick={handleRemoveCartItem(item.productId, item.variacion.talla, item.variacion.color)}>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                                            </svg>
+                                                                        </Button>
                                                                     </div>
                                                                 </div>
-                                                                <div>
-                                                                    <Button className='bg-red-600 hover:bg-red-300' onClick={handleRemoveCartItem(item.productId, item.variacion.talla, item.variacion.color)}>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                                        </svg>
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                            <hr />
-                                                        </>
-                                                    ))}
+                                                                <hr />
+                                                            </>
+                                                        ))}
+                                                    </ScrollArea>
 
                                                 </div>
 
                                                 {cart.length > 0 &&
+                                                    <div className="px-4 pt-2 sm:px-6">
+                                                        <div className="flex justify-between text-base font-medium text-gray-900">
+                                                            <p>Subtotal</p>
+                                                            <p>{formatCurrency(total)} MXN</p>
+                                                        </div>
+                                                        <p className="mt-1 text-sm text-gray-500 text-center">
+                                                            Envío calculado en el checkout.
+                                                        </p>
+                                                        <div className="mt-6">
+                                                            <a href="/carrito" className="flex items-center justify-center rounded-md border border-transparent bg-gray-800 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-azulito-100">Checkout</a>
+                                                        </div>
+                                                        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                                                            <p>
+                                                                o &nbsp;
+                                                                <Link href={'/catalogo'} className="font-medium text-gray-800 hover:text-azulito-100">
+                                                                    Sigue Comprando
+                                                                    <span aria-hidden="true"> &rarr;</span>
+                                                                </Link>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                {/* {cart.length > 0 &&
                                                     <SheetFooter>
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
@@ -357,12 +455,14 @@ export default function Navbar() {
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
-                                                        <Button type="submit">
-                                                            Finalizar compra
-                                                        </Button>
+                                                        <Link href={'/carrito'} className='w-full'>
+                                                            <Button className='w-full'>
+                                                                Finalizar compra
+                                                            </Button>
+                                                        </Link>
                                                     </SheetFooter>
                                                 }
-                                                <ToastContainer />
+                                                <ToastContainer /> */}
 
                                             </SheetContent>
                                         </Sheet>
@@ -469,7 +569,7 @@ export default function Navbar() {
 
                             {/* Carrito */}
                             <li>
-                                <a href="#" className="text-gray-800 flex items-center space-x-2 focus:outline-none py-2 px-3 rounded hover:bg-gray-100 focus:bg-gray-300 focus:ring-gray-300">
+                                <a href="/carrito" className="text-gray-800 flex items-center space-x-2 focus:outline-none py-2 px-3 rounded hover:bg-gray-100 focus:bg-gray-300 focus:ring-gray-300">
                                     <div>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
