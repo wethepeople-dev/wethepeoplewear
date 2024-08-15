@@ -13,22 +13,27 @@ import {
 
 const faqs = [
     {
-        title: "¿Cómo puedo hacer un pedido?",
-        desc: "Para hacer un pedido, por favor selecciona los productos que deseas comprar y agrégalos al carrito. Una vez que hayas terminado, ve al carrito y sigue los pasos para completar tu compra.",
+        title: "¿Cómo puedo comprar una T-Shirt?",
+        desc: "Para comprar, por favor selecciona los productos que deseas comprar y agrégalos al carrito. Una vez que hayas terminado, ve al carrito y sigue los pasos para completar tu compra. También nos puedes encontrar a la venta en Collectif Concept Store o hacer tu pedido por Instagram (@wethepeople.wear).",
     },
     {
         title: "¿Cuánto tiempo tarda en llegar mi pedido?",
-        desc: "El tiempo de entrega de tu pedido dependerá de la dirección de envío. Una vez que tu pedido haya sido confirmado, recibirás un correo con la información de seguimiento de tu pedido.",
+        desc: "El tiempo de entrega de tu pedido dependerá de la dirección de envío. Una vez que tu pedido haya sido confirmado, procederemos con la creación de la guía y te enviaremos la información de seguimiento de tu pedido.",
     },
     {
         title: "¿Cómo puedo rastrear mi pedido?",
-        desc: "Una vez que tu pedido haya sido confirmado, recibirás un correo con la información de seguimiento de tu pedido. Si no recibiste el correo, por favor contáctanos a nuestro correo o redes sociales.",
+        desc: "Una vez que tu pedido haya sido confirmado, crearemos tu guía y recibirás un correo con la información de seguimiento de tu pedido. Si no recibiste el correo, por favor contáctanos a nuestro correo (hola@wethepeoplewear.com.mx) o redes sociales (@wethepeople.wear).",
     },
     {
-        title: "¿Cómo puedo contactar a We The People?",
-        desc: "Puedes contactarnos a través de nuestro correo hola@wethepeoplewear.com.mx o a través de nuestras redes sociales.",
+        title: "¿Cómo lavo mi T-Shirt?",
+        desc: "Para una máxima duración y para garantizar el cuidado del diseño, sugerimos lavar la prenda al revés, nunca utilizar secadora ni detergentes fuertes. También es recomendable el lavado con agua fría.",
+    },
+    {
+        title: "¿Puedo planchar mi T-Shirt?",
+        desc: "Sí, pero ten mucho cuidado, ya que el calor podría hacer que se debilitara, cayera o desgastara la impresión. Para planchar tu camisa, sugerimos el planchado a temperatura baja-media, sin usar vapor y siempre con la camiseta del revés, a ser posible con un paño de barrera entre el diseño y la plancha.",
     },
 ];
+
 
 export default function Contacto() {
 

@@ -24,7 +24,7 @@ export const productos: Producto[] = [
         nombre: "Chase Your Dream",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta inspiradora que te recuerda perseguir tus sueños.",
+        descripcion: "Una camiseta inspiradora que te motiva a perseguir tus sueños. 100% algodón.",
         colores: ["Blanco"],
         variaciones: [
             // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
@@ -43,7 +43,7 @@ export const productos: Producto[] = [
         nombre: "Believe",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te anima a creer en ti mismo.",
+        descripcion: "Una camiseta que te motiva a creer en ti mismo y en tu potencial. 100% algodón.",
         colores: ["Gris"],
         variaciones: [
             // { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
@@ -62,7 +62,7 @@ export const productos: Producto[] = [
         nombre: "Make It Happen",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Camiseta que te motiva a hacer que las cosas sucedan.",
+        descripcion: "Una camiseta que te motiva a sobrepasar los obstáculos y hacer que las cosas sucedan. 100% algodón.",
         colores: ["Negro"],
         variaciones: [
             { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
@@ -81,7 +81,7 @@ export const productos: Producto[] = [
         nombre: "The Future",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te recuerda que el futuro está en tus manos.",
+        descripcion: "Una camiseta que te recuerda que tu tienes el poder de crear tu propio futuro. 100% algodón.",
         colores: ["Gris", "Blanco"],
         variaciones: [
             // { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
@@ -100,7 +100,7 @@ export const productos: Producto[] = [
         nombre: "Happiness From Within",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te recuerda que la felicidad viene desde dentro.",
+        descripcion: "Una camiseta que te recuerda que la felicidad viene desde dentro. 100% algodón.",
         colores: ["Blanco"],
         variaciones: [
             // { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
@@ -119,7 +119,7 @@ export const productos: Producto[] = [
         nombre: "Live In The Moment",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Camiseta que te motiva a vivir el momento.",
+        descripcion: "Una camiseta que te recuerda vivir en el presente y disfrutarlo. 100% algodón.",
         colores: ["Negro"],
         variaciones: [
             { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
@@ -138,7 +138,7 @@ export const productos: Producto[] = [
         nombre: "Fear Of Being Average",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te inspira a sobresalir y evitar la mediocridad.",
+        descripcion: "Una camiseta que te inspira a sobresalir y ser único. 100% algodón.",
         colores: ["Gris", "Blanco"],
         variaciones: [
             // { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
@@ -157,7 +157,7 @@ export const productos: Producto[] = [
         nombre: "Club Of Dreamers",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Camiseta para aquellos que sueñan en grande.",
+        descripcion: "Una camiseta para los que se atreven a creer en sus sueños. 100% algodón.",
         colores: ["Negro", "Blanco"],
         variaciones: [
             { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
@@ -176,7 +176,7 @@ export const productos: Producto[] = [
         nombre: "Change The World",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te motiva a cambiar el mundo.",
+        descripcion: "Una camiseta que te motiva a cambiar el mundo con tus talentos únicos. 100% algodón.",
         colores: ["Blanco"],
         variaciones: [
             // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
@@ -195,7 +195,7 @@ export const productos: Producto[] = [
         nombre: "Art In Our Lives",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que celebra el arte en nuestras vidas.",
+        descripcion: "Una camiseta que nos recuerda encontrar lo bello en lo ordinario. 100% algodón.",
         colores: ["Negro"],
         variaciones: [
             { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
@@ -214,7 +214,7 @@ export const productos: Producto[] = [
         nombre: "The Time Is Now",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te recuerda que el momento es ahora.",
+        descripcion: "Una camiseta que te recuerda que no existe el tiempo perfecto para lanzarte. 100% algodón.",
         colores: ["Negro"],
         variaciones: [
             { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
@@ -233,7 +233,7 @@ export const productos: Producto[] = [
         nombre: "Dream Big",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te motiva a soñar en grande.",
+        descripcion: "Una camiseta que te motiva a soñar en grande. 100% algodón.",
         colores: ["Blanco"],
         variaciones: [
             // { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
@@ -252,7 +252,7 @@ export const productos: Producto[] = [
         nombre: "Seek The Positive",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Camiseta que te recuerda buscar lo positivo en la vida.",
+        descripcion: "Una camiseta que te recuerda a siempre buscar lo positivo. 100% algodón.",
         colores: ["Negro", "Blanco"],
         variaciones: [
             { color: "Negro", precio: 420, tallas: ["S", "M", "L", "XL"] },
@@ -271,7 +271,7 @@ export const productos: Producto[] = [
         nombre: "Good Things Are Coming",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Una camiseta que te motiva a creer que cosas buenas están por venir.",
+        descripcion: "Una camiseta que te motiva a creer que cosas buenas están por venir. 100% algodón.",
         colores: ["Blanco"],
         variaciones: [
             // { color: "Negro", precio: 450, tallas: ["S", "M", "L", "XL"] },
@@ -290,7 +290,7 @@ export const productos: Producto[] = [
         nombre: "Come On Kid, This Is Your Dream",
         categoriaId: 1,
         categoriaNombre: "Graphic T-Shirts",
-        descripcion: "Camiseta inspiradora para aquellos que siguen sus sueños.",
+        descripcion: "Una camiseta inspiradora para aquellos que vencen el miedo y siguen sus sueños. 100% algodón.",
         colores: ["Negro"],
         variaciones: [
             { color: "Negro", precio: 400, tallas: ["S", "M", "L", "XL"] },
