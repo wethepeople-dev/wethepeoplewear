@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils";
 
 import { useCart } from "@/lib/CartContext";
 import { formatCurrency } from "@/lib/utils";
@@ -33,17 +34,136 @@ export default function Carrito() {
 
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
+    const [phone, setPhone] = useState("")
     const [addressLine, setAddressLine] = useState("")
     const [city, setCity] = useState("")
     const [state, setState] = useState("")
     const [postalCode, setPostalCode] = useState("")
-    const [paymentDetails, setPaymentDetails] = useState("")
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-    }
+    const [comments, setComments] = useState("")
+
+    const [phoneError, setPhoneError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [postalCodeError, setPostalCodeError] = useState(false);
+    const [emptyFieldsError, setEmptyFieldsError] = useState(false);
+    const [loadingFinalizarCompra, setLoadingFinalizarCompra] = useState(false);
+
 
     const handleRemoveCartItem = (productId: number, talla: string, color: string) => () => {
         removeCartItem(productId, talla, color);
+    }
+
+    const handlePhoneChange = () => {
+        if (validatePhone(phone)) {
+            setPhoneError(false); // No error
+        } else {
+            setPhoneError(true);
+        }
+    };
+
+    const validatePhone = (phoneNum: any): boolean => {
+        // Regular expression to allow digits, spaces, parentheses, and the plus sign
+        const isValid = /^[\d\s()+-]+$/.test(phoneNum);
+        return isValid && phoneNum.replace(/[\s()+-]/g, '').length >= 7;
+    };
+
+    const handleEmailChange = () => {
+        if (validateEmail(email)) {
+            setEmailError(false); // No error
+        } else {
+            setEmailError(true);
+        }
+    };
+
+    const validateEmail = (email: any) => {
+        const expression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return expression.test(String(email).toLowerCase());
+    };
+
+    const handlePostalCodeChange = () => {
+        if (validatePostalCode(postalCode)) {
+            setPostalCodeError(false); // No error
+        } else {
+            setPostalCodeError(true);
+        }
+    };
+
+    const validatePostalCode = (postalCode: string): boolean => {
+        // Regular expression to allow exactly 5 digits
+        const isValid = /^\d{5}$/.test(postalCode);
+        return isValid;
+    };
+
+    const handleFinalizarCompra = async () => {
+
+        if (name.length === 0 || email.length === 0 || phone.length === 0 || addressLine.length === 0 || city.length === 0 || state.length === 0 || postalCode.length === 0 || emailError || phoneError || postalCodeError) {
+            setEmptyFieldsError(true);
+        } else {
+            setEmptyFieldsError(false);
+            setLoadingFinalizarCompra(true);
+            // const formattedDate = '';
+            // if (date) {
+            //     const formattedDate = format(date, "EEEE d 'de' MMMM, yyyy", { locale: es });
+            // }
+            // const temp_prods = cartItems.map((item) => {
+            //     return {
+            //         id: item.productId,
+            //         nombre: item.nombre,
+            //         cantidad: item.cantidad,
+            //         precio: item.variacion.precio,
+            //         tamanio: item.variacion.tamanio,
+            //     }
+            // });
+
+            // const order_info = {
+            //     total: total,
+            //     name,
+            //     email,
+            //     phone,
+            //     pickupPerson,
+            //     // formattedDate: format(date, "EEEE d 'de' MMMM, yyyy", { locale: es }),
+            //     formattedDate: date,
+            //     pickupTime,
+            //     messageClient,
+            //     discount,
+            // }
+
+            // localStorage.setItem('orderInfo', JSON.stringify(order_info));
+            // localStorage.setItem('cartItems', JSON.stringify(temp_prods));
+
+            // try {
+            //     const stripe = await asyncStripe;
+            //     const res = await fetch(`/api/stripe/session`, {
+            //         method: "POST",
+            //         body: JSON.stringify({
+            //             products: temp_prods,
+            //             orderInfo: order_info,
+            //             code,
+            //         })
+            //     });
+
+            //     if (res.ok) {
+            //         console.log('response is ok')
+            //     } else {
+            //         console.log('response is NOT ok')
+            //     }
+
+            //     const { sessionId } = await res.json();
+            //     if (stripe) {
+            //         const { error } = await stripe.redirectToCheckout({ sessionId });
+            //         console.log(error);
+            //         if (error) {
+            //             // router.push("/error");
+            //             console.log("Stripe error 1", error.message)
+            //         }
+            //     } else {
+            //         console.log("Stripe is null");
+            //     }
+            // } catch (err) {
+            //     console.log(err);
+            //     // router.push("/error");
+            //     console.log("Stripe error 2")
+            // }
+        }
     }
 
     useEffect(() => {
@@ -122,6 +242,7 @@ export default function Carrito() {
                                         </div>
                                     </CardHeader>
 
+                                    {/* productos */}
                                     <div className="grid gap-6 p-6 max-h-[70vh] overflow-auto sticky top-0">
                                         {cart.map((product) => (
                                             <>
@@ -153,10 +274,6 @@ export default function Carrito() {
                                         ))}
                                     </div>
 
-                                    {/* <CardFooter className="bg-muted px-6 py-4 flex items-center justify-end">
-                                <CardTitle className="text-2xl font-bold mb-4">Total: {formatCurrency(total)} MXN</CardTitle>
-                            </CardFooter> */}
-
                                 </Card>
 
                                 {/* CHECKOUT */}
@@ -173,29 +290,56 @@ export default function Carrito() {
 
                                         {/* Nombre */}
                                         <div className="grid gap-2">
-                                            <Label htmlFor="name">Nombre</Label>
-                                            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Escribe tu nombre" />
+                                            <Label htmlFor="name">Nombre <span className="text-red-500">*</span></Label>
+                                            <Input
+                                                id="name"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                placeholder="Escribe tu nombre"
+                                            />
                                         </div>
 
                                         {/* Email */}
                                         <div className="grid gap-2">
-                                            <Label htmlFor="email">Email</Label>
+                                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
                                             <Input
                                                 id="email"
                                                 type="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
+                                                onKeyUp={handleEmailChange}
+                                                className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                    emailError && "border-red-500"
+                                                )}
                                                 placeholder="Escribe tu email"
+                                            />
+                                        </div>
+
+                                        {/* Teléfono */}
+                                        <div className="grid gap-2">
+                                            <Label htmlFor="phone">Número de teléfono <span className="text-red-500">*</span></Label>
+                                            <Input
+                                                id="phone"
+                                                type="phone"
+                                                value={phone}
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                onKeyUp={handlePhoneChange}
+                                                className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                    phoneError && "border-red-500"
+                                                )}
+                                                placeholder="Escribe tu número de teléfono"
                                             />
                                         </div>
 
                                         {/* Dirección */}
                                         <div className="grid gap-2">
-                                            <Label htmlFor="addressLine">Dirección</Label>
+                                            <Label htmlFor="addressLine">Dirección <span className="text-red-500">*</span></Label>
                                             <Input
                                                 id="addressLine"
                                                 value={addressLine}
                                                 onChange={(e) => setAddressLine(e.target.value)}
+                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
                                                 placeholder="Escribe tu dirección"
                                             />
                                         </div>
@@ -204,17 +348,26 @@ export default function Carrito() {
 
                                             {/* Ciudad */}
                                             <div className="grid gap-2">
-                                                <Label htmlFor="city">Ciudad</Label>
-                                                <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Ciudad" />
+                                                <Label htmlFor="city">Ciudad <span className="text-red-500">*</span></Label>
+                                                <Input
+                                                    id="city"
+                                                    value={city}
+                                                    onChange={(e) => setCity(e.target.value)}
+                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                    placeholder="Ciudad"
+                                                />
                                             </div>
 
                                             {/* Estado */}
                                             <div className="grid gap-2">
-                                                <Label htmlFor="state">Estado</Label>
+                                                <Label htmlFor="state">Estado <span className="text-red-500">*</span></Label>
                                                 {/* <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="Estado" /> */}
-                                                <Select>
+                                                <Select
+                                                    value={state}
+                                                    onValueChange={value => setState(value)}
+                                                >
                                                     <SelectTrigger id="state">
-                                                        <SelectValue placeholder="Estado" />
+                                                        <SelectValue placeholder="Estado" className="text-gray-600" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="aguascalientes">Aguascalientes</SelectItem>
@@ -256,11 +409,15 @@ export default function Carrito() {
 
                                             {/* Código Postal */}
                                             <div className="grid gap-2">
-                                                <Label htmlFor="postalCode">Código Postal</Label>
+                                                <Label htmlFor="postalCode">Código Postal <span className="text-red-500">*</span></Label>
                                                 <Input
                                                     id="postalCode"
                                                     value={postalCode}
                                                     onChange={(e) => setPostalCode(e.target.value)}
+                                                    onKeyUp={handlePostalCodeChange}
+                                                    className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                        postalCodeError && "border-red-500"
+                                                    )}
                                                     placeholder="Código Postal"
                                                 />
                                             </div>
@@ -268,18 +425,26 @@ export default function Carrito() {
 
                                         {/* Comentarios */}
                                         <div className="grid gap-2">
-                                            <Label htmlFor="paymentDetails">Comentarios</Label>
+                                            <Label htmlFor="comments">Comentarios</Label>
                                             <Textarea
-                                                id="paymentDetails"
-                                                value={paymentDetails}
-                                                onChange={(e) => setPaymentDetails(e.target.value)}
+                                                id="comments"
+                                                value={comments}
+                                                onChange={(e) => setComments(e.target.value)}
+                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
                                                 placeholder="Escribe un comentario"
                                                 rows={3}
                                             />
                                         </div>
 
-                                        <Button type="submit" className="w-full">
-                                            Proceder al pago
+                                        {emptyFieldsError && <p className="mb-2 italic text-red-500 flex">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-2">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                            </svg>
+                                            Favor de llenar correctamente todos los campos requeridos
+                                        </p>}
+
+                                        <Button type="submit" onClick={handleFinalizarCompra} className="w-full text-center py-3 transition-all duration-300 hover:shadow-lg hover:bg-gray-600">
+                                            {loadingFinalizarCompra ? "Cargando..." : "Proceder al pago"}
                                         </Button>
 
                                     </div>
