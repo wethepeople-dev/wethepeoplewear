@@ -10,6 +10,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import ContactForm from "@/components/ContactForm";
 
 const faqs = [
     {
@@ -110,29 +111,7 @@ export default function Contacto() {
 
 
                         {/* derecha */}
-                        <form className="ml-auto space-y-4">
-
-                            {/* nombre */}
-                            <input type='text' placeholder='Name'
-                                className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-blue-500 focus:bg-transparent" />
-
-                            {/* correo */}
-                            <input type='email' placeholder='Email'
-                                className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-blue-500 focus:bg-transparent" />
-
-                            {/* asunto */}
-                            <input type='text' placeholder='Subject'
-                                className="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-blue-500 focus:bg-transparent" />
-
-                            {/* mensaje */}
-                            <textarea placeholder='Message' rows={6}
-                                className="w-full rounded-md px-4 bg-gray-100 text-gray-800 text-sm pt-3 outline-blue-500 focus:bg-transparent"></textarea>
-
-                            <button type='button' className="text-white bg-blue-500 hover:bg-blue-600 tracking-wide rounded-md text-sm px-4 py-3 w-full !mt-6">
-                                Enviar
-                            </button>
-
-                        </form>
+                        <ContactForm />
 
                     </div>
 

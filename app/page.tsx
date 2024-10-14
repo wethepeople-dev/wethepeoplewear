@@ -465,7 +465,7 @@ export default function Home() {
 
           {/* embed */}
           <div className="w-full px-4 py-10 lg:w-6/12 mx-auto">
-            <div className="z-10 pt-10 lg:pt-0 flex justify-center">
+            <div className="z-10 lg:pt-0 flex justify-center">
               <blockquote
                 className="instagram-media mx-auto"
                 data-instgrm-permalink="https://www.instagram.com/wethepeople.wear/"
@@ -601,7 +601,6 @@ export default function Home() {
               </blockquote>
 
               <Script src="https://www.instagram.com/embed.js" strategy="lazyOnload" />
-              <Script src="https://www.embedista.com/j/instagram.js" strategy="lazyOnload" />
             </div>
           </div>
 
