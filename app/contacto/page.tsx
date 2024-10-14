@@ -3,7 +3,8 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { useEffect } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
     Accordion,
     AccordionContent,
@@ -45,19 +46,64 @@ export default function Contacto() {
             <Navbar />
 
             {/* HERO */}
-            <section className="mt-20">
+            <section className="mt-16">
 
-                <div className="mx-auto px-4 py-8">
+                <div className="mx-auto pb-8">
+
+                    {/* collectif */}
+                    <section className="relative overflow-hidden bg-gradient-to-br from-gray-500 to-azulito-100 text-white">
+                        <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+                            <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+                                <div className="flex flex-col justify-center">
+                                    <h1 className="mb-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-center lg:text-left">
+                                        Encuéntranos en Collectif Concept Store
+                                    </h1>
+                                    <p className="mb-6 text-xl text-gray-300 text-center lg:text-left">
+                                        Visita nuestro espacio en Collectif Concept Store, ubicado en San Pedro Garza García.
+                                    </p>
+                                    <div className="w-100 mx-auto lg:mx-0">
+                                        <Button className="bg-white text-gray-900 hover:bg-gray-300 w-36">
+                                            <Link href={'https://collectif.com.mx/'} target="blank">Conoce más</Link>
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="relative grid grid-cols-2 gap-4">
+                                    <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
+                                        <Image
+                                            src="/other/collectif_fuera2.jpeg?height=800&width=600"
+                                            alt="Concept Store Product Showcase 1"
+                                            width={600}
+                                            height={800}
+                                            className="h-full w-full object-cover"
+                                            priority
+                                        />
+                                    </div>
+                                    <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
+                                        <Image
+                                            src="/other/collectif.jpg?height=800&width=600"
+                                            alt="Concept Store Product Showcase 2"
+                                            width={600}
+                                            height={800}
+                                            className="h-full w-full object-cover"
+                                            priority
+                                        />
+                                    </div>
+                                    <div className="absolute -bottom-6 -left-6 h-48 w-48 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 opacity-50 blur-2xl filter"></div>
+                                    <div className="absolute -top-6 -right-6 h-48 w-48 rounded-full bg-gradient-to-br from-yellow-400 to-pink-600 opacity-50 blur-2xl filter"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     {/* redes sociales y forms */}
                     {/* https://readymadeui.com/tailwind-blocks/contact-form */}
-                    <div className="grid sm:grid-cols-2 items-start gap-16 p-4 md:px-8 mx-auto max-w-4xl bg-white py-8">
+                    <div className="grid sm:grid-cols-2 items-start px-10 gap-16 p-4 md:px-8 mx-auto max-w-4xl bg-white pt-20 py-8">
 
                         {/* izquierda */}
                         <div>
 
-                            <h1 className="text-gray-800 text-4xl font-extrabold">Conecta con Nosotros</h1>
-                            <p className="text-base text-gray-500 mt-4">
+                            <h1 className="text-gray-800 text-4xl font-extrabold text-center md:text-left">Conecta con Nosotros</h1>
+                            <p className="text-base text-gray-500 mt-4 text-center md:text-left">
                                 Siguenos en nuestras redes sociales para estar al tanto de nuestras novedades y promociones.
                             </p>
 
@@ -108,7 +154,6 @@ export default function Contacto() {
                             </div>
 
                         </div>
-
 
                         {/* derecha */}
                         <ContactForm />
