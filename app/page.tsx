@@ -132,6 +132,16 @@ export default function Home() {
           <div className="w-full md:w-1/2 bg-slate-200 h-full relative">
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/rack.jpg)' }}></div>
           </div>
+          {/* <div className="w-full md:w-1/2 bg-slate-200 h-full relative">
+            <video
+              src="/other/intro.mov"  // Ruta de tu video
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          </div> */}
 
         </div>
       </div>

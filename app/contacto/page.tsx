@@ -69,13 +69,12 @@ export default function Contacto() {
                                 </div>
                                 <div className="relative grid grid-cols-2 gap-4">
                                     <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
-                                        <Image
-                                            src="/other/collectif_fuera2.jpeg?height=800&width=600"
-                                            alt="Concept Store Product Showcase 1"
-                                            width={600}
-                                            height={800}
+                                        <video
+                                            src="/other/collectif_camisa.mov"
+                                            autoPlay
+                                            loop
+                                            muted
                                             className="h-full w-full object-cover"
-                                            priority
                                         />
                                     </div>
                                     <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-xl">
