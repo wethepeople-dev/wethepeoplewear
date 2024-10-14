@@ -283,7 +283,7 @@ export default function Carrito() {
 
                                     <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 px-4 py-3 my-6 rounded relative" role="alert">
                                         <strong className="font-bold">IMPORTANTE.&nbsp;</strong>
-                                        <span className="block sm:inline">Por el momento solo realizamos envíos dentro de la República Mexicana.</span>
+                                        <span className="block sm:inline">Por el momento solo realizamos envíos dentro de la República Mexicana. Envíos locales (Monterrey) +$60 MXN y envíos nacionales +$149 MXN.</span>
                                     </div>
 
                                     <div className="grid gap-4">
