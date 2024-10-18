@@ -51,14 +51,14 @@ export default function Contacto() {
                 <div className="mx-auto pb-8">
 
                     {/* collectif */}
-                    <section className="relative overflow-hidden bg-gradient-to-br from-gray-500 to-azulito-100 text-white">
+                    <section className="relative overflow-hidden bg-azulito-100 text-white">
                         <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
                             <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
                                 <div className="flex flex-col justify-center">
                                     <h1 className="mb-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-center lg:text-left">
                                         Encuéntranos en Collectif Concept Store
                                     </h1>
-                                    <p className="mb-6 text-xl text-gray-300 text-center lg:text-left">
+                                    <p className="mb-6 text-xl text-gray-200 text-center lg:text-left">
                                         Visita nuestro espacio en Collectif Concept Store, ubicado en San Pedro Garza García.
                                     </p>
                                     <div className="w-100 mx-auto lg:mx-0">
