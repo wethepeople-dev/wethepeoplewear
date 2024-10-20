@@ -1,6 +1,7 @@
+require('dotenv').config();
 const { db } = require('@vercel/postgres');
 
-async function seedDiscountCodes(client) {
+async function seedData(client) {
     try {
         // Ensure the "uuid-ossp" extension is available for generating UUIDs
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -24,14 +25,14 @@ async function seedDiscountCodes(client) {
         ];
 
         // Insert discount codes into the table
-        for (const { code, percentage, active } of discountCodes) {
-            await client.sql`
-        INSERT INTO discount_codes (code, percentage, active)
-        VALUES (${code}, ${percentage}, ${active})
-        ON CONFLICT (code) DO NOTHING;
-      `;
-        }
-        console.log(`Seeded discount codes`);
+        //     for (const { code, percentage, active } of discountCodes) {
+        //         await client.sql`
+        //     INSERT INTO discount_codes (code, percentage, active)
+        //     VALUES (${code}, ${percentage}, ${active})
+        //     ON CONFLICT (code) DO NOTHING;
+        //   `;
+        //     }
+        //     console.log(`Seeded discount codes`);
 
         // Create clients table
         await client.sql`
@@ -60,7 +61,6 @@ async function seedDiscountCodes(client) {
                 discount_code_id UUID,
                 final_price DECIMAL NOT NULL,
                 comments TEXT,
-                datetime_ordered TIMESTAMP NOT NULL,
                 session_id VARCHAR(255) UNIQUE,
                 tracking_id VARCHAR(255) UNIQUE,
                 tracking_url VARCHAR(255) UNIQUE,
@@ -70,12 +70,56 @@ async function seedDiscountCodes(client) {
                 payment_status VARCHAR(50),
                 completed BOOLEAN NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (client_id) REFERENCES clients(client_id),
                 FOREIGN KEY (discount_code_id) REFERENCES discount_codes(code_id)
             );
         `;
         console.log("Created 'orders' table");
+
+        // Create the categories table (if not already created)
+        await client.sql`
+            CREATE TABLE IF NOT EXISTS categories (
+                category_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                name VARCHAR(255) NOT NULL UNIQUE,
+                description TEXT
+            );
+        `;
+        console.log("Created 'categories' table");
+
+        // Create the products table
+        await client.sql`
+            CREATE TABLE IF NOT EXISTS products (
+                product_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                category_id UUID NOT NULL,
+                description TEXT NOT NULL,
+                colores TEXT[],
+                tallas TEXT[],
+                release_date DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (category_id) REFERENCES categories(category_id)
+            );
+        `;
+        console.log("Created 'products' table");
+
+        // Create the product_variations table
+        await client.sql`
+            CREATE TABLE IF NOT EXISTS product_variations (
+                variation_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                product_id UUID NOT NULL,
+                color VARCHAR(50) NOT NULL,
+                talla VARCHAR(50) NOT NULL,
+                precio DECIMAL NOT NULL,
+                fotos TEXT[],
+                stock_qty INT NOT NULL, 
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+            );
+        `;
+        console.log("Created 'product_variations' table");
 
         // Create order_items table
         await client.sql`
@@ -83,12 +127,12 @@ async function seedDiscountCodes(client) {
                 item_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
                 order_id UUID NOT NULL,
                 product_name VARCHAR(255) NOT NULL,
-                product_id UUID NOT NULL,  -- Changed to UUID to match the products table
-                size VARCHAR(50) NOT NULL,
-                unit_price DECIMAL NOT NULL,
+                product_id UUID NOT NULL,
+                variation_id UUID NOT NULL,
                 quantity INT NOT NULL,
                 FOREIGN KEY (order_id) REFERENCES orders(order_id),
-                FOREIGN KEY (product_id) REFERENCES products(product_id)
+                FOREIGN KEY (product_id) REFERENCES products(product_id),
+                FOREIGN KEY (variation_id) REFERENCES product_variations(variation_id)
             );
         `;
         console.log("Created 'order_items' table");
@@ -105,7 +149,7 @@ async function seedDiscountCodes(client) {
                 author_name VARCHAR(255) NOT NULL,
                 author_email VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `;
         console.log("Created 'blog_posts' table");
@@ -146,46 +190,6 @@ async function seedDiscountCodes(client) {
         `;
         console.log("Created 'logs' table");
 
-        // Create the categories table (if not already created)
-        await client.sql`
-                CREATE TABLE IF NOT EXISTS categories (
-                    category_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL UNIQUE,
-                    description TEXT
-                );
-            `;
-        console.log("Created 'categories' table");
-
-        // Create the products table
-        await client.sql`
-                CREATE TABLE IF NOT EXISTS products (
-                    product_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL,
-                    category_id UUID NOT NULL,
-                    description TEXT NOT NULL,
-                    colores TEXT[],  -- Array for storing available colors
-                    release_date DATE,  -- Release date of the product
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    FOREIGN KEY (category_id) REFERENCES categories(category_id)
-                );
-            `;
-        console.log("Created 'products' table");
-
-        // Create the product_variations table
-        await client.sql`
-                CREATE TABLE IF NOT EXISTS product_variations (
-                    variation_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                    product_id UUID NOT NULL,
-                    color VARCHAR(50) NOT NULL,
-                    precio DECIMAL NOT NULL,
-                    tallas TEXT[],  -- Array for storing available sizes
-                    fotos TEXT[],  -- Array for storing photo URLs for each color
-                    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-                );
-            `;
-        console.log("Created 'product_variations' table");
-
     } catch (error) {
         console.error('Error seeding discount codes:', error);
         throw error;
@@ -196,7 +200,7 @@ async function main() {
     const client = await db.connect();
 
     try {
-        await seedDiscountCodes(client);
+        await seedData(client);
     } finally {
         await client.end();
     }

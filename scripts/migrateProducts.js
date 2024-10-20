@@ -1,33 +1,46 @@
+// scripts/migrateProducts.js
+require('dotenv').config();
 const { db } = require('@vercel/postgres');
-const { productos } = require('../app/data/productos');
+const productos = require('../app/data/productos.js'); // Adjust path if necessary
 
 async function migrateProducts() {
     const client = await db.connect();
     try {
+        // Insert products into the products table
         for (const producto of productos) {
-            // First, find the category_id from the category name
-            const { rows: category } = await client.sql`
-                SELECT category_id FROM categories WHERE name = ${producto.categoriaNombre};
-            `;
-            const categoryId = category[0]?.category_id;
+            const { nombre, categoriaId, descripcion, colores, releaseDate, fotos } = producto;
 
-            // Insert the product
-            const { rows: product } = await client.sql`
-                INSERT INTO products (product_id, name, category_id, description, colores, release_date)
-                VALUES (uuid_generate_v4(), ${producto.nombre}, ${categoryId}, ${producto.descripcion}, ${producto.colores}, ${producto.releaseDate})
+            // Insert product
+            const result = await client.sql`
+                INSERT INTO products (name, category_id, description, colores, release_date)
+                VALUES (${nombre}, ${categoriaId}, ${descripcion}, ${colores}, ${releaseDate})
                 RETURNING product_id;
             `;
-            const productId = product[0].product_id;
+            const productId = result.rows[0].product_id;
 
-            // Insert the product variations
+            // Insert product variations
             for (const variacion of producto.variaciones) {
-                await client.sql`
-                    INSERT INTO product_variations (variation_id, product_id, color, precio, tallas, fotos)
-                    VALUES (uuid_generate_v4(), ${productId}, ${variacion.color}, ${variacion.precio}, ${variacion.tallas}, ${producto.fotos[variacion.color]});
-                `;
+                const { color, precio, tallas } = variacion;
+
+                const tallasDeCamisas = ["S", "M", "L", "XL"];
+
+                for (const tallaa of tallasDeCamisas) {
+                    await client.sql`
+                        INSERT INTO product_variations (product_id, color, talla, precio, fotos, stock_qty)
+                        VALUES (
+                            ${productId}, 
+                            ${color}, 
+                            ${tallaa},
+                            ${precio}, 
+                            ${Object.entries(fotos).find(([key]) => key === color)[1]},
+                            0
+                        );
+                    `;
+                }
+
             }
         }
-        console.log("Products migrated successfully.");
+        console.log("Products and variations migrated successfully.");
     } catch (error) {
         console.error("Error migrating products:", error);
     } finally {

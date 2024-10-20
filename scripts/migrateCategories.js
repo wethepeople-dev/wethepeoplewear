@@ -1,5 +1,6 @@
+require('dotenv').config();
 const { db } = require('@vercel/postgres');
-const { categorias } = require('../app/data/categorias');
+const categorias = require('../app/data/categorias');
 
 async function migrateCategories() {
     const client = await db.connect();
