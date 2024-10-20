@@ -4,25 +4,49 @@ import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { Producto, Variacion, productos } from '@/app/data/productos';
+// import { Producto, Variacion, productos } from '@/app/data/productos';
 import Modal from '@/components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useCart } from '@/lib/CartContext';
 import { formatCurrency } from '@/lib/utils';
+import { set } from 'react-hook-form';
+import { cn } from '@/lib/utils';
+
+interface ProductVariation {
+    variation_id: string;
+    product_id: string;
+    color: string;
+    talla: string;
+    precio: number;
+    fotos: string[];
+    stock_qty: number;
+}
+
+interface Product {
+    product_id: string;
+    name: string;
+    description: string;
+    colores: string[];
+    tallas: string[];
+    release_date: string;
+    variations: ProductVariation[];
+}
 
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
 
     const id = params.id;
-    const [producto, setProducto] = useState<Producto | null>(null);
+    const [producto, setProducto] = useState<Product | null>(null);
     const [productoCargado, setProductoCargado] = useState<Boolean>(false);
     const [productName, setProductName] = useState<string>('');
     const [colorSeleccionado, setColorSeleccionado] = useState<string>('');
     const [tallaSeleccionada, setTallaSeleccionada] = useState<string>('');
     const [imagenSeleccionada, setImagenSeleccionada] = useState<string>('');
     const [precio, setPrecio] = useState<number>(0);
+    const [currVariation, setCurrVariation] = useState<ProductVariation | null>(null);
+    const [stockLeft, setStockLeft] = useState<number>(0);
     const [cantidad, setCantidad] = useState<number>(1);
     const [warning, setWarning] = useState<Boolean>(false);
     const [imageCart, setImageCart] = useState<string>('');
@@ -35,29 +59,57 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     const closeModal = () => setIsModalOpen(false);
 
     useEffect(() => {
-        const productoEncontrado = productos.find((p) => p.id === Number(id));
-        if (productoEncontrado) {
-            setProductoCargado(true);
-            setProducto(productoEncontrado);
-            setProductName(productoEncontrado.nombre);
-            setColorSeleccionado(productoEncontrado.colores[0]);
-            setPrecio(productoEncontrado.variaciones.find(variacion => variacion.color === productoEncontrado.colores[0])?.precio || 0);
-            setImagenSeleccionada(productoEncontrado.fotos[productoEncontrado.colores[0]][0]);
-            setImageCart(productoEncontrado.fotos[productoEncontrado.colores[0]][0]);
-        } else {
-            setProductoCargado(true);
-            setProducto(null);
-        }
+        const fetchProduct = async () => {
+            if (id) {
+                const response = await fetch(`/api/products/${id}`, {
+                    cache: 'no-store', // Ensure no caching
+                });
+
+                if (response.ok) {
+                    const product: Product = await response.json();
+                    console.log(product);
+                    setProducto(product);
+                    setProductName(product.name);
+                    setProductoCargado(true);
+                    setColorSeleccionado(product.colores[0]);
+                    setPrecio(product.variations[0].precio);
+                    setImagenSeleccionada(product.variations[0].fotos[0]); // Set the first image
+                    setImageCart(product.variations[0].fotos[0]); // Set the first image for cart
+                    setCurrVariation(product.variations[0]);
+                    setStockLeft(product.variations[0].stock_qty);
+                } else {
+                    setProductoCargado(true);
+                    setProducto(null);
+                }
+            }
+        };
+
+        fetchProduct();
     }, [id]);
 
     const handleColorChange = (color: string) => {
         setColorSeleccionado(color);
-        setImagenSeleccionada(producto?.fotos[color][0] || '');
-        setImageCart(producto?.fotos[color][0] || '');
+        const variation = producto?.variations.find(variacion => variacion.color === color);
+        if (variation) {
+            setPrecio(variation.precio);
+            setImagenSeleccionada(variation.fotos[0]);
+            setImageCart(variation.fotos[0]);
+            setCurrVariation(variation);
+            setCantidad(variation.stock_qty > 0 ? 1 : 0);
+            setStockLeft(0);
+            setTallaSeleccionada('');
+        }
     };
 
     const handleTallaChange = (talla: string) => {
-        setTallaSeleccionada(talla);
+        const variation = producto?.variations.find(variacion => variacion.talla === talla && variacion.color === colorSeleccionado);
+        if (variation && variation.stock_qty > 0) {
+            setTallaSeleccionada(talla);
+            setPrecio(variation.precio);
+            setCurrVariation(variation);
+            setStockLeft(variation.stock_qty);
+            setCantidad(variation.stock_qty > 0 ? 1 : 0);
+        }
     };
 
     const handleImageChange = (image: string) => {
@@ -73,7 +125,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
         }
 
         addToCart({
-            productId: Number(id),
+            productId: id,
             nombre: productName,
             cantidad: cantidad,
             foto: imageCart,
@@ -171,7 +223,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
                                             {/* miniaturas */}
                                             <div className="grid grid-cols-4 gap-2 mb-4">
-                                                {producto.fotos[colorSeleccionado].map((foto, index) => (
+                                                {currVariation?.fotos.map((foto, index) => (
                                                     <img
                                                         key={index}
                                                         className={`cursor-pointer w-full h-24 object-cover rounded-lg border-2 ${imagenSeleccionada === foto ? 'border-black' : 'border-transparent'}`}
@@ -188,11 +240,11 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                         <div className="md:flex-1 px-4">
 
                                             {/* título */}
-                                            <h2 className="text-4xl font-bold text-gray-800 mb-2 mt-4 md:mt-0">{producto.nombre}</h2>
+                                            <h2 className="text-4xl font-bold text-gray-800 mb-2 mt-4 md:mt-0">{producto.name}</h2>
 
                                             {/* descripción */}
                                             <p className="text-gray-600 text-lg mb-4">
-                                                {producto.descripcion}
+                                                {producto.description}
                                             </p>
 
                                             <hr className='my-4' />
@@ -201,7 +253,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                             <div className="flex mb-4">
                                                 <div className="mr-4 text-lg">
                                                     <span className="font-bold text-gray-700">Precio: </span>
-                                                    <span className="text-gray-600">{formatCurrency(producto.variaciones.find(variacion => variacion.color === colorSeleccionado)?.precio ?? 0)} MXN</span>
+                                                    <span className="text-gray-600">{formatCurrency(currVariation?.precio ?? 0)} MXN</span>
                                                 </div>
                                             </div>
 
@@ -224,17 +276,18 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                             <div className="mb-4 text-lg">
                                                 <span className="font-bold text-gray-700">Selecciona Talla:</span>
                                                 <div className="flex flex-wrap mt-2">
-                                                    {producto.variaciones
-                                                        .find(variacion => variacion.color === colorSeleccionado)
-                                                        ?.tallas.map((talla, index) => (
-                                                            <button
-                                                                key={index}
-                                                                onClick={() => handleTallaChange(talla)}
-                                                                className={`w-16 h-16 border rounded-md flex items-center justify-center mr-4 my-1 text-gray-800 hover:bg-gray-200 ${tallaSeleccionada === talla ? 'bg-gray-200 border-4 border-blue-500' : ''}`}
-                                                            >
-                                                                {talla}
-                                                            </button>
-                                                        ))
+                                                    {producto.tallas.map((talla, index) => (
+                                                        <button
+                                                            key={index}
+                                                            onClick={() => handleTallaChange(talla)}
+                                                            disabled={producto.variations.find(variacion => variacion.talla === talla && variacion.color === colorSeleccionado)?.stock_qty === 0}
+                                                            className={`w-16 h-16 border rounded-md flex items-center justify-center mr-4 my-1 text-gray-800 
+                                                                ${tallaSeleccionada === talla ? 'bg-gray-200 border-4 border-blue-500' : ''} 
+                                                                ${producto.variations.find(variacion => variacion.talla === talla && variacion.color === colorSeleccionado)?.stock_qty === 0 ? 'bg-red-200 cursor-not-allowed' : 'hover:bg-gray-200 cursor-pointer'}`}
+                                                        >
+                                                            {talla}
+                                                        </button>
+                                                    ))
                                                     }
                                                 </div>
                                             </div>
@@ -255,7 +308,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                                     <input type="text" id="counter-input" data-input-counter className="flex-shrink-0 text-gray-900 border-0 bg-transparent text-lg mx-2 font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" placeholder="" value={cantidad} required />
 
                                                     {/* increment */}
-                                                    <button type="button" id="increment-button" onClick={increment} disabled={cantidad >= 5} data-input-counter-increment="counter-input" className="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-10 w-10 focus:ring-gray-100 focus:ring-2 focus:outline-none">
+                                                    <button type="button" id="increment-button" onClick={increment} disabled={cantidad >= stockLeft} data-input-counter-increment="counter-input" className="flex-shrink-0 bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-10 w-10 focus:ring-gray-100 focus:ring-2 focus:outline-none">
                                                         <svg className="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
                                                         </svg>
@@ -264,6 +317,8 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                                             </div>
 
                                             {warning && <p className='text-lg text-red-600 italic'>Porfavor selecciona un color y una talla</p>}
+
+                                            <p>Quedan {stockLeft}</p>
 
                                             {/* botones */}
                                             <div className="lg:flex lg:-mx-2 my-8 text-center text-lg">

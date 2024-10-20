@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { productos } from "./data/productos";
+// import { productos } from "./data/productos";
 import Script from 'next/script';
 
 import Navbar from "@/components/Navbar";
@@ -25,6 +25,26 @@ import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
 
 import { formatCurrency } from "@/lib/utils";
+
+interface ProductVariation {
+  variation_id: string; // UUID
+  product_id: string; // UUID
+  color: string;
+  talla: string;
+  precio: number;
+  fotos: string[]; // Adjust based on your structure
+  stock_qty: number;
+}
+
+interface Product {
+  product_id: string; // UUID
+  name: string;
+  description: string;
+  colores: string[];
+  tallas: string[];
+  release_date: string; // or Date
+  variations: ProductVariation[]; // Include variations
+}
 
 export default function Home() {
 
@@ -65,26 +85,29 @@ export default function Home() {
     })
   }, [api])
 
-  const images = [
-    {
-      url: "/carousel/rack.jpg",
-      title: '"Coolest t-shirts in town"',
-      description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
-    },
-    {
-      url: "/carousel/collectif.jpg",
-      title: "Encuéntranos en tienda",
-      description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
-    },
-    {
-      url: "/carousel/espalda.png",
-      title: "Autenticidad, comodidad y simpleza",
-      description: "A professonal website drives sales. Create a beautiful website to impress and engage new customers and establish your business online",
-    },
-  ];
+  const bestsellerIds = [
+    '988edf04-a24b-4c3f-ba61-770c12c7a853',
+    '86f8c58e-0428-4c62-bc84-07787e1c2778',
+    '5544bd99-4da1-4ed8-b0cb-b84bad6e9015'
+  ]
+  // const bestsellers = productos.filter(p => bestsellerIds.includes(p.id))
+  const [bestsellers, setBestsellers] = useState<Product[]>([]);
 
-  const bestsellerIds = [11, 1, 9]
-  const bestsellers = productos.filter(p => bestsellerIds.includes(p.id))
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const response = await fetch('/api/products');
+      if (!response.ok) {
+        console.error('Failed to fetch products');
+        return;
+      }
+      const products: Product[] = await response.json();
+      const bestSellingProducts = products.filter((p) => bestsellerIds.includes(String(p.product_id)));
+      console.log('Bestsellers:', bestSellingProducts);
+      setBestsellers(bestSellingProducts);
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <main className="flex min-h-screen flex-col">
@@ -422,8 +445,8 @@ export default function Home() {
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">BEST SELLERS</h2>
             <Link href="/catalogo" className="text-sm md:text-base font-medium text-primary hover:underline flex items-center" prefetch={false}>
               View All
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5 ml-1">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5 ml-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
             </Link>
           </div>
@@ -432,24 +455,23 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
 
             {/* Bestsellers */}
-            {bestsellers.map(producto => (
-              <div key={producto.id} className="group">
-                <Link href={`/catalogo/${producto.id}`} className="block" prefetch={false}>
+            {bestsellers.map((producto) => (
+              <div key={producto.product_id} className="group">
+                <Link href={`/catalogo/${producto.product_id}`} className="block" prefetch={false}>
                   <img
-                    src={producto.fotos.Negro ? producto.fotos.Negro[1] : producto.fotos.Blanco ? producto.fotos.Blanco[1] : producto.fotos.Gris ? producto.fotos.Gris[1] : ''}
+                    src={producto.variations[0].fotos[1]} // Adjust this based on your data structure
                     alt="Bestseller"
                     width={400}
                     height={400}
                     className="w-full h-[300px] md:h-[350px] bg-slate-200 lg:h-[400px] object-cover rounded-lg group-hover:opacity-60 transition-opacity"
                   />
                   <div className="mt-4">
-                    <h3 className="text-lg md:text-xl font-semibold">{producto.nombre}</h3>
-                    <p className="text-base font-medium text-gray-600">{formatCurrency(producto.variaciones[0].precio)} MXN</p>
+                    <h3 className="text-lg md:text-xl font-semibold">{producto.name}</h3>
+                    <p className="text-base font-medium text-gray-600">{formatCurrency(producto.variations[0].precio)} MXN</p>
                   </div>
                 </Link>
               </div>
             ))}
-
 
           </div>
         </div>

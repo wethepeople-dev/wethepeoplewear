@@ -9,7 +9,7 @@ interface Variacion {
 }
 
 export interface CartItem {
-    productId: number;
+    productId: string;
     nombre: string;
     cantidad: number;
     foto: string;
@@ -22,8 +22,8 @@ interface CartContextType {
     getCartQuantity: () => number;
     getCart: () => CartItem[];
     emptyCart: () => void;
-    editCartItem: (productId: number, talla: string, color: string, changes: Partial<CartItem>) => void;
-    removeCartItem: (productId: number, talla: string, color: string) => void;
+    editCartItem: (productId: string, talla: string, color: string, changes: Partial<CartItem>) => void;
+    removeCartItem: (productId: string, talla: string, color: string) => void;
     getTotal: () => number;
 }
 
@@ -66,7 +66,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('cart', JSON.stringify([]));
     };
 
-    const editCartItem = (productId: number, talla: string, color: string, changes: Partial<CartItem>) => {
+    const editCartItem = (productId: string, talla: string, color: string, changes: Partial<CartItem>) => {
         let updatedCart = [...cart];
         const itemIndex = updatedCart.findIndex(i =>
             i.productId === productId &&
@@ -80,7 +80,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
-    const removeCartItem = (productId: number, talla: string, color: string) => {
+    const removeCartItem = (productId: string, talla: string, color: string) => {
         let updatedCart = cart.filter(i => !(i.productId === productId && i.variacion.talla === talla && i.variacion.color === color));
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
