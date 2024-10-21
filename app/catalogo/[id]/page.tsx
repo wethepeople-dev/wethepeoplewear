@@ -133,6 +133,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                 color: colorSeleccionado,
                 talla: tallaSeleccionada,
                 precio: precio,
+                variation_id: currVariation?.variation_id ?? '',
             }
         });
         toast.success('Producto agregado exitosamente', {

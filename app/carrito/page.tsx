@@ -48,7 +48,7 @@ export default function Carrito() {
     const [loadingFinalizarCompra, setLoadingFinalizarCompra] = useState(false);
 
 
-    const handleRemoveCartItem = (productId: number, talla: string, color: string) => () => {
+    const handleRemoveCartItem = (productId: string, talla: string, color: string) => () => {
         removeCartItem(productId, talla, color);
     }
 

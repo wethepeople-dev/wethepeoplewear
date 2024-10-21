@@ -16,15 +16,19 @@ interface Product {
     name: string;
     description: string;
     colores: string[];
+    category_id: string;
     tallas: string[];
     release_date: string; // or Date
     variations: ProductVariation[]; // Include variations
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
     try {
         const result = await sql`
-            SELECT p.product_id, p.name, p.description, p.colores, p.tallas, p.release_date,
+            SELECT p.product_id, p.name, p.description, p.colores, p.tallas, p.release_date, p.category_id,
                    pv.variation_id, pv.color, pv.talla, pv.precio, pv.fotos, pv.stock_qty
             FROM products p
             LEFT JOIN product_variations pv ON p.product_id = pv.product_id;
@@ -58,6 +62,7 @@ export async function GET() {
                     product_id: productData.product_id,
                     name: productData.name,
                     description: productData.description,
+                    category_id: productData.category_id,
                     colores: productData.colores,
                     tallas: productData.tallas,
                     release_date: productData.release_date,

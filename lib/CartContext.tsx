@@ -6,6 +6,7 @@ interface Variacion {
     color: string;
     talla: string;
     precio: number;
+    variation_id: string;
 }
 
 export interface CartItem {
