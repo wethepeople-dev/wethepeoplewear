@@ -75,7 +75,7 @@ export default function Navbar() {
         })
     };
 
-    const handleRemoveCartItem = (productId: number, talla: string, color: string) => () => {
+    const handleRemoveCartItem = (productId: string, talla: string, color: string) => () => {
         removeCartItem(productId, talla, color);
     }
 
