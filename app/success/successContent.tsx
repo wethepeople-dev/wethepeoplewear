@@ -171,10 +171,12 @@ const SuccessContent = () => {
                         });
 
                         if (orderRes.ok) {
+                            console.log('orden guardada')
                             const result = await orderRes.json();
                             setOrder(result);
                             // send email
-                            const emailResult = await fetch('/api/email', {
+                            console.log('Enviando correo electrónico de confirmación...');
+                            const emailResult = await fetch('/api/confirmationEmail', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -185,6 +187,7 @@ const SuccessContent = () => {
                                     products: JSON.parse(localStorage.getItem('cartItems') || '[]'),
                                 }),
                             });
+                            console.log('Email enviado');
                             localStorage.removeItem('orderInfo');
                             localStorage.removeItem('cartItems');
                             emptyCart();
@@ -354,7 +357,8 @@ const SuccessContent = () => {
                                                             className="mr-6 h-16 w-16 rounded object-cover object-center"
                                                         />
                                                         <div>
-                                                            <div className="font-medium text-gray-900">{product.product_name} - {currVariation?.talla}</div>
+                                                            <div className="font-medium text-gray-900">"{product.product_name}"</div>
+                                                            <div className="mt-1">{currVariation?.talla} x {currVariation?.color}</div>
                                                             <div className="mt-1 sm:hidden">{currVariation?.precio} x {product.quantity}</div>
                                                         </div>
                                                     </div>
