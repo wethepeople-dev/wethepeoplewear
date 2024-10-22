@@ -319,7 +319,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
                                             {warning && <p className='text-lg text-red-600 italic'>Porfavor selecciona un color y una talla</p>}
 
-                                            <p>Quedan {stockLeft}</p>
+                                            {/* <p>Quedan {stockLeft}</p> */}
 
                                             {/* botones */}
                                             <div className="lg:flex lg:-mx-2 my-8 text-center text-lg">

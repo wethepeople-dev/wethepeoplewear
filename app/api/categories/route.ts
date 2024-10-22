@@ -10,8 +10,6 @@ export async function GET() {
             SELECT * FROM categories;
         `;
 
-        console.log('fetched categories:', result.rows);
-
         return NextResponse.json(result.rows);
     } catch (error) {
         console.error('Error fetching categories:', error);

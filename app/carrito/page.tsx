@@ -11,6 +11,17 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import { ToastContainer, toast } from 'react-toastify';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import {
     Select,
     SelectContent,
@@ -18,20 +29,46 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { ArrowLeft, ShoppingCart, Trash2, BadgePercent } from 'lucide-react'
 import { cn } from "@/lib/utils";
+
+import { loadStripe } from "@stripe/stripe-js";
+
+const asyncStripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? '');
 
 import { useCart } from "@/lib/CartContext";
 import { formatCurrency } from "@/lib/utils";
 
+interface DiscountCode {
+    code_id: string;       // UUID
+    code: string;          // The discount code
+    percentage: number;    // Discount percentage
+    active: boolean;       // Whether the code is active
+    stripe_validated: boolean; // Whether it's validated by Stripe
+    created_at: string;    // Timestamp of when the code was created
+}
+
 export default function Carrito() {
 
-    const { cart, getTotal, getCartQuantity, removeCartItem } = useCart();
+    const { cart, getTotal, getCartQuantity, removeCartItem, emptyCart } = useCart();
     const total = getTotal();
     const cartQuantity = getCartQuantity();
 
     const [loadedCart, setLoadedCart] = useState(false);
+    const [loadingFinalizarCompra, setLoadingFinalizarCompra] = useState(false);
 
-
+    // Form fields
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
@@ -41,12 +78,68 @@ export default function Carrito() {
     const [postalCode, setPostalCode] = useState("")
     const [comments, setComments] = useState("")
 
+    // coupon code
+    const [couponCode, setCouponCode] = useState('')
+    const [searchingDiscount, setSearchingDiscount] = useState(false);
+    const [isCodeValid, setIsCodeValid] = useState(false);
+    const [message, setMessage] = useState('');
+    const [discount, setDiscount] = useState(0);
+    const [discountObject, setDiscountObject] = useState<DiscountCode | null>(null);
+
+    // Errors
     const [phoneError, setPhoneError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [postalCodeError, setPostalCodeError] = useState(false);
     const [emptyFieldsError, setEmptyFieldsError] = useState(false);
-    const [loadingFinalizarCompra, setLoadingFinalizarCompra] = useState(false);
 
+
+    const handleEmptyCart = () => {
+        emptyCart();
+        toast.success("Carrito vaciado", {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        })
+    }
+
+    const validateCode = async () => {
+        setSearchingDiscount(true);
+        try {
+            const response = await fetch(`/api/validate-discounts`, {
+                method: "POST",
+                body: JSON.stringify({ code: couponCode })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.active && data.stripe_validated) {
+                    setMessage(`Código válido. Descuento del ${data.percentage}% aplicado.`);
+                    setIsCodeValid(true);
+                    setDiscount(data.percentage / 100);
+                    setDiscountObject(data);
+                    setSearchingDiscount(false);
+                } else {
+                    setMessage('El código no está activo o no es válido.');
+                    setIsCodeValid(false);
+                    setDiscount(0);
+                    setSearchingDiscount(false);
+                }
+            } else {
+                console.log('response', response);
+                setMessage('Código inválido. Intente de nuevo.');
+                setIsCodeValid(false);
+                setDiscount(0);
+                setSearchingDiscount(false);
+            }
+
+        } catch (error) {
+            console.log('error', error);
+        }
+    };
 
     const handleRemoveCartItem = (productId: string, talla: string, color: string) => () => {
         removeCartItem(productId, talla, color);
@@ -104,65 +197,67 @@ export default function Carrito() {
             // if (date) {
             //     const formattedDate = format(date, "EEEE d 'de' MMMM, yyyy", { locale: es });
             // }
-            // const temp_prods = cartItems.map((item) => {
-            //     return {
-            //         id: item.productId,
-            //         nombre: item.nombre,
-            //         cantidad: item.cantidad,
-            //         precio: item.variacion.precio,
-            //         tamanio: item.variacion.tamanio,
-            //     }
-            // });
+            const temp_prods = cart.map((item) => {
+                return {
+                    id: item.productId,
+                    nombre: item.nombre,
+                    cantidad: item.cantidad,
+                    precio: item.variacion.precio,
+                    tamanio: item.variacion.talla,
+                    color: item.variacion.color,
+                }
+            });
 
-            // const order_info = {
-            //     total: total,
-            //     name,
-            //     email,
-            //     phone,
-            //     pickupPerson,
-            //     // formattedDate: format(date, "EEEE d 'de' MMMM, yyyy", { locale: es }),
-            //     formattedDate: date,
-            //     pickupTime,
-            //     messageClient,
-            //     discount,
-            // }
+            const order_info = {
+                total: total,
+                name,
+                email,
+                phone,
+                addressLine,
+                city,
+                state,
+                postalCode,
+                comments,
+                discount,
+                discountObject,
+            }
 
-            // localStorage.setItem('orderInfo', JSON.stringify(order_info));
-            // localStorage.setItem('cartItems', JSON.stringify(temp_prods));
+            localStorage.setItem('orderInfo', JSON.stringify(order_info));
+            localStorage.setItem('cartItems', JSON.stringify(temp_prods));
 
-            // try {
-            //     const stripe = await asyncStripe;
-            //     const res = await fetch(`/api/stripe/session`, {
-            //         method: "POST",
-            //         body: JSON.stringify({
-            //             products: temp_prods,
-            //             orderInfo: order_info,
-            //             code,
-            //         })
-            //     });
+            try {
+                const stripe = await asyncStripe;
+                const res = await fetch(`/api/stripe/session`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        products: temp_prods,
+                        orderInfo: order_info,
+                        code: discountObject ? discountObject.code : null,
+                    })
+                });
 
-            //     if (res.ok) {
-            //         console.log('response is ok')
-            //     } else {
-            //         console.log('response is NOT ok')
-            //     }
+                if (res.ok) {
+                    console.log('response is ok')
+                } else {
+                    console.log('response is NOT ok')
+                }
 
-            //     const { sessionId } = await res.json();
-            //     if (stripe) {
-            //         const { error } = await stripe.redirectToCheckout({ sessionId });
-            //         console.log(error);
-            //         if (error) {
-            //             // router.push("/error");
-            //             console.log("Stripe error 1", error.message)
-            //         }
-            //     } else {
-            //         console.log("Stripe is null");
-            //     }
-            // } catch (err) {
-            //     console.log(err);
-            //     // router.push("/error");
-            //     console.log("Stripe error 2")
-            // }
+                const { sessionId } = await res.json();
+                if (stripe) {
+                    const { error } = await stripe.redirectToCheckout({ sessionId });
+                    console.log(error);
+                    if (error) {
+                        // router.push("/error");
+                        console.log("Stripe error 1", error.message)
+                    }
+                } else {
+                    console.log("Stripe is null");
+                }
+            } catch (err) {
+                console.log(err);
+                // router.push("/error");
+                console.log("Stripe error 2")
+            }
         }
     }
 
@@ -179,7 +274,7 @@ export default function Carrito() {
             <Navbar />
 
             {/* HERO */}
-            <section className="mt-20">
+            <section className="mt-16">
                 {loadedCart == false ?
 
                     <div className="flex-grow flex items-center justify-center h-[60vh]">
@@ -226,232 +321,362 @@ export default function Carrito() {
 
                         :
 
-                        <div className="container mx-auto py-10">
+                        <>
 
-                            <h1 className="text-3xl font-bold mb-8">Carrito de compras</h1>
+                            <div className="bg-gray-100 border-b mb-6 mt-2">
+                                <div className="container mx-auto px-8 py-2">
+                                    <div className="flex flex-row items-center justify-between gap-4">
 
-                            <div className="grid md:grid-cols-2 gap-8">
-
-                                {/* RESUMEN de PRODUCTOS */}
-                                <Card className="bg-card rounded-lg shadow-lg border">
-
-                                    <CardHeader className="bg-muted px-6 py-4 pb-1 border-b">
-                                        <div className="flex justify-between">
-                                            <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal mb-4">{cartQuantity} Productos</CardTitle>
-                                            <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal mb-4">{formatCurrency(total)} MXN</CardTitle>
+                                        {/* seguir comprano */}
+                                        <div className="flex items-center gap-4">
+                                            <Link href={'/catalogo'} className="w-auto flex items-center hover:text-blue-800">
+                                                <ArrowLeft className="h-6 w-6 md:h-4 md:w-4 mr-2" />
+                                                <span className="md:block hidden">Seguir comprando</span>
+                                            </Link>
                                         </div>
-                                    </CardHeader>
 
-                                    {/* productos */}
-                                    <div className="grid gap-6 p-6 max-h-[70vh] overflow-auto sticky top-0">
-                                        {cart.map((product) => (
-                                            <>
-                                                <div key={product.productId} className="grid grid-cols-[100px_1fr_auto] items-center gap-4">
-                                                    <img
-                                                        src={product.foto}
-                                                        alt={product.nombre}
-                                                        width={100}
-                                                        height={100}
-                                                        className="rounded-lg object-cover"
-                                                        style={{ aspectRatio: "100/100", objectFit: "cover" }}
-                                                    />
-                                                    <div className="grid gap-2">
-                                                        <div className="flex items-center justify-between">
-                                                            <h3 className="font-semibold">{product.nombre}</h3>
-                                                        </div>
-                                                        <div className="flex flex-col gap-1 text-muted-foreground text-sm">
-                                                            <span>Color: {product.variacion.color} | Talla: {product.variacion.talla}</span>
-                                                            <span>{product.cantidad} x ${product.variacion.precio}</span>
-                                                            {/* <span>Qty: {product.cantidad}</span> */}
-                                                        </div>
+
+                                        {/* botones */}
+                                        <div className="flex flex-row items-center gap-2 w-auto">
+
+                                            {/* Aplicar cupón */}
+                                            <div className="flex gap-2 w-full sm:w-auto">
+                                                {isCodeValid ?
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-gray-800 font-bold">Ahorras {discount * 100}%</span>
                                                     </div>
-                                                    <Button variant="outline" size="icon" onClick={handleRemoveCartItem(product.productId, product.variacion.talla, product.variacion.color)}>
-                                                        <XIcon className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                                <hr />
-                                            </>
-                                        ))}
-                                    </div>
-
-                                </Card>
-
-                                {/* CHECKOUT */}
-                                <Card className="bg-card p-6 rounded-lg shadow-lg border">
-
-                                    <h2 className="text-2xl font-bold mb-6 text-center">Checkout</h2>
-
-                                    <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 px-4 py-3 my-6 rounded relative" role="alert">
-                                        <strong className="font-bold">IMPORTANTE.&nbsp;</strong>
-                                        <span className="block sm:inline">Por el momento solo realizamos envíos dentro de la República Mexicana. Envíos locales (Monterrey) +$60 MXN y envíos nacionales +$149 MXN.</span>
-                                    </div>
-
-                                    <div className="grid gap-4">
-
-                                        {/* Nombre */}
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="name">Nombre <span className="text-red-500">*</span></Label>
-                                            <Input
-                                                id="name"
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
-                                                placeholder="Escribe tu nombre"
-                                            />
-                                        </div>
-
-                                        {/* Email */}
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-                                            <Input
-                                                id="email"
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                onKeyUp={handleEmailChange}
-                                                className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
-                                                    emailError && "border-red-500"
-                                                )}
-                                                placeholder="Escribe tu email"
-                                            />
-                                        </div>
-
-                                        {/* Teléfono */}
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="phone">Número de teléfono <span className="text-red-500">*</span></Label>
-                                            <Input
-                                                id="phone"
-                                                type="phone"
-                                                value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
-                                                onKeyUp={handlePhoneChange}
-                                                className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
-                                                    phoneError && "border-red-500"
-                                                )}
-                                                placeholder="Escribe tu número de teléfono"
-                                            />
-                                        </div>
-
-                                        {/* Dirección */}
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="addressLine">Dirección <span className="text-red-500">*</span></Label>
-                                            <Input
-                                                id="addressLine"
-                                                value={addressLine}
-                                                onChange={(e) => setAddressLine(e.target.value)}
-                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
-                                                placeholder="Escribe tu dirección"
-                                            />
-                                        </div>
-
-                                        <div className="grid md:grid-cols-3 gap-4">
-
-                                            {/* Ciudad */}
-                                            <div className="grid gap-2">
-                                                <Label htmlFor="city">Ciudad <span className="text-red-500">*</span></Label>
-                                                <Input
-                                                    id="city"
-                                                    value={city}
-                                                    onChange={(e) => setCity(e.target.value)}
-                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
-                                                    placeholder="Ciudad"
-                                                />
+                                                    :
+                                                    <Dialog>
+                                                        <DialogTrigger asChild>
+                                                            <Button variant="outline">
+                                                                <BadgePercent className="h-4 w-4 mr-2" />
+                                                                Aplicar cupón
+                                                            </Button>
+                                                        </DialogTrigger>
+                                                        <DialogContent className="sm:max-w-md">
+                                                            <DialogHeader>
+                                                                <DialogTitle>Cupón de descuento</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Ingresa el código de tu cupón para aplicar el descuento.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <div className="flex items-center space-x-2">
+                                                                <div className="grid flex-1 gap-2">
+                                                                    <Label htmlFor="link" className="sr-only">
+                                                                        Link
+                                                                    </Label>
+                                                                    <Input
+                                                                        id="link"
+                                                                        defaultValue="Ingresa tu código..."
+                                                                        value={couponCode}
+                                                                        onChange={(e) => setCouponCode(e.target.value)}
+                                                                        disabled={searchingDiscount || isCodeValid}
+                                                                    />
+                                                                </div>
+                                                                <Button type="submit"
+                                                                    size="sm"
+                                                                    className="px-3"
+                                                                    onClick={validateCode}
+                                                                    disabled={searchingDiscount || couponCode.length <= 0 || isCodeValid}
+                                                                >
+                                                                    {
+                                                                        searchingDiscount ?
+                                                                            'Validando...'
+                                                                            :
+                                                                            isCodeValid ?
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mx-auto">
+                                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                                                </svg>
+                                                                                :
+                                                                                'Validar'
+                                                                    }
+                                                                </Button>
+                                                            </div>
+                                                            <DialogFooter className="sm:justify-start">
+                                                                {message ?
+                                                                    isCodeValid ?
+                                                                        <p className="text-sm text-green-700">{message}</p>
+                                                                        :
+                                                                        <p className="text-sm text-red-500">{message}</p>
+                                                                    :
+                                                                    <></>
+                                                                }
+                                                            </DialogFooter>
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                }
                                             </div>
 
-                                            {/* Estado */}
-                                            <div className="grid gap-2">
-                                                <Label htmlFor="state">Estado <span className="text-red-500">*</span></Label>
-                                                {/* <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="Estado" /> */}
-                                                <Select
-                                                    value={state}
-                                                    onValueChange={value => setState(value)}
-                                                >
-                                                    <SelectTrigger id="state">
-                                                        <SelectValue placeholder="Estado" className="text-gray-600" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="aguascalientes">Aguascalientes</SelectItem>
-                                                        <SelectItem value="baja-california">Baja California</SelectItem>
-                                                        <SelectItem value="baja-california-sur">Baja California Sur</SelectItem>
-                                                        <SelectItem value="campeche">Campeche</SelectItem>
-                                                        <SelectItem value="chiapas">Chiapas</SelectItem>
-                                                        <SelectItem value="chihuahua">Chihuahua</SelectItem>
-                                                        <SelectItem value="ciudad-de-mexico">Ciudad de México</SelectItem>
-                                                        <SelectItem value="coahuila">Coahuila</SelectItem>
-                                                        <SelectItem value="colima">Colima</SelectItem>
-                                                        <SelectItem value="durango">Durango</SelectItem>
-                                                        <SelectItem value="guanajuato">Guanajuato</SelectItem>
-                                                        <SelectItem value="guerrero">Guerrero</SelectItem>
-                                                        <SelectItem value="hidalgo">Hidalgo</SelectItem>
-                                                        <SelectItem value="jalisco">Jalisco</SelectItem>
-                                                        <SelectItem value="mexico">Estado de México</SelectItem>
-                                                        <SelectItem value="michoacan">Michoacán</SelectItem>
-                                                        <SelectItem value="morelos">Morelos</SelectItem>
-                                                        <SelectItem value="nayarit">Nayarit</SelectItem>
-                                                        <SelectItem value="nuevo-leon">Nuevo León</SelectItem>
-                                                        <SelectItem value="oaxaca">Oaxaca</SelectItem>
-                                                        <SelectItem value="puebla">Puebla</SelectItem>
-                                                        <SelectItem value="queretaro">Querétaro</SelectItem>
-                                                        <SelectItem value="quintana-roo">Quintana Roo</SelectItem>
-                                                        <SelectItem value="san-luis-potosi">San Luis Potosí</SelectItem>
-                                                        <SelectItem value="sinaloa">Sinaloa</SelectItem>
-                                                        <SelectItem value="sonora">Sonora</SelectItem>
-                                                        <SelectItem value="tabasco">Tabasco</SelectItem>
-                                                        <SelectItem value="tamaulipas">Tamaulipas</SelectItem>
-                                                        <SelectItem value="tlaxcala">Tlaxcala</SelectItem>
-                                                        <SelectItem value="veracruz">Veracruz</SelectItem>
-                                                        <SelectItem value="yucatan">Yucatán</SelectItem>
-                                                        <SelectItem value="zacatecas">Zacatecas</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-
+                                            {/* Vaciar carrito */}
+                                            <div className="flex gap-2 w-full sm:w-auto">
+                                                <ToastContainer />
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <button
+                                                            type="button"
+                                                            className="px-4 py-2 my-2 flex items-center bg-white hover:bg-gray-100 border-red-300 border hover:shadow-lg focus:ring-0 text-red-500 text-sm rounded font-medium"
+                                                        >
+                                                            <Trash2 className="h-4 w-4 mr-1" />
+                                                            Vaciar
+                                                        </button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>¿Vaciar carrito?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                Esta acción no se puede deshacer.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                            <AlertDialogAction className="bg-red-500" onClick={handleEmptyCart}>Vaciar</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
                                             </div>
 
-                                            {/* Código Postal */}
-                                            <div className="grid gap-2">
-                                                <Label htmlFor="postalCode">Código Postal <span className="text-red-500">*</span></Label>
-                                                <Input
-                                                    id="postalCode"
-                                                    value={postalCode}
-                                                    onChange={(e) => setPostalCode(e.target.value)}
-                                                    onKeyUp={handlePostalCodeChange}
-                                                    className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
-                                                        postalCodeError && "border-red-500"
-                                                    )}
-                                                    placeholder="Código Postal"
-                                                />
-                                            </div>
                                         </div>
-
-                                        {/* Comentarios */}
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="comments">Comentarios</Label>
-                                            <Textarea
-                                                id="comments"
-                                                value={comments}
-                                                onChange={(e) => setComments(e.target.value)}
-                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
-                                                placeholder="Escribe un comentario"
-                                                rows={3}
-                                            />
-                                        </div>
-
-                                        {emptyFieldsError && <p className="mb-2 italic text-red-500 flex">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-2">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                                            </svg>
-                                            Favor de llenar correctamente todos los campos requeridos
-                                        </p>}
-
-                                        <Button type="submit" onClick={handleFinalizarCompra} className="w-full text-center py-3 transition-all duration-300 hover:shadow-lg hover:bg-gray-600">
-                                            {loadingFinalizarCompra ? "Cargando..." : "Proceder al pago"}
-                                        </Button>
-
                                     </div>
-                                </Card>
-
+                                </div>
                             </div>
-                        </div>
+
+                            <div className="container mx-auto pb-10">
+
+                                <div className="grid md:grid-cols-2 gap-8">
+
+                                    {/* RESUMEN de PRODUCTOS */}
+                                    <Card className="bg-card rounded-lg shadow-lg border">
+
+                                        <CardHeader className="bg-muted px-6 py-4 border-b pb-4">
+
+                                            <div className="flex justify-between">
+                                                <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal">{cartQuantity} Productos</CardTitle>
+                                                <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal">{isCodeValid ? formatCurrency(total * (1 - discount)) : formatCurrency(total)} MXN</CardTitle>
+                                            </div>
+
+                                            {/* codigo de descuento */}
+                                            {isCodeValid &&
+                                                <div className="flex justify-end">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-muted-foreground">Total sin descuento:</span>
+                                                        <span className="font-semibold line-through">{formatCurrency(total)} MXN</span>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </CardHeader>
+
+                                        {/* productos */}
+                                        <div className="grid gap-6 p-6 max-h-[70vh] overflow-auto sticky top-0">
+                                            {cart.map((product) => (
+                                                <>
+                                                    <div key={product.productId} className="grid grid-cols-[100px_1fr_auto] items-center gap-4">
+                                                        <img
+                                                            src={product.foto}
+                                                            alt={product.nombre}
+                                                            width={100}
+                                                            height={100}
+                                                            className="rounded-lg object-cover"
+                                                            style={{ aspectRatio: "100/100", objectFit: "cover" }}
+                                                        />
+                                                        <div className="grid gap-2">
+                                                            <div className="flex items-center justify-between">
+                                                                <h3 className="font-semibold">{product.nombre}</h3>
+                                                            </div>
+                                                            <div className="flex flex-col gap-1 text-muted-foreground text-sm">
+                                                                <span>Color: {product.variacion.color} | Talla: {product.variacion.talla}</span>
+                                                                <span>{product.cantidad} x ${product.variacion.precio}</span>
+                                                                {/* <span>Qty: {product.cantidad}</span> */}
+                                                            </div>
+                                                        </div>
+                                                        <Button variant="outline" size="icon" onClick={handleRemoveCartItem(product.productId, product.variacion.talla, product.variacion.color)}>
+                                                            <XIcon className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                    <hr />
+                                                </>
+                                            ))}
+                                        </div>
+
+                                    </Card>
+
+                                    {/* CHECKOUT */}
+                                    <Card className="bg-card p-6 rounded-lg shadow-lg border">
+
+                                        <h2 className="text-2xl font-bold mb-6 text-center">Checkout</h2>
+
+                                        <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 px-4 py-3 my-6 rounded relative" role="alert">
+                                            <strong className="font-bold">IMPORTANTE.&nbsp;</strong>
+                                            <span className="block sm:inline">Por el momento solo realizamos envíos dentro de la República Mexicana. Envíos locales (Monterrey) +$60 MXN y envíos nacionales +$149 MXN.</span>
+                                        </div>
+
+                                        <div className="grid gap-4">
+
+                                            {/* Nombre */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="name">Nombre <span className="text-red-500">*</span></Label>
+                                                <Input
+                                                    id="name"
+                                                    value={name}
+                                                    onChange={(e) => setName(e.target.value)}
+                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                    placeholder="Escribe tu nombre"
+                                                />
+                                            </div>
+
+                                            {/* Email */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                                                <Input
+                                                    id="email"
+                                                    type="email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    onKeyUp={handleEmailChange}
+                                                    className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                        emailError && "border-red-500"
+                                                    )}
+                                                    placeholder="Escribe tu email"
+                                                />
+                                            </div>
+
+                                            {/* Teléfono */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="phone">Número de teléfono <span className="text-red-500">*</span></Label>
+                                                <Input
+                                                    id="phone"
+                                                    type="phone"
+                                                    value={phone}
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    onKeyUp={handlePhoneChange}
+                                                    className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                        phoneError && "border-red-500"
+                                                    )}
+                                                    placeholder="Escribe tu número de teléfono"
+                                                />
+                                            </div>
+
+                                            {/* Dirección */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="addressLine">Dirección <span className="text-red-500">*</span></Label>
+                                                <Input
+                                                    id="addressLine"
+                                                    value={addressLine}
+                                                    onChange={(e) => setAddressLine(e.target.value)}
+                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                    placeholder="Escribe tu dirección"
+                                                />
+                                            </div>
+
+                                            <div className="grid md:grid-cols-3 gap-4">
+
+                                                {/* Ciudad */}
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="city">Ciudad <span className="text-red-500">*</span></Label>
+                                                    <Input
+                                                        id="city"
+                                                        value={city}
+                                                        onChange={(e) => setCity(e.target.value)}
+                                                        className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                        placeholder="Ciudad"
+                                                    />
+                                                </div>
+
+                                                {/* Estado */}
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="state">Estado <span className="text-red-500">*</span></Label>
+                                                    {/* <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="Estado" /> */}
+                                                    <Select
+                                                        value={state}
+                                                        onValueChange={value => setState(value)}
+                                                    >
+                                                        <SelectTrigger id="state">
+                                                            <SelectValue placeholder="Estado" className="text-gray-600" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="aguascalientes">Aguascalientes</SelectItem>
+                                                            <SelectItem value="baja-california">Baja California</SelectItem>
+                                                            <SelectItem value="baja-california-sur">Baja California Sur</SelectItem>
+                                                            <SelectItem value="campeche">Campeche</SelectItem>
+                                                            <SelectItem value="chiapas">Chiapas</SelectItem>
+                                                            <SelectItem value="chihuahua">Chihuahua</SelectItem>
+                                                            <SelectItem value="ciudad-de-mexico">Ciudad de México</SelectItem>
+                                                            <SelectItem value="coahuila">Coahuila</SelectItem>
+                                                            <SelectItem value="colima">Colima</SelectItem>
+                                                            <SelectItem value="durango">Durango</SelectItem>
+                                                            <SelectItem value="guanajuato">Guanajuato</SelectItem>
+                                                            <SelectItem value="guerrero">Guerrero</SelectItem>
+                                                            <SelectItem value="hidalgo">Hidalgo</SelectItem>
+                                                            <SelectItem value="jalisco">Jalisco</SelectItem>
+                                                            <SelectItem value="mexico">Estado de México</SelectItem>
+                                                            <SelectItem value="michoacan">Michoacán</SelectItem>
+                                                            <SelectItem value="morelos">Morelos</SelectItem>
+                                                            <SelectItem value="nayarit">Nayarit</SelectItem>
+                                                            <SelectItem value="nuevo-leon">Nuevo León</SelectItem>
+                                                            <SelectItem value="oaxaca">Oaxaca</SelectItem>
+                                                            <SelectItem value="puebla">Puebla</SelectItem>
+                                                            <SelectItem value="queretaro">Querétaro</SelectItem>
+                                                            <SelectItem value="quintana-roo">Quintana Roo</SelectItem>
+                                                            <SelectItem value="san-luis-potosi">San Luis Potosí</SelectItem>
+                                                            <SelectItem value="sinaloa">Sinaloa</SelectItem>
+                                                            <SelectItem value="sonora">Sonora</SelectItem>
+                                                            <SelectItem value="tabasco">Tabasco</SelectItem>
+                                                            <SelectItem value="tamaulipas">Tamaulipas</SelectItem>
+                                                            <SelectItem value="tlaxcala">Tlaxcala</SelectItem>
+                                                            <SelectItem value="veracruz">Veracruz</SelectItem>
+                                                            <SelectItem value="yucatan">Yucatán</SelectItem>
+                                                            <SelectItem value="zacatecas">Zacatecas</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+
+                                                </div>
+
+                                                {/* Código Postal */}
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="postalCode">Código Postal <span className="text-red-500">*</span></Label>
+                                                    <Input
+                                                        id="postalCode"
+                                                        value={postalCode}
+                                                        onChange={(e) => setPostalCode(e.target.value)}
+                                                        onKeyUp={handlePostalCodeChange}
+                                                        className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                            postalCodeError && "border-red-500"
+                                                        )}
+                                                        placeholder="Código Postal"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Comentarios */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="comments">Comentarios</Label>
+                                                <Textarea
+                                                    id="comments"
+                                                    value={comments}
+                                                    onChange={(e) => setComments(e.target.value)}
+                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                    placeholder="Escribe un comentario"
+                                                    rows={3}
+                                                />
+                                            </div>
+
+                                            {emptyFieldsError && <p className="mb-2 italic text-red-500 flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mr-2">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                                </svg>
+                                                Favor de llenar correctamente todos los campos requeridos
+                                            </p>}
+
+                                            <Button type="submit" onClick={handleFinalizarCompra} className="w-full text-center py-3 transition-all duration-300 hover:shadow-lg hover:bg-gray-600">
+                                                {loadingFinalizarCompra ? "Cargando..." : "Proceder al pago"}
+                                            </Button>
+
+                                        </div>
+                                    </Card>
+
+                                </div>
+                            </div>
+                        </>
                 }
 
             </section>
