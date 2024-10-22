@@ -59,6 +59,19 @@ interface DiscountCode {
     created_at: string;    // Timestamp of when the code was created
 }
 
+const shippingOptions = [
+    {
+        id: 'shr_1QCd2Z06GvttNHxde76R6bnb',
+        name: 'Envíos locales',
+        price: 60,
+    },
+    {
+        id: 'shr_1QCd3d06GvttNHxdNBL5g2YX',
+        name: 'Envíos nacionales',
+        price: 149,
+    },
+];
+
 export default function Carrito() {
 
     const { cart, getTotal, getCartQuantity, removeCartItem, emptyCart } = useCart();
@@ -205,6 +218,7 @@ export default function Carrito() {
                     precio: item.variacion.precio,
                     tamanio: item.variacion.talla,
                     color: item.variacion.color,
+                    variation_id: item.variacion.variation_id,
                 }
             });
 
@@ -216,6 +230,7 @@ export default function Carrito() {
                 addressLine,
                 city,
                 state,
+                country: 'México',
                 postalCode,
                 comments,
                 discount,
@@ -594,39 +609,40 @@ export default function Carrito() {
                                                             <SelectValue placeholder="Estado" className="text-gray-600" />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="aguascalientes">Aguascalientes</SelectItem>
-                                                            <SelectItem value="baja-california">Baja California</SelectItem>
-                                                            <SelectItem value="baja-california-sur">Baja California Sur</SelectItem>
-                                                            <SelectItem value="campeche">Campeche</SelectItem>
-                                                            <SelectItem value="chiapas">Chiapas</SelectItem>
-                                                            <SelectItem value="chihuahua">Chihuahua</SelectItem>
-                                                            <SelectItem value="ciudad-de-mexico">Ciudad de México</SelectItem>
-                                                            <SelectItem value="coahuila">Coahuila</SelectItem>
-                                                            <SelectItem value="colima">Colima</SelectItem>
-                                                            <SelectItem value="durango">Durango</SelectItem>
-                                                            <SelectItem value="guanajuato">Guanajuato</SelectItem>
-                                                            <SelectItem value="guerrero">Guerrero</SelectItem>
-                                                            <SelectItem value="hidalgo">Hidalgo</SelectItem>
-                                                            <SelectItem value="jalisco">Jalisco</SelectItem>
-                                                            <SelectItem value="mexico">Estado de México</SelectItem>
-                                                            <SelectItem value="michoacan">Michoacán</SelectItem>
-                                                            <SelectItem value="morelos">Morelos</SelectItem>
-                                                            <SelectItem value="nayarit">Nayarit</SelectItem>
-                                                            <SelectItem value="nuevo-leon">Nuevo León</SelectItem>
-                                                            <SelectItem value="oaxaca">Oaxaca</SelectItem>
-                                                            <SelectItem value="puebla">Puebla</SelectItem>
-                                                            <SelectItem value="queretaro">Querétaro</SelectItem>
-                                                            <SelectItem value="quintana-roo">Quintana Roo</SelectItem>
-                                                            <SelectItem value="san-luis-potosi">San Luis Potosí</SelectItem>
-                                                            <SelectItem value="sinaloa">Sinaloa</SelectItem>
-                                                            <SelectItem value="sonora">Sonora</SelectItem>
-                                                            <SelectItem value="tabasco">Tabasco</SelectItem>
-                                                            <SelectItem value="tamaulipas">Tamaulipas</SelectItem>
-                                                            <SelectItem value="tlaxcala">Tlaxcala</SelectItem>
-                                                            <SelectItem value="veracruz">Veracruz</SelectItem>
-                                                            <SelectItem value="yucatan">Yucatán</SelectItem>
-                                                            <SelectItem value="zacatecas">Zacatecas</SelectItem>
+                                                            <SelectItem value="Aguascalientes">Aguascalientes</SelectItem>
+                                                            <SelectItem value="Baja California">Baja California</SelectItem>
+                                                            <SelectItem value="Baja California Sur">Baja California Sur</SelectItem>
+                                                            <SelectItem value="Campeche">Campeche</SelectItem>
+                                                            <SelectItem value="Chiapas">Chiapas</SelectItem>
+                                                            <SelectItem value="Chihuahua">Chihuahua</SelectItem>
+                                                            <SelectItem value="Ciudad de México">Ciudad de México</SelectItem>
+                                                            <SelectItem value="Coahuila">Coahuila</SelectItem>
+                                                            <SelectItem value="Colima">Colima</SelectItem>
+                                                            <SelectItem value="Durango">Durango</SelectItem>
+                                                            <SelectItem value="Guanajuato">Guanajuato</SelectItem>
+                                                            <SelectItem value="Guerrero">Guerrero</SelectItem>
+                                                            <SelectItem value="Hidalgo">Hidalgo</SelectItem>
+                                                            <SelectItem value="Jalisco">Jalisco</SelectItem>
+                                                            <SelectItem value="Estado de México">Estado de México</SelectItem>
+                                                            <SelectItem value="Michoacán">Michoacán</SelectItem>
+                                                            <SelectItem value="Morelos">Morelos</SelectItem>
+                                                            <SelectItem value="Nayarit">Nayarit</SelectItem>
+                                                            <SelectItem value="Nuevo León">Nuevo León</SelectItem>
+                                                            <SelectItem value="Oaxaca">Oaxaca</SelectItem>
+                                                            <SelectItem value="Puebla">Puebla</SelectItem>
+                                                            <SelectItem value="Querétaro">Querétaro</SelectItem>
+                                                            <SelectItem value="Quintana Roo">Quintana Roo</SelectItem>
+                                                            <SelectItem value="San Luis Potosí">San Luis Potosí</SelectItem>
+                                                            <SelectItem value="Sinaloa">Sinaloa</SelectItem>
+                                                            <SelectItem value="Sonora">Sonora</SelectItem>
+                                                            <SelectItem value="Tabasco">Tabasco</SelectItem>
+                                                            <SelectItem value="Tamaulipas">Tamaulipas</SelectItem>
+                                                            <SelectItem value="Tlaxcala">Tlaxcala</SelectItem>
+                                                            <SelectItem value="Veracruz">Veracruz</SelectItem>
+                                                            <SelectItem value="Yucatán">Yucatán</SelectItem>
+                                                            <SelectItem value="Zacatecas">Zacatecas</SelectItem>
                                                         </SelectContent>
+
                                                     </Select>
 
                                                 </div>

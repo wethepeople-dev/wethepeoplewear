@@ -28,6 +28,14 @@ export const POST = async (request) => {
             line_items: stripe_products,
             mode: "payment",
             discounts: body?.code ? [{ coupon: body.code }] : [],
+            // shipping_options: [
+            //     {
+            //         shipping_rate: 'shr_1QCd2Z06GvttNHxde76R6bnb', // envios locales
+            //     },
+            //     {
+            //         shipping_rate: 'shr_1QCd3d06GvttNHxdNBL5g2YX', // envios nacionales
+            //     },
+            // ],
             cancel_url: `${host}/carrito`,
             success_url: `${host}/success?session_id={CHECKOUT_SESSION_ID}`,
         });
