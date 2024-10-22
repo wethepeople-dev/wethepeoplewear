@@ -357,7 +357,7 @@ const SuccessContent = () => {
                                                             className="mr-6 h-16 w-16 rounded object-cover object-center"
                                                         />
                                                         <div>
-                                                            <div className="font-medium text-gray-900">"{product.product_name}"</div>
+                                                            <div className="font-medium text-gray-900">{product.product_name}</div>
                                                             <div className="mt-1">{currVariation?.talla} x {currVariation?.color}</div>
                                                             <div className="mt-1 sm:hidden">{currVariation?.precio} x {product.quantity}</div>
                                                         </div>
