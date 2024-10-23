@@ -338,6 +338,7 @@ export default function Carrito() {
 
                         <>
 
+                            {/* barra superior */}
                             <div className="bg-gray-100 border-b mb-6 mt-2">
                                 <div className="container mx-auto px-8 py-2">
                                     <div className="flex flex-row items-center justify-between gap-4">

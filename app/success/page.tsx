@@ -12,11 +12,11 @@ export default function Success() {
             <NavBar />
 
             {/* HERO */}
-            <section className="flex flex-col items-center justify-center mt-16" style={{ height: 'auto' }}>
+            <div>
                 <Suspense>
                     <SuccessContent />
                 </Suspense>
-            </section>
+            </div>
 
             {/* FOOTER */}
             <Footer />

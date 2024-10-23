@@ -1,37 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from "@/lib/CartContext";
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import PurchaseOrderAlert from '@/components/purchase-order-alert';
+import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from 'react-confetti'
 
 // import { productos } from '@/data/productos';
 
-import { Button } from "@/components/ui/button"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-
-// import { format, parse } from 'date-fns';
-// import { es } from 'date-fns/locale';
-
-// // Function to parse the date string
-// function parseDate(dateString: string) {
-//     // Extract the date part (yyyy-MM-dd)
-//     const datePart = dateString.split(' ')[0];
-
-//     // Parse the extracted date part
-//     const parsedDate = parse(datePart, 'yyyy-MM-dd', new Date());
-
-//     return parsedDate;
-// }
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { CheckCircle, Package, CreditCard, Truck, MapPin, Info, User } from "lucide-react"
+import Image from 'next/image';
 
 interface ProductVariation {
     variation_id: string;
@@ -102,6 +85,15 @@ type OrderResponse = {
     items: OrderItem[];
 };
 
+interface DiscountCode {
+    code_id: string;       // UUID
+    code: string;          // The discount code
+    percentage: number;    // Discount percentage
+    active: boolean;       // Whether the code is active
+    stripe_validated: boolean; // Whether it's validated by Stripe
+    created_at: string;    // Timestamp of when the code was created
+}
+
 
 const SuccessContent = () => {
     const searchParams = useSearchParams();
@@ -110,9 +102,13 @@ const SuccessContent = () => {
     const [order, setOrder] = useState<OrderResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+    const [discountObject, setDiscountObject] = useState<DiscountCode | null>(null);
 
     const [products, setProducts] = useState<Product[]>([]);
     const [loadedProducts, setLoadedProducts] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+    const { width, height } = useWindowSize()
 
     // Fetch products
     useEffect(() => {
@@ -173,7 +169,38 @@ const SuccessContent = () => {
                         if (orderRes.ok) {
                             console.log('orden guardada')
                             const result = await orderRes.json();
+                            console.log('order result:', result);
                             setOrder(result);
+
+                            // get discount code
+                            const validateDiscountCode = async () => {
+                                try {
+                                    const response = await fetch('/api/getDiscountWithId', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ code_id: result.order.discount_code_id }),
+                                    });
+
+                                    if (!response.ok) {
+                                        const errorData = await response.json();
+                                        throw new Error(errorData.error || 'Error validating discount code');
+                                    }
+
+                                    const data = await response.json();
+                                    setDiscountObject(data);
+                                } catch (error) {
+                                    console.log('Error fetching discount code:', error);
+                                } finally {
+                                    setLoading(false);
+                                }
+                            };
+                            if (result.order.discount_applied) {
+                                validateDiscountCode();
+                            }
+                            console.log('descuento obtenido');
+
                             // send email
                             console.log('Enviando correo electrónico de confirmación...');
                             const emailResult = await fetch('/api/confirmationEmail', {
@@ -212,9 +239,20 @@ const SuccessContent = () => {
         fetchOrder();
     }, [session_id]);
 
+    const [isConfettiVisible, setIsConfettiVisible] = useState(true)
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsConfettiVisible(false)
+        }, 5000)
+
+        // Cleanup timeout when the component unmounts
+        return () => clearTimeout(timer)
+    }, [])
+
     if (loading || !loadedProducts) {
         return (
-            <div className="flex items-center justify-center" style={{ height: '60vh' }}>
+            <div className="flex items-center justify-center" style={{ height: '70vh' }}>
                 <div role="status" className="flex flex-col items-center justify-center">
                     <svg aria-hidden="true" className="w-8 h-8 text-gray-200 animate-spin fill-gray-500" viewBox="0 0 100 101" xmlns="http://www.w3.org/2000/svg">
                         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
@@ -253,135 +291,302 @@ const SuccessContent = () => {
         </div>)
     }
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString) // Parse the date from the string
+        const formatter = new Intl.DateTimeFormat('es-MX', {
+            timeZone: 'America/Monterrey',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+        })
+        return formatter.format(date)
+    }
+
     return (
         <>
 
+            {isConfettiVisible && (
+                <Confetti
+                    width={width}
+                    height={height}
+                />
+            )}
+
             {/* https://www.tailwindir.com/component/invoice-table */}
 
-            <div className="bg-white">
-                <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:pb-24">
-                    <div >
-                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                            ¡Gracias por tu compra!
-                        </h1>
-                        <p className="mt-2 text-md text-gray-500">
-                            Tu pedido ha sido recibido y está siendo procesado. Recibirás un correo electrónico con la confirmación del pedido.
-                        </p>
-                    </div>
+            {/* header */}
+            <section className="mt-16 relative bg-azulito-100">
+                <div className="w-full max-w-7xl px-4 md:px-5 lg:px-5 mx-auto py-10">
+                    <div className="w-full flex-col justify-start items-center lg:gap-12 gap-8 inline-flex">
 
-                    <div className="mt-16">
-
-                        <div className="space-y-20">
-                            <div className="rounded-lg bg-gray-50 px-4 py-6 sm:flex sm:items-center sm:justify-between sm:space-x-6 sm:px-6 lg:space-x-8">
-                                <dl className="flex-auto space-y-6 divide-y divide-gray-200 text-sm text-gray-600 sm:grid sm:grid-cols-4 sm:gap-x-6 sm:space-y-0 sm:divide-y-0 lg:w-1/2">
-                                    <div className="flex justify-between sm:block">
-                                        <dt className="font-medium text-gray-900">Ordenado el</dt>
-                                        <dd className="sm:mt-1">
-                                            <p>{order.order.created_at}</p>
-                                        </dd>
-                                    </div>
-                                    <div className="flex justify-between pt-6 sm:block sm:pt-0">
-                                        <dt className='font-medium text-gray-900'>Total</dt>
-                                        <dd className="sm:mt-1 font-normal">{formatCurrency(order.order.total)} mxn</dd>
-                                    </div>
-                                    <div className="flex justify-between pt-6 sm:block sm:pt-0">
-                                        <dt className='font-medium text-gray-900'>Descuento</dt>
-                                        <dd className="sm:mt-1 font-normal">{order.order.discount_applied ? formatCurrency(order.order.total - order.order.final_price) : "0"}</dd>
-                                    </div>
-                                    <div className="flex justify-between pt-6 sm:block sm:pt-0">
-                                        <dt className='font-medium text-gray-900'>Precio final</dt>
-                                        <dd className="sm:mt-1 font-normal">{formatCurrency(order.order.final_price)} mxn</dd>
-                                    </div>
-                                </dl>
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button className="mt-6 flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:w-auto">
-                                            Ver Detalles
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-[425px]">
-                                        <DialogHeader>
-                                            <DialogTitle>Detalles de la orden</DialogTitle>
-                                            <DialogDescription>
-                                                Aquí puedes ver los detalles de tu orden.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <div className="y-4">
-                                            <hr />
-                                            <div className='flex flex-col py-2'>
-                                                <p className='text-sm text-gray-400'>Ordenado por</p>
-                                                <p className='text-md text-gray-800'>{order.client.name}</p>
-                                                <p className='text-md text-gray-800'>{order.client.email} | {order.client.phone}</p>
-                                            </div>
-                                            <hr />
-                                            <div className='flex flex-col py-2'>
-                                                <p className='text-sm text-gray-400'>Comentarios</p>
-                                                <p className='text-md text-gray-800'>{order.order.comments}</p>
-                                            </div>
-                                            <hr />
-                                        </div>
-                                    </DialogContent>
-                                </Dialog>
-                            </div>
-
-                            <table className="mt-4 w-full text-gray-500 sm:mt-6">
-                                <caption className="sr-only">Products</caption>
-                                <thead className="sr-only text-left text-sm text-gray-500 sm:not-sr-only">
-                                    <tr>
-                                        <th scope="col" className="py-3 pr-8 font-normal sm:w-2/5 lg:w-1/3">
-                                            Producto
-                                        </th>
-                                        <th scope="col" className="hidden w-1/5 py-3 pr-8 font-normal sm:table-cell">
-                                            Precio
-                                        </th>
-                                        <th scope="col" className="hidden py-3 pr-8 font-normal sm:table-cell">
-                                            Cantidad
-                                        </th>
-                                        {/* <th scope="col" className="w-0 py-3 text-right font-normal">
-                                            Info
-                                        </th> */}
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200 border-b border-gray-200 text-sm border-t">
-                                    {order?.items?.map((product) => {
-
-                                        const currVariation = products.find(p => p.product_id === product.product_id)?.variations.find(v => v.variation_id === product.variation_id);
-
-                                        return (
-                                            <tr key={product.item_id}>
-                                                <td className="py-6 pr-8">
-                                                    <div className="flex items-center">
-                                                        <img
-                                                            src={currVariation?.fotos[0]}
-                                                            alt={product.product_name}
-                                                            className="mr-6 h-16 w-16 rounded object-cover object-center"
-                                                        />
-                                                        <div>
-                                                            <div className="font-medium text-gray-900">{product.product_name}</div>
-                                                            <div className="mt-1">{currVariation?.talla} x {currVariation?.color}</div>
-                                                            <div className="mt-1 sm:hidden">{currVariation?.precio} x {product.quantity}</div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="hidden py-6 pr-8 sm:table-cell">{currVariation?.precio}</td>
-                                                <td className="hidden py-6 pr-8 sm:table-cell">{product.quantity}</td>
-                                                <td className="whitespace-nowrap py-6 text-right font-medium">
-                                                    <a href={`/catalogo/${currVariation?.product_id}`}
-                                                        className="text-mainRojo-100 border p-3 rounded-md hover:bg-mainRojo-100 hover:text-white transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-mainRojo-100 focus:ring-offset-2"
-                                                    >
-                                                        Ver<span className="hidden lg:inline"> Producto</span>
-                                                        <span className="sr-only">, {product.product_name}</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
+                        {/* Title and description */}
+                        <div className="flex-col justify-start items-center gap-3 flex">
+                            <Image src="/logos/LOGO_BLANCO.png" alt="Success" width={80} height={80} />
+                            <h2 className="text-center text-gray-100 text-4xl font-bold leading-normal">¡Gracias por tu compra!</h2>
+                            <p className="max-w-xl text-center text-white text-lg font-normal leading-8">
+                                Tu orden ha sido completada exitosamente. A continuación encontrarás los detalles de tu compra.
+                            </p>
                         </div>
+
                     </div>
                 </div>
+            </section>
+
+            {/* Order status */}
+            <div className='container lg:w-5/6 py-6'>
+                <PurchaseOrderAlert
+                    status={order.order.shipping_status == 'processing' ? 'processing' : order.order.shipping_status == 'delivered' ? 'delivered' : order.order.shipping_status == 'completed' ? 'completed' : 'processing'}
+                    trackingUrl={order.order.tracking_url ? '' : ''}
+                />
             </div>
+
+            {/* Order details */}
+            <section className="bg-white pt-4 pb-8 antialiased md:pb-12">
+                <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+
+                    <div className="lg:flex lg:gap-8">
+
+                        {/* resumen de compra */}
+                        <div className="w-full divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 lg:max-w-xl xl:max-w-2xl flex flex-col">
+                            <CardHeader className="bg-gray-100">
+                                <div className="flex items-center space-x-2">
+                                    <Package className="text-black0" />
+                                    <CardTitle>Resumen de Compra</CardTitle>
+                                </div>
+                            </CardHeader>
+
+                            {/* productos */}
+                            <div className="max-h-[50vh] overflow-auto sticky top-0 flex-grow">
+                                {order?.items?.map((product) => {
+                                    const currVariation = products.find(p => p.product_id === product.product_id)?.variations.find(v => v.variation_id === product.variation_id);
+
+                                    return (
+                                        <div className="space-y-4 p-6 border-b py-6" key={product.item_id}>
+                                            <div className='flex flex-row justify-between'>
+                                                <div className="flex items-center gap-6">
+                                                    <div className="h-20 w-20">
+                                                        <img
+                                                            className="mr-4 h-20 w-20 rounded object-cover object-center"
+                                                            src={currVariation?.fotos[0]}
+                                                            alt={product.product_name}
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <a href={`/catalogo/${currVariation?.product_id}`} className="font-bold text-gray-900 hover:underline">{product.product_name}</a>
+                                                        <div className="">{currVariation?.talla} x {currVariation?.color}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-end gap-4">
+                                                    <p className="text-base font-normal text-gray-900">x{product.quantity}</p>
+                                                    <p className="text-xl font-bold leading-tight text-gray-900">{formatCurrency(currVariation?.precio)}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Desgloce precio */}
+                            <div className="space-y-4 bg-gray-50 p-6 mt-auto">
+                                <div className="space-y-2">
+                                    {/* total */}
+                                    <dl className="flex items-center justify-between gap-4">
+                                        <dt className="font-normal text-gray-500 dark:text-gray-400">Precio original</dt>
+                                        <dd className="font-medium text-gray-900">{formatCurrency(order.order.total)}</dd>
+                                    </dl>
+
+                                    {/* descuento */}
+                                    {order.order.discount_applied && (
+                                        <dl className="flex items-center justify-between gap-4">
+                                            <dt className="font-normal text-gray-500 dark:text-gray-400">Descuento {discountObject?.percentage}%</dt>
+                                            <dd className="text-base font-medium text-green-500">-{formatCurrency(((discountObject?.percentage ?? 0) / 100) * order.order.total)}</dd>
+                                        </dl>
+                                    )}
+
+                                    {/* costo de envio */}
+                                    <dl className="flex items-center justify-between gap-4">
+                                        <dt className="font-normal text-gray-500 dark:text-gray-400">Costo de envío</dt>
+                                        <dd className="font-medium text-gray-900">{order.order.shipping_cost > 0 ? `${formatCurrency(order.order.shipping_cost)}` : 'GRATIS'}</dd>
+                                    </dl>
+                                </div>
+
+                                {/* precio final */}
+                                <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                                    <dt className="text-lg font-bold text-gray-900">Total</dt>
+                                    <dd className="text-lg font-bold text-gray-900">{formatCurrency(order.order.final_price)} MXN</dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        {/* order history */}
+                        {/* <div className="mt-6 grow sm:mt-8 lg:mt-0">
+                            <div className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                                <h3 className="text-xl font-semibold text-gray-900">Order history</h3>
+
+                                <ol className="relative ms-3 border-s border-gray-200 dark:border-gray-700">
+                                    <li className="mb-10 ms-6">
+                                        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700 dark:ring-gray-800">
+                                            <svg className="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5" />
+                                            </svg>
+                                        </span>
+                                        <h4 className="mb-0.5 text-base font-semibold text-gray-900">Estimated delivery in 24 Nov 2023</h4>
+                                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Products delivered</p>
+                                    </li>
+
+                                    <li className="mb-10 ms-6">
+                                        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-700 dark:ring-gray-800">
+                                            <svg className="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
+                                            </svg>
+                                        </span>
+                                        <h4 className="mb-0.5 text-base font-semibold text-gray-900">Today</h4>
+                                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Products being delivered</p>
+                                    </li>
+
+                                    <li className="mb-10 ms-6 text-primary-700 dark:text-primary-500">
+                                        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 ring-8 ring-white dark:bg-primary-900 dark:ring-gray-800">
+                                            <svg className="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5" />
+                                            </svg>
+                                        </span>
+                                        <h4 className="mb-0.5 font-semibold">23 Nov 2023, 15:15</h4>
+                                        <p className="text-sm">Products in the courier's warehouse</p>
+                                    </li>
+
+                                    <li className="mb-10 ms-6 text-primary-700 dark:text-primary-500">
+                                        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 ring-8 ring-white dark:bg-primary-900 dark:ring-gray-800">
+                                            <svg className="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5" />
+                                            </svg>
+                                        </span>
+                                        <h4 className="mb-0.5 text-base font-semibold">22 Nov 2023, 12:27</h4>
+                                        <p className="text-sm">Products delivered to the courier - DHL Express</p>
+                                    </li>
+
+                                    <li className="mb-10 ms-6 text-primary-700 dark:text-primary-500">
+                                        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 ring-8 ring-white dark:bg-primary-900 dark:ring-gray-800">
+                                            <svg className="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5" />
+                                            </svg>
+                                        </span>
+                                        <h4 className="mb-0.5 font-semibold">19 Nov 2023, 10:47</h4>
+                                        <p className="text-sm">Payment accepted - VISA Credit Card</p>
+                                    </li>
+
+                                    <li className="ms-6 text-primary-700 dark:text-primary-500">
+                                        <span className="absolute -start-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 ring-8 ring-white dark:bg-primary-900 dark:ring-gray-800">
+                                            <svg className="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5" />
+                                            </svg>
+                                        </span>
+                                        <div>
+                                            <h4 className="mb-0.5 font-semibold">19 Nov 2023, 10:45</h4>
+                                            <a href="#" className="text-sm font-medium hover:underline">Order placed - Receipt #647563</a>
+                                        </div>
+                                    </li>
+                                </ol>
+
+                                <div className="gap-4 sm:flex sm:items-center">
+                                    <button type="button" className="w-full rounded-lg  border border-gray-200 bg-white px-5  py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Cancel the order</button>
+
+                                    <a href="#" className="mt-4 flex w-full items-center justify-center rounded-lg bg-primary-700  px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300  dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 sm:mt-0">Order details</a>
+                                </div>
+                            </div>
+                        </div> */}
+
+                        {/* informacion adicional */}
+                        <div className="mt-6 grow sm:mt-8 lg:mt-0">
+                            <div className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                                <div>
+                                    <h3 className="text-xl font-semibold text-gray-900">Información Adicional</h3>
+                                    <p>Orden creada el {formatDate(order.order.created_at)}</p>
+                                </div>
+
+                                <div className="mt-4">
+                                    <div className="grid gap-6">
+
+                                        <Separator />
+
+                                        {/* cliente */}
+                                        <div>
+                                            <h3 className="font-semibold mb-2 flex items-center">
+                                                <User className="mr-2" /> Cliente
+                                            </h3>
+                                            <p>{order.client.name}</p>
+                                            <p>{order.client.email}</p>
+                                            <p>{order.client.phone}</p>
+                                        </div>
+
+                                        <Separator />
+
+                                        {/* pago */}
+                                        {/* <div>
+                                            <h3 className="font-semibold mb-2 flex items-center">
+                                                <CreditCard className="mr-2" /> Pago
+                                            </h3>
+                                            <p>Estatus: {order.order.payment_status == 'paid' ? 'Pagado' : order.order.payment_status}</p>
+                                        </div>
+
+                                        <Separator /> */}
+
+                                        {/* envio */}
+                                        <div>
+                                            <h3 className="font-semibold mb-2 flex items-center">
+                                                <Truck className="mr-2" /> Envío
+                                            </h3>
+                                            <p>Estatus: {order.order.shipping_status || "Pendiente"}</p>
+                                            <p>Costo: {formatCurrency(order.order.shipping_cost)}</p>
+                                            {order.order.tracking_id && (
+                                                <p>Tracking ID: {order.order.tracking_id}</p>
+                                            )}
+                                            {order.order.tracking_url && (
+                                                <p>
+                                                    <a href={order.order.tracking_url} className="text-blue-600 hover:underline">
+                                                        Track your package
+                                                    </a>
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <Separator />
+
+                                        {/* direccion */}
+                                        <div>
+                                            <h3 className="font-semibold mb-2 flex items-center">
+                                                <MapPin className="mr-2" /> Dirección de Envío
+                                            </h3>
+                                            <p>{order.client.name}</p>
+                                            <p>{order.client.address}</p>
+                                            <p>{order.client.city}, {order.client.state} {order.client.postal_code}</p>
+                                            <p>{order.client.country}</p>
+                                        </div>
+
+                                        {/* Comentarios */}
+                                        {order.order.comments && (
+                                            <>
+                                                <Separator />
+                                                <div>
+                                                    <h3 className="font-semibold mb-2">Comentarios</h3>
+                                                    <p>{`"${order.order.comments}"`}</p>
+                                                </div>
+                                            </>
+                                        )}
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
 
 
         </>

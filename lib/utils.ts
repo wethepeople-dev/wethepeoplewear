@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const formatCurrency = (
-  amount: number,
+  amount: number = 0,
   locale: string = 'es-MX',
   currency: string = 'MXN'
 ): string => {

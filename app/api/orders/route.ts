@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         // Insert order info
         const orderResult = await client.query(
             `INSERT INTO orders 
-             (client_id, total, discount_applied, final_price, discount_code_id, comments, session_id, shipping_cost, payment_status, completed) 
+             (client_id, total, discount_applied, final_price, discount_code_id, comments, session_id, shipping_status, shipping_cost, payment_status, completed) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
              RETURNING *`,
             [
@@ -83,9 +83,10 @@ export async function POST(req: NextRequest) {
                 discountObject?.code_id || null, // Handle discount object
                 comments,
                 session_id,
-                0, // Placeholder for shipping cost
-                'paid', // Assume payment was successful
-                false // Set completed to false initially
+                'processing',
+                0,
+                'paid',
+                false
             ]
         );
         const order = orderResult.rows[0];
