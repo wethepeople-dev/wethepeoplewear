@@ -41,7 +41,7 @@ export const ConfirmationEmail = ({
             <Body style={main}>
                 <Container style={container}>
                     <div style={{ textAlign: 'center' }}>
-                        <img src="cid:logo" alt="Logo" style={{ width: '100px', borderRadius: '50%' }} />
+                        <img src={'https://wethepeoplewear.vercel.app/logos/icon.png'} alt="Logo" style={{ width: '100px', borderRadius: '50%' }} />
                     </div>
                     <Heading style={heading}>¡Gracias por tu pedido, {name}!</Heading>
                     <Text>Tu orden ha sido recibida. Estamos preparando tu paquete para envío.</Text>

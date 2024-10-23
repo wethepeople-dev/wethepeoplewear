@@ -63,13 +63,13 @@ export async function POST(request: NextRequest) {
         to: email, // Sending email to the client
         subject: `Confirmación de Pedido para ${name}`,
         html: emailHTML, // Make sure this is now a string, not a Promise
-        attachments: [
-            {
-                filename: 'LOGO_BLANCO.png',
-                path: './public/logos/icon.png', // Path to your logo
-                cid: 'logo', // Same CID referenced in the HTML
-            },
-        ],
+        // attachments: [
+        //     {
+        //         filename: 'LOGO_BLANCO.png',
+        //         path: './public/logos/icon.png', // Path to your logo
+        //         cid: 'logo', // Same CID referenced in the HTML
+        //     },
+        // ],
     };
 
 
