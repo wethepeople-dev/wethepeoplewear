@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         const orderResult = await client.query(
             `INSERT INTO orders 
              (client_id, total, discount_applied, final_price, discount_code_id, comments, session_id, shipping_status, shipping_cost, payment_status, completed) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
              RETURNING *`,
             [
                 clientId,
