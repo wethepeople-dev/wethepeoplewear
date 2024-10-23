@@ -8,6 +8,8 @@ const host = process.env.NEXT_PUBLIC_HOST;
 export async function POST(request: NextRequest) {
     const body = await request.json();
 
+    console.log('Received email request:', body);
+
     const {
         session_id,
         name,
