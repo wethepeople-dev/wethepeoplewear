@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
         },
     });
 
+    console.log('rendering email template');
+
+
     // Render the email template to HTML
     const emailHTML = await render(
         ConfirmationEmail({
@@ -50,6 +53,8 @@ export async function POST(request: NextRequest) {
         })
     );
 
+    console.log('assigning mail options');
+
     // Now assign the rendered HTML to the mailOptions
     const mailOptions: Mail.Options = {
         from: process.env.MY_EMAIL,
@@ -65,13 +70,17 @@ export async function POST(request: NextRequest) {
         ],
     };
 
+
     try {
+        console.log('Sending email to', email);
         await transport.sendMail(mailOptions);
         return NextResponse.json({ message: 'Correo electrónico enviado' });
     } catch (err) {
         if (err instanceof Error) {
+            console.error('Error sending email:', err);
             return NextResponse.json({ error: err.message }, { status: 500 });
         } else {
+            console.error('Unknown error:', err);
             return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
         }
     }
