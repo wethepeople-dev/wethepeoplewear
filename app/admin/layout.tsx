@@ -8,12 +8,11 @@ import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { SidebarProvider, useSidebar } from "@/lib/AdminSidebarContext"
 
-interface LayoutProps {
+export default function Layout({
+    children,
+}: {
     children: React.ReactNode;
-    title?: string;
-};
-
-export default function Layout({ children, title = 'Admin Page' }: LayoutProps) {
+}) {
     return (
         <SidebarProvider>
             <div className="flex h-screen overflow-hidden">
