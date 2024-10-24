@@ -13,7 +13,7 @@ type LayoutProps = {
     title?: string;
 };
 
-export function Layout({ children, title = 'Admin Page' }: LayoutProps) {
+export default function Layout({ children, title = 'Admin Page' }: LayoutProps) {
     return (
         <SidebarProvider>
             <div className="flex h-screen overflow-hidden">
