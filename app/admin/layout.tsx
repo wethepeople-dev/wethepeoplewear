@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { SidebarProvider, useSidebar } from "@/lib/AdminSidebarContext"
 
-type LayoutProps = {
+interface LayoutProps {
     children: React.ReactNode;
     title?: string;
 };
