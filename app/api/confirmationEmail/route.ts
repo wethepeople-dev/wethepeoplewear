@@ -8,14 +8,13 @@ const host = process.env.NEXT_PUBLIC_HOST;
 export async function POST(request: NextRequest) {
     const body = await request.json();
 
-    console.log('Received email request:', body);
-
     const {
         session_id,
         name,
         email,
         phone,
         addressLine,
+        municipio,
         city,
         state,
         country = 'México',
@@ -24,6 +23,9 @@ export async function POST(request: NextRequest) {
         comments,
         discount,
         discountObject,
+        shipping_method,
+        shipping_cost,
+        shipping_status,
         products,
     } = body;
 
@@ -35,8 +37,6 @@ export async function POST(request: NextRequest) {
         },
     });
 
-    console.log('rendering email template');
-
 
     // Render the email template to HTML
     const emailHTML = await render(
@@ -46,16 +46,18 @@ export async function POST(request: NextRequest) {
             discount,
             comments,
             addressLine,
+            municipio,
             city,
             state,
+            shipping_method,
+            shipping_cost,
+            shipping_status,
             postalCode,
             session_id,
             host,
             products,
         })
     );
-
-    console.log('assigning mail options');
 
     // Now assign the rendered HTML to the mailOptions
     const mailOptions: Mail.Options = {

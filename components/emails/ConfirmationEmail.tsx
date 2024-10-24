@@ -7,8 +7,12 @@ interface ConfirmationEmailProps {
     discount: number;
     comments: string;
     addressLine: string;
+    municipio: string;
     city: string;
     state: string;
+    shipping_method: string;
+    shipping_cost: number;
+    shipping_status: string;
     postalCode: string;
     session_id: string;
     host: string | undefined;
@@ -21,14 +25,40 @@ interface ConfirmationEmailProps {
     }>;
 }
 
+const nombres_playeras: { [key: string]: string } = {
+    'Chase Your Dream': `chaseyourdream`,
+    'Believe': `believe`,
+    'Make It Happen': `makeithappen`,
+    'The Future': `thefuture`,
+    'Happiness From Within': `happinessfromwithin`,
+    'Live In The Moment': `liveinthemoment`,
+    'Fear Of Being Average': `fearofbeingaverage`,
+    'Club Of Dreamers': `clubofdreamers`,
+    'Change The World': `changetheworld`,
+    'Art In Our Lives': `artinourlives`,
+    'The Time Is Now': `thetimeisnow`,
+    'Dream Big': `dreambig`,
+    'Seek The Positive': `seekthepositive`,
+    'Good Things Are Coming': `goodthingarecoming`,
+    'Come On Kid, This Is Your Dream': `comeonkid`,
+};
+
+const getCodeName = (shirtName: string): string | undefined => {
+    return nombres_playeras[shirtName];
+};
+
 export const ConfirmationEmail = ({
     name,
     total,
     discount,
     comments,
     addressLine,
+    municipio,
     city,
     state,
+    shipping_method,
+    shipping_cost,
+    shipping_status,
     postalCode,
     session_id,
     host,
@@ -41,7 +71,7 @@ export const ConfirmationEmail = ({
             <Body style={main}>
                 <Container style={container}>
                     <div style={{ textAlign: 'center' }}>
-                        <img src={'https://wethepeoplewear.vercel.app/logos/icon.png'} alt="Logo" style={{ width: '100px', borderRadius: '50%' }} />
+                        <img src={`https://wethepeoplewear.vercel.app/logos/icon.png`} alt="Logo" style={{ width: '50px', borderRadius: '50%' }} />
                     </div>
                     <Heading style={heading}>¡Gracias por tu pedido, {name}!</Heading>
                     <Text>Tu orden ha sido recibida. Estamos preparando tu paquete para envío.</Text>
@@ -50,9 +80,15 @@ export const ConfirmationEmail = ({
 
                     <Heading style={heading}>Productos</Heading>
                     {products.map((product, index) => (
-                        <Text key={index}>
-                            <strong>{product.nombre}</strong> ({product.tamanio} - {product.color}), {product.cantidad} x ${product.precio}
-                        </Text>
+                        <div key={index} style={sideToSide}>
+                            <div>
+                                <img src={`https://wethepeoplewear.vercel.app/camisas/${getCodeName(product.nombre)}_${product.color == 'Negro' ? 'negra' : product.color == 'Blanco' ? 'blanca' : product.color == 'Gris' ? 'gris' : ''}_back.png`} alt={product.nombre} style={{ width: '80px', marginRight: '10px' }} />
+                            </div>
+                            <Text>
+                                <strong>{product.nombre}</strong> ({product.tamanio} - {product.color}) <br />
+                                {product.cantidad} x ${product.precio}
+                            </Text>
+                        </div>
                     ))}
 
                     <Hr style={hr} />
@@ -60,8 +96,9 @@ export const ConfirmationEmail = ({
                     <Section>
                         <Heading style={heading}>Resumen de compra</Heading>
                         <Text><strong>Precio original:</strong> {formatCurrency(total)} MXN</Text>
-                        <Text><strong>Descuento:</strong> {formatCurrency(total * discount)} MXN</Text>
-                        <Text><strong>Total:</strong> {formatCurrency(total * (1 - discount))} MXN</Text>
+                        <Text><strong>Envío:</strong> {formatCurrency(shipping_cost)} MXN</Text>
+                        <Text><strong>Descuento:</strong> {discount > 0 ? '-' : ''}{formatCurrency(total * discount)} MXN</Text>
+                        <Text><strong>Total:</strong> {formatCurrency(total * (1 - discount) + shipping_cost)} MXN</Text>
                         {comments && <Text><strong>Mensaje:</strong> {comments}</Text>}
                     </Section>
 
@@ -69,7 +106,10 @@ export const ConfirmationEmail = ({
 
                     <Section>
                         <Heading style={heading}>Envío</Heading>
-                        <Text><strong>Dirección de envío:</strong> {addressLine}, {city}, {state}, {postalCode}</Text>
+                        {shipping_method == 'collectif' && <Text><strong>Recolección en Collectif:</strong> Río Guadalquivir 320 ote, col. Del Valle, San Pedro Garza García, Nuevo León, CP 66220</Text>}
+                        {shipping_method != 'collectif' && <Text><strong>Dirección de envío:</strong> {addressLine}, {municipio}, {city}, {state}, {postalCode}</Text>}
+                        <Text><strong>Tipo de envío:</strong> {shipping_method == 'local' ? 'Envío a domicilio en Monterrey' : shipping_method == 'nacional' ? 'Envío nacional' : shipping_method == 'collectif' ? 'Recolección en Collectif' : ''}</Text>
+                        <Text><strong>Estatus:</strong> {shipping_status == 'processing' ? 'En proceso' : shipping_status == 'delivered' ? 'Enviado' : shipping_status == 'completed' ? 'Paquete entregado' : "Desconocido"}</Text>
                     </Section>
 
                     <Hr style={hr} />
@@ -111,6 +151,13 @@ export const ConfirmationEmail = ({
 const main = {
     backgroundColor: '#f6f9fc',
     fontFamily: 'Arial, sans-serif',
+};
+
+const sideToSide = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: '5px',
 };
 
 const container = {

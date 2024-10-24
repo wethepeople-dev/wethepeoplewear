@@ -41,11 +41,12 @@ async function seedData(client) {
                 name VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL,
                 phone VARCHAR(50) NOT NULL,
-                address TEXT NOT NULL,
-                city VARCHAR(255) NOT NULL,
-                state VARCHAR(50) NOT NULL,
-                postal_code VARCHAR(50) NOT NULL,
-                country VARCHAR(50) NOT NULL,
+                address TEXT,
+                municipio VARCHAR(255),
+                city VARCHAR(255),
+                state VARCHAR(50),
+                postal_code VARCHAR(50),
+                country VARCHAR(50),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `;

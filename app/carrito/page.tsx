@@ -68,7 +68,7 @@ const shippingOptions = [
     {
         id: 'shr_1QCd3d06GvttNHxdNBL5g2YX',
         name: 'Envíos nacionales',
-        price: 149,
+        price: 150,
     },
 ];
 
@@ -86,8 +86,10 @@ export default function Carrito() {
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
     const [addressLine, setAddressLine] = useState("")
+    const [municipio, setMunicipio] = useState("")
     const [city, setCity] = useState("")
     const [state, setState] = useState("")
+    const [tipoEnvio, setTipoEnvio] = useState("")
     const [postalCode, setPostalCode] = useState("")
     const [comments, setComments] = useState("")
 
@@ -193,6 +195,17 @@ export default function Carrito() {
         }
     };
 
+    const handleEnvioChange = (value: string) => {
+        setTipoEnvio(value);
+        if (value == 'local') {
+            setCity('Monterrey');
+            setState('Nuevo León');
+        } else {
+            setCity('');
+            setState('');
+        }
+    }
+
     const validatePostalCode = (postalCode: string): boolean => {
         // Regular expression to allow exactly 5 digits
         const isValid = /^\d{5}$/.test(postalCode);
@@ -201,15 +214,28 @@ export default function Carrito() {
 
     const handleFinalizarCompra = async () => {
 
-        if (name.length === 0 || email.length === 0 || phone.length === 0 || addressLine.length === 0 || city.length === 0 || state.length === 0 || postalCode.length === 0 || emailError || phoneError || postalCodeError) {
+        // checar campos del Envio
+        if (tipoEnvio === '') {
             setEmptyFieldsError(true);
+            console.log('error envio vacio')
+            return;
+        } else if (tipoEnvio != 'collectif') {
+            if (addressLine.length === 0 || municipio.length === 0 || city.length === 0 || state.length === 0 || postalCode.length === 0 || postalCodeError) {
+                setEmptyFieldsError(true);
+                console.log('error campos de envio')
+                return;
+            }
+        }
+
+        // checar campos de contacto
+        if (name.length === 0 || email.length === 0 || phone.length === 0 || tipoEnvio.length === 0 || emailError || phoneError) {
+            setEmptyFieldsError(true);
+            console.log('error campos de contacto')
+
+            // Proceder al pago
         } else {
             setEmptyFieldsError(false);
             setLoadingFinalizarCompra(true);
-            // const formattedDate = '';
-            // if (date) {
-            //     const formattedDate = format(date, "EEEE d 'de' MMMM, yyyy", { locale: es });
-            // }
             const temp_prods = cart.map((item) => {
                 return {
                     id: item.productId,
@@ -228,10 +254,15 @@ export default function Carrito() {
                 email,
                 phone,
                 addressLine,
+                municipio,
                 city,
                 state,
                 country: 'México',
                 postalCode,
+                shipping_status: 'processing',
+                shipping_method: tipoEnvio,
+                shipping_cost: tipoEnvio == 'local' ? 60 : tipoEnvio == 'nacional' ? 150 : 0,
+                shipment_cost_id: tipoEnvio == 'local' ? 'shr_1QCd2Z06GvttNHxde76R6bnb' : tipoEnvio == 'nacional' ? 'shr_1QCd3d06GvttNHxdNBL5g2YX' : '',
                 comments,
                 discount,
                 discountObject,
@@ -351,7 +382,6 @@ export default function Carrito() {
                                             </Link>
                                         </div>
 
-
                                         {/* botones */}
                                         <div className="flex flex-row items-center gap-2 w-auto">
 
@@ -458,7 +488,7 @@ export default function Carrito() {
 
                             <div className="container mx-auto pb-10">
 
-                                <div className="grid md:grid-cols-2 gap-8">
+                                <div className="grid lg:grid-cols-2 gap-8">
 
                                     {/* RESUMEN de PRODUCTOS */}
                                     <Card className="bg-card rounded-lg shadow-lg border">
@@ -523,7 +553,9 @@ export default function Carrito() {
 
                                         <div className="bg-yellow-50 border border-yellow-400 text-yellow-700 px-4 py-3 my-6 rounded relative" role="alert">
                                             <strong className="font-bold">IMPORTANTE.&nbsp;</strong>
-                                            <span className="block sm:inline">Por el momento solo realizamos envíos dentro de la República Mexicana. Envíos locales (Monterrey) +$60 MXN y envíos nacionales +$149 MXN.</span>
+                                            <span className="block sm:inline">
+                                                Por el momento solo realizamos envíos dentro de la República Mexicana. Envíos locales (Monterrey) +$60 MXN y envíos nacionales +$150 MXN.
+                                            </span>
                                         </div>
 
                                         <div className="grid gap-4">
@@ -572,101 +604,154 @@ export default function Carrito() {
                                                 />
                                             </div>
 
-                                            {/* Dirección */}
+                                            {/* Envío */}
                                             <div className="grid gap-2">
-                                                <Label htmlFor="addressLine">Dirección <span className="text-red-500">*</span></Label>
-                                                <Input
-                                                    id="addressLine"
-                                                    value={addressLine}
-                                                    onChange={(e) => setAddressLine(e.target.value)}
-                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
-                                                    placeholder="Escribe tu dirección"
-                                                />
+                                                <Label htmlFor="envio">Envío <span className="text-red-500">*</span></Label>
+                                                <Select
+                                                    value={tipoEnvio}
+                                                    onValueChange={value => handleEnvioChange(value)}
+                                                >
+                                                    <SelectTrigger id="envio">
+                                                        <SelectValue placeholder="Seleccionar método" className="text-gray-600" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="local">Local (Monterrey y área metropolitana) - $60</SelectItem>
+                                                        <SelectItem value="nacional">Nacional (Todo México) - $150</SelectItem>
+                                                        <SelectItem value="collectif">Recoger en Collectif (Monterrey) - Gratis</SelectItem>
+                                                    </SelectContent>
+
+                                                </Select>
+
                                             </div>
 
-                                            <div className="grid md:grid-cols-3 gap-4">
+                                            {tipoEnvio != '' ?
+                                                tipoEnvio != 'collectif' ?
+                                                    <>
+                                                        {/* Dirección */}
+                                                        <div className="grid gap-2">
+                                                            <Label htmlFor="addressLine">Dirección (calle, número y colonia) <span className="text-red-500">*</span></Label>
+                                                            <Input
+                                                                id="addressLine"
+                                                                value={addressLine}
+                                                                onChange={(e) => setAddressLine(e.target.value)}
+                                                                className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                                placeholder="Escribe tu dirección"
+                                                            />
+                                                        </div>
 
-                                                {/* Ciudad */}
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="city">Ciudad <span className="text-red-500">*</span></Label>
-                                                    <Input
-                                                        id="city"
-                                                        value={city}
-                                                        onChange={(e) => setCity(e.target.value)}
-                                                        className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
-                                                        placeholder="Ciudad"
-                                                    />
-                                                </div>
+                                                        <div className="grid md:grid-cols-2 gap-4">
 
-                                                {/* Estado */}
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="state">Estado <span className="text-red-500">*</span></Label>
-                                                    {/* <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="Estado" /> */}
-                                                    <Select
-                                                        value={state}
-                                                        onValueChange={value => setState(value)}
-                                                    >
-                                                        <SelectTrigger id="state">
-                                                            <SelectValue placeholder="Estado" className="text-gray-600" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="Aguascalientes">Aguascalientes</SelectItem>
-                                                            <SelectItem value="Baja California">Baja California</SelectItem>
-                                                            <SelectItem value="Baja California Sur">Baja California Sur</SelectItem>
-                                                            <SelectItem value="Campeche">Campeche</SelectItem>
-                                                            <SelectItem value="Chiapas">Chiapas</SelectItem>
-                                                            <SelectItem value="Chihuahua">Chihuahua</SelectItem>
-                                                            <SelectItem value="Ciudad de México">Ciudad de México</SelectItem>
-                                                            <SelectItem value="Coahuila">Coahuila</SelectItem>
-                                                            <SelectItem value="Colima">Colima</SelectItem>
-                                                            <SelectItem value="Durango">Durango</SelectItem>
-                                                            <SelectItem value="Guanajuato">Guanajuato</SelectItem>
-                                                            <SelectItem value="Guerrero">Guerrero</SelectItem>
-                                                            <SelectItem value="Hidalgo">Hidalgo</SelectItem>
-                                                            <SelectItem value="Jalisco">Jalisco</SelectItem>
-                                                            <SelectItem value="Estado de México">Estado de México</SelectItem>
-                                                            <SelectItem value="Michoacán">Michoacán</SelectItem>
-                                                            <SelectItem value="Morelos">Morelos</SelectItem>
-                                                            <SelectItem value="Nayarit">Nayarit</SelectItem>
-                                                            <SelectItem value="Nuevo León">Nuevo León</SelectItem>
-                                                            <SelectItem value="Oaxaca">Oaxaca</SelectItem>
-                                                            <SelectItem value="Puebla">Puebla</SelectItem>
-                                                            <SelectItem value="Querétaro">Querétaro</SelectItem>
-                                                            <SelectItem value="Quintana Roo">Quintana Roo</SelectItem>
-                                                            <SelectItem value="San Luis Potosí">San Luis Potosí</SelectItem>
-                                                            <SelectItem value="Sinaloa">Sinaloa</SelectItem>
-                                                            <SelectItem value="Sonora">Sonora</SelectItem>
-                                                            <SelectItem value="Tabasco">Tabasco</SelectItem>
-                                                            <SelectItem value="Tamaulipas">Tamaulipas</SelectItem>
-                                                            <SelectItem value="Tlaxcala">Tlaxcala</SelectItem>
-                                                            <SelectItem value="Veracruz">Veracruz</SelectItem>
-                                                            <SelectItem value="Yucatán">Yucatán</SelectItem>
-                                                            <SelectItem value="Zacatecas">Zacatecas</SelectItem>
-                                                        </SelectContent>
+                                                            {/* Municipio */}
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="municipio">Municipio <span className="text-red-500">*</span></Label>
+                                                                <Input
+                                                                    id="municipio"
+                                                                    value={municipio}
+                                                                    onChange={(e) => setMunicipio(e.target.value)}
+                                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                                    placeholder="Municipio"
+                                                                />
+                                                            </div>
 
-                                                    </Select>
+                                                            {/* Ciudad */}
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="city">Ciudad <span className="text-red-500">*</span></Label>
+                                                                <Input
+                                                                    id="city"
+                                                                    disabled={tipoEnvio == 'local'}
+                                                                    value={city}
+                                                                    onChange={(e) => setCity(e.target.value)}
+                                                                    className={"block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent"}
+                                                                    placeholder={tipoEnvio == 'local' ? "Monterrey" : "Ciudad"}
+                                                                />
+                                                            </div>
 
-                                                </div>
+                                                        </div>
 
-                                                {/* Código Postal */}
-                                                <div className="grid gap-2">
-                                                    <Label htmlFor="postalCode">Código Postal <span className="text-red-500">*</span></Label>
-                                                    <Input
-                                                        id="postalCode"
-                                                        value={postalCode}
-                                                        onChange={(e) => setPostalCode(e.target.value)}
-                                                        onKeyUp={handlePostalCodeChange}
-                                                        className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
-                                                            postalCodeError && "border-red-500"
-                                                        )}
-                                                        placeholder="Código Postal"
-                                                    />
-                                                </div>
-                                            </div>
+                                                        <div className="grid md:grid-cols-2 gap-4">
+
+                                                            {/* Estado */}
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="state">Estado <span className="text-red-500">*</span></Label>
+                                                                {/* <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="Estado" /> */}
+                                                                <Select
+                                                                    value={state}
+                                                                    disabled={tipoEnvio == 'local'}
+                                                                    onValueChange={value => setState(value)}
+                                                                >
+                                                                    <SelectTrigger id="state">
+                                                                        <SelectValue placeholder={tipoEnvio == 'local' ? "Nuevo León" : "Estado"} className="text-gray-600" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectItem value="Aguascalientes">Aguascalientes</SelectItem>
+                                                                        <SelectItem value="Baja California">Baja California</SelectItem>
+                                                                        <SelectItem value="Baja California Sur">Baja California Sur</SelectItem>
+                                                                        <SelectItem value="Campeche">Campeche</SelectItem>
+                                                                        <SelectItem value="Chiapas">Chiapas</SelectItem>
+                                                                        <SelectItem value="Chihuahua">Chihuahua</SelectItem>
+                                                                        <SelectItem value="Ciudad de México">Ciudad de México</SelectItem>
+                                                                        <SelectItem value="Coahuila">Coahuila</SelectItem>
+                                                                        <SelectItem value="Colima">Colima</SelectItem>
+                                                                        <SelectItem value="Durango">Durango</SelectItem>
+                                                                        <SelectItem value="Guanajuato">Guanajuato</SelectItem>
+                                                                        <SelectItem value="Guerrero">Guerrero</SelectItem>
+                                                                        <SelectItem value="Hidalgo">Hidalgo</SelectItem>
+                                                                        <SelectItem value="Jalisco">Jalisco</SelectItem>
+                                                                        <SelectItem value="Estado de México">Estado de México</SelectItem>
+                                                                        <SelectItem value="Michoacán">Michoacán</SelectItem>
+                                                                        <SelectItem value="Morelos">Morelos</SelectItem>
+                                                                        <SelectItem value="Nayarit">Nayarit</SelectItem>
+                                                                        <SelectItem value="Nuevo León">Nuevo León</SelectItem>
+                                                                        <SelectItem value="Oaxaca">Oaxaca</SelectItem>
+                                                                        <SelectItem value="Puebla">Puebla</SelectItem>
+                                                                        <SelectItem value="Querétaro">Querétaro</SelectItem>
+                                                                        <SelectItem value="Quintana Roo">Quintana Roo</SelectItem>
+                                                                        <SelectItem value="San Luis Potosí">San Luis Potosí</SelectItem>
+                                                                        <SelectItem value="Sinaloa">Sinaloa</SelectItem>
+                                                                        <SelectItem value="Sonora">Sonora</SelectItem>
+                                                                        <SelectItem value="Tabasco">Tabasco</SelectItem>
+                                                                        <SelectItem value="Tamaulipas">Tamaulipas</SelectItem>
+                                                                        <SelectItem value="Tlaxcala">Tlaxcala</SelectItem>
+                                                                        <SelectItem value="Veracruz">Veracruz</SelectItem>
+                                                                        <SelectItem value="Yucatán">Yucatán</SelectItem>
+                                                                        <SelectItem value="Zacatecas">Zacatecas</SelectItem>
+                                                                    </SelectContent>
+
+                                                                </Select>
+
+                                                            </div>
+
+                                                            {/* Código Postal */}
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="postalCode">Código Postal <span className="text-red-500">*</span></Label>
+                                                                <Input
+                                                                    id="postalCode"
+                                                                    value={postalCode}
+                                                                    onChange={(e) => setPostalCode(e.target.value)}
+                                                                    onKeyUp={handlePostalCodeChange}
+                                                                    className={cn("block w-full rounded-md border border-gray-300 p-2.5 text-sm text-gray-900 focus:bg-gray-100 focus-visible:ring-0 focus-visible:ring-transparent",
+                                                                        postalCodeError && "border-red-500"
+                                                                    )}
+                                                                    placeholder="Código Postal"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <p className="text-sm text-gray-500">
+                                                            Collectif Concept Store: <br />
+                                                            Río Guadalquivir 320 ote, col. Del Valle, San Pedro Garza García, Nuevo León, CP 66220 <br />
+                                                            <a href="https://maps.app.goo.gl/ZdFY7pYak5pMWfTT9" className=" underline hover:text-gray-300" target="blank">https://maps.app.goo.gl/ZdFY7pYak5pMWfTT9</a>
+                                                        </p>
+                                                    </>
+                                                :
+                                                <></>
+                                            }
 
                                             {/* Comentarios */}
                                             <div className="grid gap-2">
-                                                <Label htmlFor="comments">Comentarios</Label>
+                                                <Label htmlFor="comments">Comentarios adicionales</Label>
                                                 <Textarea
                                                     id="comments"
                                                     value={comments}
@@ -684,7 +769,11 @@ export default function Carrito() {
                                                 Favor de llenar correctamente todos los campos requeridos
                                             </p>}
 
-                                            <Button type="submit" onClick={handleFinalizarCompra} className="w-full text-center py-3 transition-all duration-300 hover:shadow-lg hover:bg-gray-600">
+                                            <Button
+                                                type="submit"
+                                                onClick={handleFinalizarCompra}
+                                                className="w-full text-center py-3 transition-all duration-300 hover:shadow-lg hover:bg-gray-600"
+                                            >
                                                 {loadingFinalizarCompra ? "Cargando..." : "Proceder al pago"}
                                             </Button>
 

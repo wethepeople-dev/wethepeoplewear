@@ -43,6 +43,7 @@ type Client = {
     email: string;
     phone: string;
     address: string;
+    municipio: string;
     city: string;
     state: string;
     postal_code: string;
@@ -106,7 +107,6 @@ const SuccessContent = () => {
 
     const [products, setProducts] = useState<Product[]>([]);
     const [loadedProducts, setLoadedProducts] = useState(false);
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     const { width, height } = useWindowSize()
 
@@ -151,9 +151,7 @@ const SuccessContent = () => {
                 if (res.ok) {
                     const { payment_status } = await res.json();
                     if (payment_status === 'paid') {
-                        console.log('Pago completado');
                         // Consultar o guardar la orden en la base de datos
-                        console.log('Guardando la orden...');
                         const orderRes = await fetch('/api/orders', {
                             method: 'POST',
                             headers: {
@@ -167,7 +165,6 @@ const SuccessContent = () => {
                         });
 
                         if (orderRes.ok) {
-                            console.log('orden guardada')
                             const result = await orderRes.json();
                             console.log('order result:', result);
                             setOrder(result);
@@ -199,10 +196,8 @@ const SuccessContent = () => {
                             if (result.order.discount_applied) {
                                 validateDiscountCode();
                             }
-                            console.log('descuento obtenido');
 
                             // send email
-                            console.log('Enviando correo electrónico de confirmación...');
                             const emailResult = await fetch('/api/confirmationEmail', {
                                 method: 'POST',
                                 headers: {
@@ -214,7 +209,6 @@ const SuccessContent = () => {
                                     products: JSON.parse(localStorage.getItem('cartItems') || '[]'),
                                 }),
                             });
-                            console.log('Email enviado');
                             localStorage.removeItem('orderInfo');
                             localStorage.removeItem('cartItems');
                             emptyCart();
@@ -540,32 +534,27 @@ const SuccessContent = () => {
                                             <h3 className="font-semibold mb-2 flex items-center">
                                                 <Truck className="mr-2" /> Envío
                                             </h3>
-                                            <p>Estatus: {order.order.shipping_status || "Pendiente"}</p>
-                                            <p>Costo: {formatCurrency(order.order.shipping_cost)}</p>
-                                            {order.order.tracking_id && (
-                                                <p>Tracking ID: {order.order.tracking_id}</p>
-                                            )}
-                                            {order.order.tracking_url && (
-                                                <p>
-                                                    <a href={order.order.tracking_url} className="text-blue-600 hover:underline">
-                                                        Track your package
-                                                    </a>
-                                                </p>
-                                            )}
+                                            <p>Estatus: {order.order.shipping_status == 'processing' ? 'En proceso' : order.order.shipping_status == 'delivered' ? 'Enviado' : order.order.shipping_status == 'completed' ? 'Paquete entregado' : "Desconocido"}</p>
+                                            {/* <p>Costo: {formatCurrency(order.order.shipping_cost)}</p> */}
+                                            <p>Tipo: {order.order.shipping_method == 'local' ? 'Envío a domicilio en Monterrey' : order.order.shipping_method == 'nacional' ? 'Envío nacional' : order.order.shipping_method == 'collectif' ? 'Recolección en Collectif' : ''}</p>
                                         </div>
 
                                         <Separator />
 
                                         {/* direccion */}
-                                        <div>
-                                            <h3 className="font-semibold mb-2 flex items-center">
-                                                <MapPin className="mr-2" /> Dirección de Envío
-                                            </h3>
-                                            <p>{order.client.name}</p>
-                                            <p>{order.client.address}</p>
-                                            <p>{order.client.city}, {order.client.state} {order.client.postal_code}</p>
-                                            <p>{order.client.country}</p>
-                                        </div>
+                                        {order.order.shipping_method != 'collectif' && (
+                                            <>
+                                                <div>
+                                                    <h3 className="font-semibold mb-2 flex items-center">
+                                                        <MapPin className="mr-2" /> Dirección de Envío
+                                                    </h3>
+                                                    <p>{order.client.name}</p>
+                                                    <p>{order.client.address}, {order.client.municipio}</p>
+                                                    <p>{order.client.city}, {order.client.state} {order.client.postal_code}</p>
+                                                    <p>{order.client.country}</p>
+                                                </div>
+                                            </>
+                                        )}
 
                                         {/* Comentarios */}
                                         {order.order.comments && (

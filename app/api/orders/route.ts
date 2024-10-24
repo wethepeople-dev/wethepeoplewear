@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
         email,
         phone,
         addressLine,
+        municipio,
         city,
         state,
         country = 'México',
@@ -20,6 +21,8 @@ export async function POST(req: NextRequest) {
         comments,
         discount,
         discountObject,
+        shipping_method,
+        shipping_cost,
         // products
         products,
     } = body;
@@ -61,30 +64,42 @@ export async function POST(req: NextRequest) {
         await client.query('BEGIN');
 
         // Insert client info
-        const clientResult = await client.query(
-            `INSERT INTO clients (name, email, phone, address, city, state, postal_code, country) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
-             RETURNING client_id`,
-            [name, email, phone, addressLine, city, state, postalCode, country]
-        );
-        const clientId = clientResult.rows[0].client_id;
+        let clientId = '';
+        if (shipping_method != 'collectif') {
+            const clientResult = await client.query(
+                `INSERT INTO clients (name, email, phone, address, city, state, postal_code, country, municipio) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+                 RETURNING client_id`,
+                [name, email, phone, addressLine, city, state, postalCode, country, municipio]
+            );
+            clientId = clientResult.rows[0].client_id;
+        } else {
+            const clientResult = await client.query(
+                `INSERT INTO clients (name, email, phone) 
+                 VALUES ($1, $2, $3) 
+                 RETURNING client_id`,
+                [name, email, phone]
+            );
+            clientId = clientResult.rows[0].client_id;
+        }
 
         // Insert order info
         const orderResult = await client.query(
             `INSERT INTO orders 
-             (client_id, total, discount_applied, final_price, discount_code_id, comments, session_id, shipping_status, shipping_cost, payment_status, completed) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+             (client_id, total, discount_applied, final_price, discount_code_id, comments, session_id, shipping_status, shipping_cost, shipping_method, payment_status, completed) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
              RETURNING *`,
             [
                 clientId,
                 total,
                 discount > 0,
-                total * (1 - discount),
+                (total * (1 - discount)) + shipping_cost,
                 discountObject?.code_id || null, // Handle discount object
                 comments,
                 session_id,
                 'processing',
-                0,
+                shipping_cost,
+                shipping_method,
                 'paid',
                 false
             ]
@@ -120,7 +135,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             order,
-            client: { client_id: clientId, name, email, phone, addressLine, city, state, postalCode, country },
+            client: { client_id: clientId, name, email, phone, address: addressLine, city, state, postalCode, country, municipio },
             items: orderItems,
         });
     } catch (err) {
