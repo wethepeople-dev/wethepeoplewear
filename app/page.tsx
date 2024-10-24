@@ -496,8 +496,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* https://www.instagram.com/p/C172po5JmC4/ */}
-
           {/* embed */}
           <div className="w-full px-4 py-10 lg:w-6/12 mx-auto text-center justify-center flex flex-row gap-4">
 

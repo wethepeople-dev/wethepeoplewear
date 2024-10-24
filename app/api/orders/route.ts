@@ -106,9 +106,18 @@ export async function POST(req: NextRequest) {
         );
         const order = orderResult.rows[0];
 
-        // Insert order items
-        const orderItemsPromises = products.map((product: { nombre: string; id: string; variation_id: string; cantidad: number }) =>
-            client.query(
+        // Insert order items and update stock quantities
+        const orderItemsPromises = products.map(async (product: { nombre: string; id: string; variation_id: string; cantidad: number }) => {
+            // Update the stock quantity for the variation
+            await client.query(
+                `UPDATE product_variations 
+                 SET stock_qty = stock_qty - $1 
+                 WHERE variation_id = $2 AND stock_qty >= $1`,
+                [product.cantidad, product.variation_id]
+            );
+
+            // Insert the order item
+            return client.query(
                 `INSERT INTO order_items 
                  (order_id, product_name, product_id, variation_id, quantity) 
                  VALUES ($1, $2, $3, $4, $5)`,
@@ -119,8 +128,8 @@ export async function POST(req: NextRequest) {
                     product.variation_id,
                     product.cantidad,
                 ]
-            )
-        );
+            );
+        });
         await Promise.all(orderItemsPromises);
 
         // Fetch inserted order items

@@ -309,9 +309,51 @@ export default function Carrito() {
 
     useEffect(() => {
         if (cart) {
+            const checkStock = async () => {
+                try {
+                    let removedItems = [];
+                    console.log('checking stock');
+                    console.log('cart:', cart);
+                    for (const item of cart) {
+                        const response = await fetch('/api/check-stock', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ variation_id: item.variacion.variation_id }),
+                        });
+
+                        const data = await response.json();
+                        console.log('product:', item.nombre, 'stock:', data.stock_qty, 'qty:', item.cantidad);
+
+                        if (data.stock_qty < item.cantidad) {
+                            console.log('removing item:', item.nombre);
+                            removedItems.push(item);
+                            // remove item from cart
+                            removeCartItem(item.productId, item.variacion.talla, item.variacion.color);
+                        }
+                    }
+
+                    if (removedItems.length > 0) {
+                        toast.error(`Algunos productos ya no están disponibles en la cantidad deseada y fueron removidos del carrito.`, {
+                            position: "bottom-right",
+                            autoClose: 10000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error checking stock:', error);
+                }
+            };
+
+            checkStock();
             setLoadedCart(true);
         }
-    }, []);
+    }, [cart]);
 
     return (
         <main className="flex min-h-screen flex-col">
@@ -797,8 +839,8 @@ export default function Carrito() {
 
 function XIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
         </svg>
     )
 }
