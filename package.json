@@ -41,6 +41,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "react-resizable-panels": "^2.0.19",
+    "react-social-media-embed": "^2.5.17",
     "react-toastify": "^10.0.5",
     "react-use": "^17.5.1",
     "stripe": "^17.2.1",
