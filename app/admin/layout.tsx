@@ -13,7 +13,7 @@ type LayoutProps = {
     title?: string;
 };
 
-const Layout: React.FC<LayoutProps> = ({ children, title = 'Admin Page' }) => {
+export function Layout({ children, title = 'Admin Page' }: LayoutProps) {
     return (
         <SidebarProvider>
             <div className="flex h-screen overflow-hidden">
@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'Admin Page' }) => {
             </div>
         </SidebarProvider>
     );
-};
+}
 
 const Sidebar: React.FC = () => {
     const { isSidebarOpen, toggleSidebar } = useSidebar(); // Use the sidebar state from context
@@ -94,6 +94,4 @@ const Sidebar: React.FC = () => {
             </div>
         </aside>
     );
-};
-
-export default Layout;
+}
