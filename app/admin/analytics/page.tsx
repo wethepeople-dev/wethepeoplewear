@@ -44,7 +44,7 @@ export default function Analytics() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 rounded-full">
                             <img
-                                src="/placeholder.svg?height=32&width=32"
+                                src="/logos/icon.png"
                                 alt="User"
                                 className="rounded-full"
                             />

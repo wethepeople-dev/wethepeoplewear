@@ -31,6 +31,8 @@ export default function AdminDashboard() {
 
             {/* Top Bar */}
             <header className="flex h-16 items-center justify-between border-b bg-white px-4 lg:px-6">
+
+                {/* sidebar toggle */}
                 <Button
                     variant="ghost"
                     className="lg:hidden"
@@ -39,18 +41,24 @@ export default function AdminDashboard() {
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Toggle Sidebar</span>
                 </Button>
+
+                {/* title */}
                 <h1 className="text-2xl font-semibold">Overview</h1>
+
+                {/* user menu */}
                 <DropdownMenu>
+
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 rounded-full">
+                        <div className="h-10 w-10 rounded-full hover:cursor-pointer">
                             <img
-                                src="/placeholder.svg?height=32&width=32"
+                                src="/logos/icon.png"
                                 alt="User"
-                                className="rounded-full"
+                                className="rounded-full hover:opacity-75"
                             />
                             <span className="sr-only">Toggle user menu</span>
-                        </Button>
+                        </div>
                     </DropdownMenuTrigger>
+
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
@@ -58,7 +66,9 @@ export default function AdminDashboard() {
                         <DropdownMenuItem>Settings</DropdownMenuItem>
                         <DropdownMenuItem>Logout</DropdownMenuItem>
                     </DropdownMenuContent>
+
                 </DropdownMenu>
+
             </header>
 
             {/* Dashboard Content */}

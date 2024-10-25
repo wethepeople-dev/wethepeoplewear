@@ -26,6 +26,7 @@
     "@react-email/render": "^1.0.1",
     "@stripe/react-stripe-js": "^2.8.1",
     "@stripe/stripe-js": "^4.9.0",
+    "@tanstack/react-table": "^8.20.5",
     "@types/nodemailer": "^6.4.16",
     "@vercel/postgres": "^0.10.0",
     "class-variance-authority": "^0.7.0",
