@@ -77,7 +77,7 @@ export default function Catalogo() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch('/api/categories', {
+                const response = await fetch('/api/getCategories', {
                     cache: 'no-store', // Ensure no caching
                 });
                 const data = await response.json();

@@ -152,7 +152,7 @@ const SuccessContent = () => {
                     const { payment_status } = await res.json();
                     if (payment_status === 'paid') {
                         // Consultar o guardar la orden en la base de datos
-                        const orderRes = await fetch('/api/orders', {
+                        const orderRes = await fetch('/api/insertOrders', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
