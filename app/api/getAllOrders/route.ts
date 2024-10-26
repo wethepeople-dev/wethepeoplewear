@@ -18,7 +18,9 @@ export async function GET(req: NextRequest) {
                 o.final_price,
                 o.shipping_status,
                 o.shipping_method,
-                o.completed
+                o.completed,
+                o.tracking_id,
+                o.tracking_url
             FROM orders o
             LEFT JOIN order_items oi ON oi.order_id = o.order_id
             LEFT JOIN clients c ON c.client_id = o.client_id

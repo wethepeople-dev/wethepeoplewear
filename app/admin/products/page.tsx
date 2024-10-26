@@ -206,8 +206,6 @@ export default function Products() {
 
                     :
 
-
-
                     <Table>
                         {searchValue ?
                             <TableCaption>{filteredProducts.length} resultados para &quot;{searchValue}&quot;</TableCaption>

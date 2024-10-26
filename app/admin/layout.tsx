@@ -7,6 +7,7 @@ import { BarChart3, LayoutDashboard, Settings, ShoppingCart, PackageSearch, Note
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { SidebarProvider, useSidebar } from "@/lib/AdminSidebarContext"
+import { usePathname } from 'next/navigation'
 
 export default function Layout({
     children,
@@ -30,6 +31,17 @@ export default function Layout({
 
 const Sidebar: React.FC = () => {
     const { isSidebarOpen, toggleSidebar } = useSidebar(); // Use the sidebar state from context
+
+    function getLastElementFromUrl(url: string): string {
+        // Split the URL by '/' and filter out empty strings
+        const segments = url.split('/').filter(segment => segment !== '');
+
+        // Return the last segment
+        return segments.length > 0 ? segments[segments.length - 1] : '';
+    }
+
+    const pathname = usePathname();
+    const currentPath = getLastElementFromUrl(pathname);
 
     return (
         <aside
@@ -82,7 +94,7 @@ const Sidebar: React.FC = () => {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800"
+                                className={`flex items-center rounded-lg px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 ${currentPath === item.href.split('/')[2] ? 'bg-gray-800' : currentPath === 'admin' && item.href === '/admin' ? 'bg-gray-800' : ''}`}
                             >
                                 <item.icon className="mr-3 h-6 w-6" />
                                 {item.name}

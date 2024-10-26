@@ -129,7 +129,7 @@ export function DataTable<TData, TValue>({
                 <Table>
 
                     {/* table header */}
-                    <TableHeader>
+                    <TableHeader className="bg-gray-200">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
@@ -155,6 +155,7 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    className="hover:bg-slate-200"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
