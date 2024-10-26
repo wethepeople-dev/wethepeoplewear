@@ -42,14 +42,14 @@ export default function Blogs() {
                 <h1 className="text-2xl font-semibold">Blogs</h1>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 rounded-full">
+                        <div className="h-8 w-8 rounded-full hover:cursor-pointer">
                             <img
                                 src="/logos/icon.png"
                                 alt="User"
-                                className="rounded-full"
+                                className="rounded-full hover:opacity-75"
                             />
                             <span className="sr-only">Toggle user menu</span>
-                        </Button>
+                        </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>

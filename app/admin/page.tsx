@@ -49,7 +49,7 @@ export default function AdminDashboard() {
                 <DropdownMenu>
 
                     <DropdownMenuTrigger asChild>
-                        <div className="h-10 w-10 rounded-full hover:cursor-pointer">
+                        <div className="h-8 w-8 rounded-full hover:cursor-pointer">
                             <img
                                 src="/logos/icon.png"
                                 alt="User"

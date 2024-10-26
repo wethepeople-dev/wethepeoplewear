@@ -5,13 +5,6 @@ import { BarChart3, Menu, Settings, ShoppingCart, Users } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -42,14 +35,14 @@ export default function Products() {
                 <h1 className="text-2xl font-semibold">Products</h1>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 rounded-full">
+                        <div className="h-8 w-8 rounded-full hover:cursor-pointer">
                             <img
                                 src="/logos/icon.png"
                                 alt="User"
-                                className="rounded-full"
+                                className="rounded-full hover:opacity-75"
                             />
                             <span className="sr-only">Toggle user menu</span>
-                        </Button>
+                        </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>

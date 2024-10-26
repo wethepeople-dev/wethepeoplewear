@@ -23,7 +23,96 @@ export type Payment = {
     email: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+interface ProductVariation {
+    variation_id: string;
+    product_id: string;
+    color: string;
+    talla: string;
+    precio: number;
+    fotos: string[];
+    stock_qty: number;
+}
+
+interface Product {
+    product_id: string;
+    name: string;
+    description: string;
+    category_id: string;
+    colores: string[];
+    tallas: string[];
+    release_date: string;
+    variations: ProductVariation[];
+}
+
+type Client = {
+    client_id: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    municipio: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    country: string;
+    created_at: string;
+};
+
+type Order = {
+    order_id: string;
+    client_id: string;
+    final_price: number;
+    discount_applied: boolean;
+    discount_code_id: string | null;
+    comments: string | null;
+    completed: boolean;
+    total: number;
+    session_id: string;
+    tracking_id: string | null;
+    tracking_url: string | null;
+    shipping_status: string | null;
+    shipping_cost: number;
+    shipping_method: string | null;
+    payment_status: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+type OrderItem = {
+    item_id: string;
+    order_id: string;
+    product_name: string;
+    product_id: string;
+    variation_id: string;
+    quantity: number;
+};
+
+type OrderResponse = {
+    order: Order;
+    client: Client;
+    items: OrderItem[];
+};
+
+interface DiscountCode {
+    code_id: string;
+    code: string;
+    percentage: number;
+    active: boolean;
+    stripe_validated: boolean;
+    created_at: string;
+}
+
+export type OrderData = {
+    order_id: string;
+    created_at: string;
+    product_quantity: number;
+    final_price: number;
+    shipping_status: string;
+    shipping_method: string;
+    completed: boolean;
+};
+
+export const columns: ColumnDef<OrderData>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -46,35 +135,68 @@ export const columns: ColumnDef<Payment>[] = [
         enableSorting: false,
         enableHiding: false,
     },
+    // {
+    //     accessorKey: "created_at",
+    //     header: "Creada el",
+    // },
     {
-        accessorKey: "status",
-        header: "Status",
-    },
-    {
-        accessorKey: "email",
+        accessorKey: "created_at",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Email
+                    Creada el
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
     },
     {
-        accessorKey: "amount",
-        header: () => <div className="text-right">Amount</div>,
+        accessorKey: "shipping_status",
+        header: "Estado de envío",
+    },
+    {
+        accessorKey: "shipping_method",
+        header: "Método de envío",
+    },
+    {
+        accessorKey: "completed",
+        header: "Completada",
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"))
+            const completed = row.getValue("completed")
+
+            return (
+                <div className="flex items-center justify-center">
+                    {completed ? (
+                        <span className="sr-only">Completada</span>
+                    ) : (
+                        <span className="sr-only">No completada</span>
+                    )}
+                    <div
+                        className={`h-3 w-3 rounded-full ${completed ? "bg-green-500" : "bg-gray-300"
+                            }`}
+                    />
+                </div>
+            )
+        }
+    },
+    {
+        accessorKey: "product_quantity",
+        header: "Cantidad",
+    },
+    {
+        accessorKey: "final_price",
+        header: () => <div className="">Precio Final</div>,
+        cell: ({ row }) => {
+            const amount = parseFloat(row.getValue("final_price"))
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
             }).format(amount)
 
-            return <div className="text-right font-medium">{formatted}</div>
+            return <div className=" font-medium">{formatted}</div>
         },
     },
     {
@@ -93,7 +215,7 @@ export const columns: ColumnDef<Payment>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
+                            onClick={() => navigator.clipboard.writeText(payment.order_id)}
                         >
                             Copy payment ID
                         </DropdownMenuItem>

@@ -14,92 +14,39 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { Payment, columns } from "./columns"
+import { Payment, columns, OrderData } from "./columns"
 import { DataTable } from "./data-table"
 
 import { useSidebar } from "@/lib/AdminSidebarContext"
 
 export default function Orders() {
 
-    const [data, setData] = useState<Payment[]>([])
+    const [data, setData] = useState<OrderData[]>([])
 
     useEffect(() => {
-        const getData = async (): Promise<Payment[]> => {
+        const getData = async (): Promise<OrderData[]> => {
             try {
-                return [
-                    {
-                        id: "728ed52f",
-                        amount: 100,
-                        status: "pending",
-                        email: "m@example.com",
-                    },
-                    {
-                        id: "b1234fgh",
-                        amount: 250,
-                        status: "processing",
-                        email: "jane.doe@example.com",
-                    },
-                    {
-                        id: "c5678ijk",
-                        amount: 75,
-                        status: "failed",
-                        email: "john.smith@example.com",
-                    },
-                    {
-                        id: "d91011lmn",
-                        amount: 150,
-                        status: "success",
-                        email: "alice.wonderland@example.com",
-                    },
-                    {
-                        id: "e121314op",
-                        amount: 200,
-                        status: "pending",
-                        email: "charlie.brown@example.com",
-                    },
-                    {
-                        id: "f151617qr",
-                        amount: 300,
-                        status: "processing",
-                        email: "lucy.vanpelt@example.com",
-                    },
-                    {
-                        id: "g181920st",
-                        amount: 50,
-                        status: "failed",
-                        email: "linus.vanpelt@example.com",
-                    },
-                    {
-                        id: "h212223uv",
-                        amount: 400,
-                        status: "success",
-                        email: "snoopy@example.com",
-                    },
-                    {
-                        id: "i242526wx",
-                        amount: 125,
-                        status: "pending",
-                        email: "peppermint.patty@example.com",
-                    },
-                    {
-                        id: "j272829yz",
-                        amount: 175,
-                        status: "processing",
-                        email: "marcie@example.com",
-                    },
-                    {
-                        id: "k303132ab",
-                        amount: 225,
-                        status: "failed",
-                        email: "franklin@example.com",
-                    },
-                    {
-                        id: "l333435cd",
-                        amount: 275,
-                        status: "success",
-                        email: "pigpen@example.com",
-                    }
-                ];
+
+                // Fetch data from the API
+                const response = await fetch('/api/getAllOrders', {
+                    cache: 'no-store', // Ensure no caching
+                });
+
+                const rawData = await response.json();
+
+                // Format the data into OrderData type
+                const formattedData: OrderData[] = rawData.map((order: any) => ({
+                    order_id: order.order_id,
+                    created_at: order.created_at,
+                    product_quantity: parseInt(order.product_quantity, 10) || 0, // Handle potential NaN
+                    final_price: parseFloat(order.final_price) || 0, // Handle potential NaN
+                    shipping_status: order.shipping_status,
+                    shipping_method: order.shipping_method,
+                    completed: order.completed,
+                }));
+
+                return formattedData;
+
             } catch (error) {
                 console.error('Error checking stock:', error);
                 return []; // Return an empty array if there's an error
@@ -129,14 +76,14 @@ export default function Orders() {
                 <h1 className="text-2xl font-semibold">Orders</h1>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 rounded-full">
+                        <div className="h-8 w-8 rounded-full hover:cursor-pointer">
                             <img
                                 src="/logos/icon.png"
                                 alt="User"
-                                className="rounded-full"
+                                className="rounded-full hover:opacity-75"
                             />
                             <span className="sr-only">Toggle user menu</span>
-                        </Button>
+                        </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
