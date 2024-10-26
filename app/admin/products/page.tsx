@@ -181,7 +181,7 @@ export default function Products() {
                 {/* Products */}
                 <Table>
                     {searchValue ?
-                        <TableCaption>{filteredProducts.length} resultados para "{searchValue}"</TableCaption>
+                        <TableCaption>{filteredProducts.length} resultados para &quot;{searchValue}&quot;</TableCaption>
                         :
                         <TableCaption>{productsVariation.length} variaciones de producto</TableCaption>
                     }
