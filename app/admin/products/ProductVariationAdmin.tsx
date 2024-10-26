@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog"
 
 import { formatCurrency } from "@/lib/utils"
-import { ToastContainer, toast } from 'react-toastify';
 
 interface ProductVariation {
     product_name: string;
@@ -32,7 +31,12 @@ interface ProductVariation {
     stock_qty: number;
 }
 
-export default function ProductVariationAdmin(p: ProductVariation) {
+export default function ProductVariationAdmin({
+    onUpdateProductVariation,
+    ...p
+}: ProductVariation & {
+    onUpdateProductVariation: (updatedProduct: ProductVariation & { product_name: string }) => void;
+}) {
 
     const [isOpen, setIsOpen] = useState(false)
     const [price, setPrice] = useState(p.precio)
@@ -64,30 +68,12 @@ export default function ProductVariationAdmin(p: ProductVariation) {
             }
 
             const data = await response.json();
-            console.log('Updated variation:', data.variation);
+            onUpdateProductVariation({ ...p, precio: price, stock_qty: stock });
 
             // Close the modal and show a success toast
             setIsOpen(false);
-            toast.success("Producto actualizado", {
-                position: "bottom-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            })
         } catch (error) {
             console.error('Error updating variation:', error);
-            toast.error(`Ocurrió un error, intenta más tarde`, {
-                position: "bottom-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
         }
     };
 
