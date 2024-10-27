@@ -20,11 +20,20 @@ export async function GET(req: NextRequest) {
                 o.shipping_method,
                 o.completed,
                 o.tracking_id,
-                o.tracking_url
+                o.tracking_url,
+                c.name,
+                c.email,
+                c.phone,
+                c.address,
+                c.municipio,
+                c.city,
+                c.postal_code,
+                c.state,
+                c.country
             FROM orders o
             LEFT JOIN order_items oi ON oi.order_id = o.order_id
             LEFT JOIN clients c ON c.client_id = o.client_id
-            GROUP BY o.order_id
+            GROUP BY o.order_id, o.created_at, o.final_price, o.shipping_status, o.shipping_method, o.completed, o.tracking_id, o.tracking_url, c.name, c.email, c.phone, c.address, c.municipio, c.city, c.postal_code, c.state, c.country
             ORDER BY o.created_at DESC;
         `);
 

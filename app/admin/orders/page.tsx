@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSidebar } from "@/lib/AdminSidebarContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { count } from "console";
 
 export default function Orders() {
     const [allOrders, setAllOrders] = useState<OrderData[]>([]);
@@ -45,6 +46,15 @@ export default function Orders() {
                     completed: order.completed,
                     tracking_id: order.tracking_id,
                     tracking_url: order.tracking_url,
+                    name: order.name,
+                    email: order.email,
+                    phone: order.phone,
+                    address: order.address,
+                    municipio: order.municipio,
+                    city: order.city,
+                    postal_code: order.postal_code,
+                    state: order.state,
+                    country: order.country,
                 }));
 
                 setAllOrders(formattedData);

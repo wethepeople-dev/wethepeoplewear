@@ -3,6 +3,8 @@
 import { cn } from "@/lib/utils"
 import { BarChart3, LayoutDashboard, Settings, ShoppingCart, Users, Menu } from "lucide-react"
 
+import { use, useEffect, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -22,7 +24,38 @@ import {
 
 import { useSidebar } from "@/lib/AdminSidebarContext"
 
+import { formatCurrencyShort } from "@/lib/utils"
+
+type Statistic = {
+    totalSales: number;
+    totalClients: number;
+    totalOrders: number;
+    totalProductsSold: number;
+    topProducts: { product_name: string; total_sold: number }[];
+    productsSoldByWeek: { week: string; products_sold: number }[];
+}
+
 export default function AdminDashboard() {
+
+    const [stats, setStats] = useState<Statistic | null>(null);
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+
+                console.log(data);
+                setStats(data);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchData();
+    }, []);
 
     const { toggleSidebar } = useSidebar();
 
@@ -76,10 +109,10 @@ export default function AdminDashboard() {
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {/* Summary Cards */}
                     {[
-                        { title: "Total Revenue", value: "$54,321", description: "10% increase from last month" },
-                        { title: "Active Users", value: "12,345", description: "5% increase from last week" },
-                        { title: "New Orders", value: "234", description: "15% increase from yesterday" },
-                        { title: "Customer Satisfaction", value: "4.8/5", description: "Based on 1,234 reviews" },
+                        { title: "Ventas Totales", value: formatCurrencyShort(stats?.totalSales), description: "" },
+                        { title: "Productos Vendidos", value: stats?.totalProductsSold, description: "" },
+                        { title: "Órdenes Totales", value: stats?.totalOrders, description: "" },
+                        { title: "Clientes Totales", value: stats?.totalClients, description: "" },
                     ].map((card, index) => (
                         <Card key={index}>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -109,8 +142,8 @@ export default function AdminDashboard() {
                 <div className="mt-6 grid gap-6 md:grid-cols-2">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Recent Sales</CardTitle>
-                            <CardDescription>You made 265 sales this month.</CardDescription>
+                            <CardTitle>Ventas recientes</CardTitle>
+                            <CardDescription>Prodcutos vendidos por semana.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {/* Placeholder for a sales chart or table */}
@@ -119,8 +152,10 @@ export default function AdminDashboard() {
                     </Card>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Top Products</CardTitle>
-                            <CardDescription>Your best selling products this month.</CardDescription>
+                            <CardTitle>Productos más vendidos</CardTitle>
+                            <CardDescription>
+                                Los productos más vendidos del sitio.
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
                             {/* Placeholder for a product list or chart */}

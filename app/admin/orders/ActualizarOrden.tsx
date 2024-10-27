@@ -21,6 +21,15 @@ export type OrderData = {
     completed: boolean;
     tracking_id: string;
     tracking_url: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    municipio: string;
+    city: string;
+    postal_code: string;
+    state: string;
+    country: string;
 };
 
 export default function ActualizarOrden({

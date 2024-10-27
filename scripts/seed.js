@@ -8,15 +8,15 @@ async function seedData(client) {
 
         // Create the "discount_codes" table if it doesn't exist
         await client.sql`
-      CREATE TABLE IF NOT EXISTS discount_codes (
-        code_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        code VARCHAR(255) NOT NULL UNIQUE,
-        percentage INT NOT NULL,
-        active BOOLEAN NOT NULL,
-        stripe_validated BOOLEAN NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
+            CREATE TABLE IF NOT EXISTS discount_codes (
+                code_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+                code VARCHAR(255) NOT NULL UNIQUE,
+                percentage INT NOT NULL,
+                active BOOLEAN NOT NULL,
+                stripe_validated BOOLEAN NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            `;
         console.log(`Created "discount_codes" table`);
 
         // Array of sample discount codes

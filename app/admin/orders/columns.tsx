@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, ArrowUpDown } from "lucide-react"
+import { MoreHorizontal, ArrowUpDown, User, Mail, Phone, MapPin } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
@@ -17,6 +17,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
 const formatDate = (dateString: string) => {
     const date = new Date(dateString) // Parse the date from the string
@@ -43,6 +49,15 @@ export type OrderData = {
     completed: boolean;
     tracking_id: string;
     tracking_url: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    municipio: string;
+    city: string;
+    postal_code: string;
+    state: string;
+    country: string;
 };
 
 export const columns = (handleOrderUpdate: (order: OrderData) => void): ColumnDef<OrderData>[] => [
@@ -89,6 +104,46 @@ export const columns = (handleOrderUpdate: (order: OrderData) => void): ColumnDe
             const date: string = row.getValue("created_at")
             return <div>{formatDate(date)}</div>
         },
+    },
+    {
+        accessorKey: "name",
+        header: "Cliente",
+        cell: ({ row }) => {
+            const order = row.original; // Access the original row data
+
+            return (
+                <Popover>
+                    <PopoverTrigger>
+                        <div className="text-blue-800 underline hover:text-gray-600">{order.name}</div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full gap-2 grid">
+                        <div className="flex items-center space-x-4">
+                            <User className="h-5 w-5 text-gray-500" />
+                            <div className="font-normal">{order.name}</div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <Mail className="h-5 w-5 text-gray-500" />
+                            <div className="overflow-hidden">{order.email}</div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <Phone className="h-5 w-5 text-gray-500" />
+                            <div>{order.phone}</div>
+                        </div>
+                        {order.address && (
+                            <div className="grid gap-2">
+                                <div className="font-normal flex space-x-2">
+                                    <MapPin className="h-5 w-5 text-gray-500" />
+                                    <div className="pl-2 grid gap-1">
+                                        <div>{order.address}, {order.municipio} {order.postal_code}</div>
+                                        <div>{order.city}, {order.state}, {order.country}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </PopoverContent>
+                </Popover>
+            )
+        }
     },
     {
         accessorKey: "shipping_status",
@@ -171,19 +226,15 @@ export const columns = (handleOrderUpdate: (order: OrderData) => void): ColumnDe
                         </DropdownMenuItem>
                         <DropdownMenuSeparator /> */}
 
-                        <DropdownMenuItem onClick={() => console.log('ver cliente')} className="hover:cursor-pointer">
-                            Ver cliente
-                        </DropdownMenuItem>
-
                         <DropdownMenuItem>
-                            <Link href={`/admin/orders/${order.order_id}`}>
+                            <Link href={`/admin/orders/${order.order_id}`} className="w-full">
                                 Ver Detalle
                             </Link>
                         </DropdownMenuItem>
 
                         {order.tracking_url && (
                             <DropdownMenuItem className="hover:cursor-pointer">
-                                <Link href={`${order.tracking_url}`} target="blank">
+                                <Link href={`${order.tracking_url}`} target="blank" className="w-full">
                                     Ver seguimiento
                                 </Link>
                             </DropdownMenuItem>

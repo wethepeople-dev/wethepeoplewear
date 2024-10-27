@@ -33,6 +33,10 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
+import { TableProperties } from "lucide-react"
+
+import { DataTablePagination } from "./data-table-pagination";
+
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
@@ -74,29 +78,34 @@ export function DataTable<TData, TValue>({
 
                 {/* search input */}
                 <Input
-                    placeholder="Filter shipping method..."
-                    value={(table.getColumn("shipping_method")?.getFilterValue() as string) ?? ""}
+                    placeholder="Filtrar cliente..."
+                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("shipping_method")?.setFilterValue(event.target.value)
+                        table.getColumn("name")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
 
                 {/* selected row count */}
-                {Object.keys(rowSelection).length > 0 && (
+                {/* {Object.keys(rowSelection).length > 0 && (
                     <>
                         <div className="flex-1 text-sm text-muted-foreground pr-4 text-end">
                             {table.getFilteredSelectedRowModel().rows.length} of{" "}
                             {table.getFilteredRowModel().rows.length} row(s) selected.
                         </div>
                     </>
-                )}
+                )} */}
 
                 {/* columns dropdown */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Columns
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="ml-auto hidden h-8 lg:flex"
+                        >
+                            <TableProperties className="mr-2 h-4 w-4" />
+                            View
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -177,7 +186,7 @@ export function DataTable<TData, TValue>({
             </div>
 
             {/* pagination buttons */}
-            <div className="flex items-center justify-end space-x-2 py-4">
+            {/* <div className="flex items-center justify-end space-x-2 py-4">
                 <Button
                     variant="outline"
                     size="sm"
@@ -194,6 +203,10 @@ export function DataTable<TData, TValue>({
                 >
                     Next
                 </Button>
+            </div> */}
+
+            <div className="items-center space-x-2 py-4">
+                <DataTablePagination table={table} />
             </div>
 
         </div>
