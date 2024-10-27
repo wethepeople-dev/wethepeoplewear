@@ -4,8 +4,6 @@ import React from "react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-// import { productos } from "./data/productos";
-import Script from 'next/script';
 
 import Navbar from "@/components/Navbar";
 
@@ -13,7 +11,6 @@ import Autoplay from "embla-carousel-autoplay"
 import { type CarouselApi } from "@/components/ui/carousel"
 import { InstagramEmbed } from 'react-social-media-embed';
 
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Carousel,
   CarouselContent,
@@ -480,10 +477,9 @@ export default function Home() {
       </section>
 
       {/* SOCIAL MEDIA FEED */}
-      <div className="relative py-10 pt-14">
+      {/* <div className="relative py-10 pt-14">
         <div className="flex flex-wrap w-full">
 
-          {/* texto */}
           <div className="w-full px-10 md:px-20 mx-auto text-center lg:text-left lg:w-6/12 lg:flex lg:items-center">
             <div className="hero-content">
               <h1 className="mb-6 lg:text-7xl md:text-5xl text-4xl font-bold tracking-tight">
@@ -496,7 +492,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* embed */}
           <div className="w-full px-4 py-10 lg:w-6/12 mx-auto text-center justify-center flex flex-row gap-4">
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -513,7 +508,7 @@ export default function Home() {
 
 
         </div>
-      </div>
+      </div> */}
 
       {/* FOOTER */}
       <Footer />
