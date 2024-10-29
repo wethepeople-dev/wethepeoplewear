@@ -292,7 +292,7 @@ export default function Blogs() {
                                                     <p className="text-sm text-muted-foreground">
                                                         Talla: {currVariation?.talla}, Color: {currVariation?.color}
                                                     </p>
-                                                    <p className="text-sm">Quantity: {product.quantity}</p>
+                                                    <p className="text-sm">Cantidad: {product.quantity}</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="font-semibold">${currVariation?.precio}</p>

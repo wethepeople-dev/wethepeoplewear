@@ -177,7 +177,7 @@ export default function Products() {
             <div className="container mx-auto p-4 lg:p-8">
 
                 {/* search input */}
-                <div className="flex flex-row items-center py-4">
+                <div className="flex flex-row items-center pb-4">
                     <div className="flex flex-row w-full items-center">
                         <Search className="h-6 w-6 mr-3" />
                         <Input
