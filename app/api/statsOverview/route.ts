@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
                 oi.variation_id
             FROM orders o
             JOIN order_items oi ON o.order_id = oi.order_id
-            WHERE o.created_at >= CURRENT_DATE - INTERVAL '7 days'`
+            WHERE o.created_at >= CURRENT_DATE - INTERVAL '10 days'`
         );
         const productsSoldByDay = productsSoldByDayResult.rows;
 

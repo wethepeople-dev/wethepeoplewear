@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { Menu } from "lucide-react"
 
+import { format, subDays } from 'date-fns';
+
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -77,6 +79,19 @@ const formatDate = (dateString: string) => {
     return formatter.format(date)
 }
 
+// Helper function to generate the past 10 days
+const generatePast10Days = (): string[] => {
+    const days = [];
+    const today = new Date();
+
+    for (let i = 0; i < 10; i++) {
+        const date = subDays(today, i);
+        days.unshift(format(date, 'd MMM').toLowerCase()); // Format as "day month" (e.g., "2 nov")
+    }
+
+    return days;
+};
+
 // Function to group products by day
 const groupProductsByDay = (orders: Order[]): GroupedProducts[] => {
     const grouped: Record<string, number> = {};
@@ -86,15 +101,18 @@ const groupProductsByDay = (orders: Order[]): GroupedProducts[] => {
 
         // Increment the product sold count for the specific date
         if (!grouped[formattedDate]) {
-            grouped[formattedDate] = 0; // Initialize if it doesn't exist
+            grouped[formattedDate] = 0;
         }
         grouped[formattedDate] += order.quantity;
     });
 
-    // Convert the grouped record to an array of objects
-    return Object.entries(grouped).map(([day, products_sold]) => ({
+    // Generate past 10 days, including days without sales
+    const past10Days = generatePast10Days();
+
+    // Map past 10 days with grouped data or 0 if no sales
+    return past10Days.map(day => ({
         day,
-        products_sold,
+        products_sold: grouped[day] || 0,
     }));
 };
 
@@ -118,6 +136,7 @@ export default function AdminDashboard() {
 
                 // Set sold products
                 const groupedProducts = groupProductsByDay(data.productsSoldByDay);
+                console.log(groupedProducts);
                 setSoldProducts(groupedProducts);
 
             }
