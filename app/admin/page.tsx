@@ -41,6 +41,7 @@ const chartConfig = {
 
 import { useSidebar } from "@/lib/AdminSidebarContext"
 import { formatCurrencyShort } from "@/lib/utils"
+import AdminTopBar from "@/components/AdminTopBar";
 
 export type Statistic = {
     // orders
@@ -129,14 +130,11 @@ export default function AdminDashboard() {
                 const response = await fetch('/api/statsOverview');
                 const data = await response.json();
 
-                console.log(data);
-
                 // Set stats
                 setStats(data);
 
                 // Set sold products
                 const groupedProducts = groupProductsByDay(data.productsSoldByDay);
-                console.log(groupedProducts);
                 setSoldProducts(groupedProducts);
 
             }
@@ -154,46 +152,7 @@ export default function AdminDashboard() {
         <main className="flex min-h-screen flex-col">
 
             {/* Top Bar */}
-            <header className="flex h-16 items-center justify-between border-b bg-white px-4 lg:px-6">
-
-                {/* sidebar toggle */}
-                <Button
-                    variant="ghost"
-                    className="lg:hidden"
-                    onClick={toggleSidebar}
-                >
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Toggle Sidebar</span>
-                </Button>
-
-                {/* title */}
-                <h1 className="text-2xl font-semibold">Overview</h1>
-
-                {/* user menu */}
-                <DropdownMenu>
-
-                    <DropdownMenuTrigger asChild>
-                        <div className="h-8 w-8 rounded-full hover:cursor-pointer">
-                            <img
-                                src="/logos/icon.png"
-                                alt="User"
-                                className="rounded-full hover:opacity-75"
-                            />
-                            <span className="sr-only">Toggle user menu</span>
-                        </div>
-                    </DropdownMenuTrigger>
-
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Settings</DropdownMenuItem>
-                        <DropdownMenuItem>Logout</DropdownMenuItem>
-                    </DropdownMenuContent>
-
-                </DropdownMenu>
-
-            </header>
+            <AdminTopBar title='Overview' />
 
             {stats !== null ?
 
@@ -286,7 +245,7 @@ export default function AdminDashboard() {
                             <Card className="col-span-4">
                                 <CardHeader>
                                     <CardTitle>Productos vendidos</CardTitle>
-                                    <CardDescription>Productos vendidos los últimos 7 días</CardDescription>
+                                    <CardDescription>Productos vendidos los últimos 10 días</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <Skeleton className="h-20" />
@@ -363,7 +322,7 @@ export default function AdminDashboard() {
                                                 <p className="text-sm font-medium leading-none">{sale.name}</p>
                                                 <p className="text-sm text-muted-foreground">{sale.email}</p>
                                             </div>
-                                            <div className="ml-auto font-medium">+{formatCurrencyShort(sale.final_price)}</div>
+                                            <div className="ml-auto font-medium text-green-500">+{formatCurrencyShort(sale.final_price)}</div>
                                         </div>
                                     ))}
                                 </div>
