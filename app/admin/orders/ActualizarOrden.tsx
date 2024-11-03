@@ -39,7 +39,6 @@ export default function ActualizarOrden({
     onUpdateOrder: (updatedOrder: OrderData) => void;
 }) {
 
-    const [open, setOpen] = useState(false)
     const [saving, setSaving] = useState(false)
     const [formData, setFormData] = useState({
         status: order.shipping_status,

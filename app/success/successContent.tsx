@@ -333,7 +333,7 @@ const SuccessContent = () => {
             <div className='container lg:w-5/6 py-6'>
                 <PurchaseOrderAlert
                     status={order.order.shipping_status == 'processing' ? 'processing' : order.order.shipping_status == 'delivered' ? 'delivered' : order.order.shipping_status == 'completed' ? 'completed' : 'processing'}
-                    trackingUrl={order.order.tracking_url ? '' : ''}
+                    trackingUrl={order.order.tracking_url ? order.order.tracking_url : ''}
                 />
             </div>
 
