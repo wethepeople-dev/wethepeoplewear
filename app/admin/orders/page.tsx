@@ -37,6 +37,7 @@ export default function Orders() {
                     completed: order.completed,
                     tracking_id: order.tracking_id,
                     tracking_url: order.tracking_url,
+                    delivery_email_sent: order.delivery_email_sent,
                     name: order.name,
                     email: order.email,
                     phone: order.phone,
@@ -90,7 +91,7 @@ export default function Orders() {
                         <ToastContainer />
 
                         <Tabs defaultValue="activas">
-                            <TabsList className="grid grid-cols-2 w-[400px] border bg-gray-200 h-11">
+                            <TabsList className="grid grid-cols-2 w-[400px] border bg-gray-200 h-11 mx-auto lg:mx-0">
                                 <TabsTrigger value="activas">Sin completar</TabsTrigger>
                                 <TabsTrigger value="completadas">Completadas</TabsTrigger>
                             </TabsList>

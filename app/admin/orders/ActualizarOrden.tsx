@@ -9,7 +9,9 @@ import { Switch } from "@/components/ui/switch"
 import { Pencil } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { set } from "react-hook-form"
+
+import { AlertCircle, XCircle, X } from 'lucide-react'
+import { Alert } from "@/components/ui/alert"
 
 export type OrderData = {
     order_id: string;
@@ -21,6 +23,7 @@ export type OrderData = {
     completed: boolean;
     tracking_id: string;
     tracking_url: string;
+    delivery_email_sent: boolean;
     name: string;
     email: string;
     phone: string;
@@ -49,7 +52,6 @@ export default function ActualizarOrden({
 
     const handleChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({ ...prev, [field]: value }))
-        console.log(formData)
     }
 
     const editOrder = async () => {
@@ -105,7 +107,37 @@ export default function ActualizarOrden({
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-4 py-4">
+                    <div className="grid gap-4 pb-4">
+
+                        {order.delivery_email_sent ? (
+                            <Alert className={`bg-yellow-50 border-yellow-200 text-yellow-800 py-3 px-4`}>
+                                <div className="flex items-center space-x-3">
+                                    <AlertCircle className="h-8 w-8" />
+                                    <p className="text-sm font-medium">El correo de este pedido ya fue enviado.<br />Marca como <strong>&quot;Completed&quot;</strong> solo si el cliente ya recibió su paquete.</p>
+                                </div>
+                                {/* <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setIsVisible(false)}
+                                        className="text-gray-400 hover:text-gray-500 flex-shrink-0 ml-3 h-6 w-6"
+                                        aria-label="Dismiss"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button> */}
+                            </Alert>
+                        )
+                            :
+                            <>
+                                <Alert className={`bg-gray-50 border-gray-200 text-gray-800 py-3 px-4`}>
+                                    <div className="flex items-center space-x-3">
+                                        <AlertCircle className="h-8 w-8" />
+                                        <p className="text-sm font-medium">
+                                            Este es un pedido tipo <strong>&quot;{order.shipping_method}&quot;</strong><br />Para que el correo sea enviado se debe marcar estatus como &quot;Delivered&quot;{order.shipping_method != 'collectif' ? ` y haber proporcionado un Tracking URL` : ''}.
+                                        </p>
+                                    </div>
+                                </Alert>
+                            </>
+                        }
 
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="status" className="text-right">

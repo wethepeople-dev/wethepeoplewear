@@ -186,6 +186,7 @@ async function seedData(client) {
                 product_color VARCHAR(255),  -- Optional: For logging product colors (useful for 'add_to_cart' and 'purchase_completed')
                 quantity INT,  -- Optional: For tracking the quantity of products (useful for 'purchase_completed')
                 total_amount DECIMAL(10, 2),  -- Optional: For tracking total spent (applies to 'purchase_completed')
+                variation_id UUID,  -- Optional: For tracking specific product variation
                 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Log the time of the action
             );
         `;

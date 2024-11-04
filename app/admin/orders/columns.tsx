@@ -49,6 +49,7 @@ export type OrderData = {
     completed: boolean;
     tracking_id: string;
     tracking_url: string;
+    delivery_email_sent: boolean;
     name: string;
     email: string;
     phone: string;

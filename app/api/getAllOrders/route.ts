@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
                 o.completed,
                 o.tracking_id,
                 o.tracking_url,
+                o.delivery_email_sent,
                 c.name,
                 c.email,
                 c.phone,

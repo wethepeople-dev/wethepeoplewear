@@ -257,7 +257,7 @@ export default function AdminDashboard() {
                             <Card className="col-span-4">
                                 <CardHeader>
                                     <CardTitle>Productos vendidos</CardTitle>
-                                    <CardDescription>Productos vendidos los últimos 7 días</CardDescription>
+                                    <CardDescription>Productos vendidos los últimos 10 días</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <ChartContainer config={chartConfig}>
@@ -309,10 +309,10 @@ export default function AdminDashboard() {
                         }
 
                         {/* ventas recientes */}
-                        <Card className="col-span-3">
+                        <Card className="col-span-4 xl:col-span-3">
                             <CardHeader>
                                 <CardTitle>Últimas ventas</CardTitle>
-                                <CardDescription>{stats?.monthlyStats.totalOrders} en el último més</CardDescription>
+                                <CardDescription>{stats?.monthlyStats.totalOrders} en el último mes</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-8">

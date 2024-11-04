@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -8,11 +8,8 @@ import Navbar from "@/components/Navbar";
 import Modal from '@/components/Modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { useCart } from '@/lib/CartContext';
 import { formatCurrency } from '@/lib/utils';
-import { set } from 'react-hook-form';
-import { cn } from '@/lib/utils';
 
 interface ProductVariation {
     variation_id: string;
@@ -37,6 +34,7 @@ interface Product {
 
 export default function SingleProduct({ params }: { params: { id: string } }) {
 
+    const { addToCart, hasViewedProduct, addProductView } = useCart();
     const id = params.id;
     const [producto, setProducto] = useState<Product | null>(null);
     const [productoCargado, setProductoCargado] = useState<Boolean>(false);
@@ -50,6 +48,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
     const [cantidad, setCantidad] = useState<number>(1);
     const [warning, setWarning] = useState<Boolean>(false);
     const [imageCart, setImageCart] = useState<string>('');
+    const [idRetrieved, setIdRetrieved] = useState<Boolean>(false);
 
     const increment = () => setCantidad(cantidad + 1);
     const decrement = () => setCantidad(cantidad - 1);
@@ -85,7 +84,29 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
         };
 
         fetchProduct();
+        setIdRetrieved(true);
     }, [id]);
+
+    useEffect(() => {
+        if (params.id && idRetrieved) { // Verificar que el id esté disponible
+            const logProductView = async () => {
+                console.log('Sending log');
+                const response = await fetch('/api/logProductView', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ product_id: params.id }),
+                });
+            };
+
+            if (!hasViewedProduct(params.id)) {
+                console.log('Adding product view');
+                addProductView(params.id);
+                logProductView();
+            } else {
+                console.log('Already viewed');
+            }
+        }
+    }, [idRetrieved]);
 
     const handleColorChange = (color: string) => {
         setColorSeleccionado(color);
@@ -116,8 +137,6 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
         setImagenSeleccionada(image);
     };
 
-    const { addToCart } = useCart();
-
     const handleAddToCart = () => {
         if (!colorSeleccionado || !tallaSeleccionada) {
             setWarning(true);
@@ -136,6 +155,22 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
                 variation_id: currVariation?.variation_id ?? '',
             }
         });
+
+        try {
+            fetch('/api/logAddToCart', {
+                method: 'POST',
+                body: JSON.stringify({
+                    product_id: id,
+                    size: tallaSeleccionada,
+                    color: colorSeleccionado,
+                    quantity: cantidad,
+                    variation_id: currVariation?.variation_id,
+                }),
+            });
+        } catch (error) {
+            console.error('Error logging add to cart:', error);
+        }
+
         toast.success('Producto agregado exitosamente', {
             position: "bottom-right",
             autoClose: 3000,

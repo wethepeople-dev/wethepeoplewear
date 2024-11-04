@@ -18,6 +18,7 @@ export interface CartItem {
 }
 
 interface CartContextType {
+    // cart
     cart: CartItem[];
     addToCart: (item: CartItem) => void;
     getCartQuantity: () => number;
@@ -26,16 +27,23 @@ interface CartContextType {
     editCartItem: (productId: string, talla: string, color: string, changes: Partial<CartItem>) => void;
     removeCartItem: (productId: string, talla: string, color: string) => void;
     getTotal: () => number;
+    // product views
+    productViews: string[];  // Track viewed products
+    hasViewedProduct: (productId: string) => boolean;
+    addProductView: (productId: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [cart, setCart] = useState<CartItem[]>([]);
+    const [productViews, setProductViews] = useState<string[]>([]);
 
     useEffect(() => {
         const loadedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const loadedProductViews = JSON.parse(localStorage.getItem('productViews') || '[]');
         setCart(loadedCart);
+        setProductViews(loadedProductViews);
     }, []);
 
     const addToCart = (item: CartItem) => {
@@ -91,8 +99,23 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return cart.reduce((acc, item) => acc + item.cantidad * item.variacion.precio, 0);
     }
 
+    const hasViewedProduct = (productId: string) => {
+        return productViews.includes(productId);
+    };
+
+    const addProductView = (productId: string) => {
+        if (!hasViewedProduct(productId)) {
+            const updatedProductViews = [...productViews, productId];
+            setProductViews(updatedProductViews);
+            localStorage.setItem('productViews', JSON.stringify(updatedProductViews));
+        }
+    };
+
     return (
-        <CartContext.Provider value={{ cart, addToCart, getCartQuantity, getCart, emptyCart, editCartItem, removeCartItem, getTotal }}>
+        <CartContext.Provider value={{
+            cart, addToCart, getCartQuantity, getCart, emptyCart, editCartItem,
+            removeCartItem, getTotal, productViews, hasViewedProduct, addProductView
+        }}>
             {children}
         </CartContext.Provider>
     );
