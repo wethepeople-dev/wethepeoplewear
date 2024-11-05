@@ -61,12 +61,12 @@ interface DiscountCode {
 
 const shippingOptions = [
     {
-        id: 'shr_1QCd2Z06GvttNHxde76R6bnb',
+        id: 'shr_1QHuxw06GvttNHxdc6MS3BBL',
         name: 'Envíos locales',
         price: 60,
     },
     {
-        id: 'shr_1QCd3d06GvttNHxdNBL5g2YX',
+        id: 'shr_1QHuyN06GvttNHxdv3PFRvz6',
         name: 'Envíos nacionales',
         price: 150,
     },
@@ -262,7 +262,7 @@ export default function Carrito() {
                 shipping_status: 'processing',
                 shipping_method: tipoEnvio,
                 shipping_cost: tipoEnvio == 'local' ? 60 : tipoEnvio == 'nacional' ? 150 : 0,
-                shipment_cost_id: tipoEnvio == 'local' ? 'shr_1QCd2Z06GvttNHxde76R6bnb' : tipoEnvio == 'nacional' ? 'shr_1QCd3d06GvttNHxdNBL5g2YX' : '',
+                shipment_cost_id: tipoEnvio == 'local' ? 'shr_1QHuxw06GvttNHxdc6MS3BBL' : tipoEnvio == 'nacional' ? 'shr_1QHuyN06GvttNHxdv3PFRvz6' : '',
                 comments,
                 discount,
                 discountObject,
