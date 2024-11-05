@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
 
         // Fetching latest 5 sales
         const latestSalesResult = await client.query(
-            `SELECT c.name, c.email, o.final_price 
+            `SELECT c.name, c.email, o.final_price, o.shipping_status
              FROM orders o
              JOIN clients c ON o.client_id = c.client_id
              ORDER BY o.created_at DESC 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Menu } from "lucide-react"
 
 import { format, subDays } from 'date-fns';
+import { Badge } from "@/components/ui/badge"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -52,7 +53,7 @@ export type Statistic = {
     totalProductsSold: number;
     productsSoldByDay: Order[];
     // new stats
-    latestSales: { name: string, email: string, final_price: number }[];
+    latestSales: { name: string, email: string, final_price: number, shipping_status: string }[];
     monthlyStats: { totalRevenue: number; totalOrders: number; totalProductsSold: number };
     // alerts
     alerts: { processingOrders: number; deliveredOrders: number; outOfStockVariations: number; lowStockProducts: number };
@@ -129,6 +130,7 @@ export default function AdminDashboard() {
             try {
                 const response = await fetch('/api/statsOverview');
                 const data = await response.json();
+                console.log(data);
 
                 // Set stats
                 setStats(data);
@@ -319,7 +321,12 @@ export default function AdminDashboard() {
                                     {stats?.latestSales.map((sale, index) => (
                                         <div key={index} className="flex items-center">
                                             <div className="space-y-1">
-                                                <p className="text-sm font-medium leading-none">{sale.name}</p>
+                                                <p className="text-sm font-medium leading-none">
+                                                    {sale.name}
+                                                    <Badge className={`${sale.shipping_status == 'processing' ? 'bg-gray-400' : sale.shipping_status == 'delivered' ? 'bg-yellow-500' : sale.shipping_status == 'completed' ? 'bg-green-500' : 'text-black'} ml-2 text-xs rounded-md`}>
+                                                        {(sale.shipping_status as string).toUpperCase()}
+                                                    </Badge>
+                                                </p>
                                                 <p className="text-sm text-muted-foreground">{sale.email}</p>
                                             </div>
                                             <div className="ml-auto font-medium text-green-500">+{formatCurrencyShort(sale.final_price)}</div>

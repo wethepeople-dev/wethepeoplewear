@@ -84,6 +84,8 @@ export async function GET(req: NextRequest) {
         );
         const topStates = topStatesResult.rows;
 
+        const topStatesNotNull = topStates.filter(state => state.state !== null);
+
         // 10. Customer Acquisition Over Time
         const customerAcquisitionResult = await client.query(
             `SELECT DATE_TRUNC('month', created_at) AS month, COUNT(client_id) AS new_clients
@@ -92,25 +94,6 @@ export async function GET(req: NextRequest) {
              ORDER BY month`
         );
         const customerAcquisition = customerAcquisitionResult.rows;
-
-        // 11. Top Purchasing Times
-        const purchasingTimesResult = await client.query(
-            `SELECT DATE_PART('hour', created_at) AS hour, COUNT(order_id) AS order_count
-             FROM orders
-             GROUP BY hour
-             ORDER BY order_count DESC`
-        );
-        const purchasingTimes = purchasingTimesResult.rows;
-
-        // 12. Best-Selling Variations
-        const bestSellingVariationsResult = await client.query(
-            `SELECT pv.color, pv.talla, SUM(oi.quantity) AS total_sold
-             FROM order_items oi
-             JOIN product_variations pv ON oi.variation_id = pv.variation_id
-             GROUP BY pv.color, pv.talla
-             ORDER BY total_sold DESC`
-        );
-        const bestSellingVariations = bestSellingVariationsResult.rows;
 
         // Fetching latest 5 sales
         const latestSalesResult = await client.query(
@@ -155,27 +138,62 @@ export async function GET(req: NextRequest) {
             totalProductsSoldMonthly
         };
 
+        // Top Sizes Bought
+        const topSizesResult = await client.query(
+            `SELECT pv.talla AS size, SUM(oi.quantity) AS total_sold
+             FROM order_items oi
+             JOIN product_variations pv ON oi.variation_id = pv.variation_id
+             GROUP BY pv.talla
+             ORDER BY total_sold DESC
+             LIMIT 5`
+        );
+        const topSizes = topSizesResult.rows;
+
+        // Top Colors Bought
+        const topColorsResult = await client.query(
+            `SELECT pv.color AS color, SUM(oi.quantity) AS total_sold
+             FROM order_items oi
+             JOIN product_variations pv ON oi.variation_id = pv.variation_id
+             GROUP BY pv.color
+             ORDER BY total_sold DESC
+             LIMIT 5`
+        );
+        const topColors = topColorsResult.rows;
+
+        // Orders by Shipping Status
+        const ordersByShippingStatusResult = await client.query(
+            `SELECT shipping_status, COUNT(order_id) AS count
+             FROM orders
+             WHERE shipping_status IN ('local', 'nacional', 'collectif')
+             GROUP BY shipping_status`
+        );
+        const ordersByShippingStatus = ordersByShippingStatusResult.rows.reduce((acc, row) => {
+            acc[row.shipping_status] = row.count;
+            return acc;
+        }, { local: 0, nacional: 0, collectif: 0 });
+
 
         // Compile all stats into a single response object
         const statistics = {
             totalSales,
-            totalClients,
+            // totalClients,
             totalOrders,
             totalProductsSold,
             topProducts,
             productsSoldByDay,
             avgOrderValue,
             discountUsage,
-            topStates,
+            topStates: topStatesNotNull,
             customerAcquisition,
-            purchasingTimes,
-            bestSellingVariations,
             latestSales,
             monthlyStats: {
                 totalRevenue: monthlyStats.totalRevenueMonthly,
                 totalOrders: monthlyStats.totalOrdersMonthly,
                 totalProductsSold: monthlyStats.totalProductsSoldMonthly,
-            }
+            },
+            topSizes,
+            topColors,
+            ordersByShippingStatus,
         };
 
         return NextResponse.json(statistics);
