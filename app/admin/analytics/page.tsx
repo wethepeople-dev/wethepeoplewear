@@ -12,7 +12,6 @@ import { TrendingUp } from "lucide-react"
 import { CartesianGrid, LabelList } from "recharts"
 
 //
-export const description = "A bar chart with a custom label"
 const chartData = [
     { month: "January", desktop: 186, mobile: 80 },
     { month: "February", desktop: 305, mobile: 200 },
@@ -33,7 +32,6 @@ const chartConfig = {
 } satisfies ChartConfig
 
 // 
-export const description2 = "A bar chart with a label"
 const chartData2 = [
     { month: "January", desktop: 186 },
     { month: "February", desktop: 305 },
