@@ -85,7 +85,7 @@ export default function Footer() {
                         </a>
 
                         {/* email */}
-                        <a href="mailto:hola@wethepeoplewear.com.mx" className="text-gray-500 hover:text-white border rounded-full bg-gray-300 focus:ring-2 focus:ring-slate-100 p-2 ms-3">
+                        <a href="mailto:wethepeople.wear.mx@gmail.com" className="text-gray-500 hover:text-white border rounded-full bg-gray-300 focus:ring-2 focus:ring-slate-100 p-2 ms-3">
                             <svg width="17" height="17" fill="currentColor" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                                 <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />

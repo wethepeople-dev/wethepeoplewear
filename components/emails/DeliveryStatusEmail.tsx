@@ -135,7 +135,7 @@ export const DeliveryStatusEmail = ({
                     {/* Footer Section */}
                     <Section style={{ textAlign: 'center', marginTop: '20px' }}>
                         <Text style={{ fontSize: '12px', color: '#666' }}>
-                            Contáctanos: <a href="mailto:hola@wethepeoplewear.com.mx">hola@wethepeoplewear.com.mx</a>
+                            Contáctanos: <a href="mailto:wethepeople.wear.mx@gmail.com">wethepeople.wear.mx@gmail.com</a>
                         </Text>
                         <Text style={{ fontSize: '12px', color: '#666' }}>
                             Síguenos en:

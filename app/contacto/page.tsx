@@ -24,7 +24,7 @@ const faqs = [
     },
     {
         title: "¿Cómo puedo rastrear mi pedido?",
-        desc: "Una vez que tu pedido haya sido confirmado, crearemos tu guía y recibirás un correo con la información de seguimiento de tu pedido. Si no recibiste el correo, por favor contáctanos a nuestro correo (hola@wethepeoplewear.com.mx) o redes sociales (@wethepeople.wear).",
+        desc: "Una vez que tu pedido haya sido confirmado, crearemos tu guía y recibirás un correo con la información de seguimiento de tu pedido. Si no recibiste el correo, por favor contáctanos a nuestro correo (wethepeople.wear.mx@gmail.com) o redes sociales (@wethepeople.wear).",
     },
     {
         title: "¿Cómo lavo mi T-Shirt?",
@@ -119,9 +119,9 @@ export default function Contacto() {
                                                     data-original="#000000" />
                                             </svg>
                                         </div>
-                                        <a href="mailto:hola@wethepeoplewear.com.mx" className="text-[#007bff] text-sm ml-4">
+                                        <a href="mailto:wethepeople.wear.mx@gmail.com" className="text-[#007bff] text-sm ml-4">
                                             <small className="block">Mail</small>
-                                            <strong>hola@wethepeoplewear.com.mx</strong>
+                                            <strong>wethepeople.wear.mx@gmail.com</strong>
                                         </a>
                                     </li>
                                 </ul>
