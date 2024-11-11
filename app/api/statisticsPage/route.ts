@@ -8,31 +8,31 @@ export async function GET(req: NextRequest) {
     const client = await sql.connect();
 
     try {
-        // 1. Total sales
+        // Total sales
         const totalSalesResult = await client.query(
             'SELECT COALESCE(SUM(final_price), 0) AS total_sales FROM orders'
         );
         const totalSales = totalSalesResult.rows[0].total_sales;
 
-        // 2. Total clients
+        // Total clients
         const totalClientsResult = await client.query(
             'SELECT COUNT(*) AS total_clients FROM clients'
         );
         const totalClients = totalClientsResult.rows[0].total_clients;
 
-        // 3. Total orders
+        // Total orders
         const totalOrdersResult = await client.query(
             'SELECT COUNT(*) AS total_orders FROM orders'
         );
         const totalOrders = totalOrdersResult.rows[0].total_orders;
 
-        // 4. Total products sold
+        // Total products sold
         const totalProductsSoldResult = await client.query(
             'SELECT COALESCE(SUM(quantity), 0) AS total_products_sold FROM order_items'
         );
         const totalProductsSold = totalProductsSoldResult.rows[0].total_products_sold;
 
-        // 5. Top products
+        // Top products
         const topProductsResult = await client.query(
             `SELECT product_name, SUM(quantity) AS total_sold 
              FROM order_items 
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
         );
         const topProducts = topProductsResult.rows;
 
-        // 6. Products sold by day
+        // Products sold by day
         const productsSoldByDayResult = await client.query(
             `SELECT 
                 o.order_id,
@@ -59,13 +59,13 @@ export async function GET(req: NextRequest) {
         );
         const productsSoldByDay = productsSoldByDayResult.rows;
 
-        // 7. Average Order Value
+        // Average Order Value
         const avgOrderValueResult = await client.query(
             'SELECT AVG(final_price) AS avg_order_value FROM orders'
         );
         const avgOrderValue = avgOrderValueResult.rows[0].avg_order_value || 0;
 
-        // 8. Discount Usage Trends
+        // Discount Usage Trends
         const discountUsageResult = await client.query(
             `SELECT 
                 COUNT(CASE WHEN discount_applied = true THEN 1 END) AS with_discount,
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
         );
         const discountUsage = discountUsageResult.rows[0];
 
-        // 9. Top States by Sales
+        // Top States by Sales
         const topStatesResult = await client.query(
             `SELECT c.state, COUNT(o.order_id) AS order_count
              FROM clients c
@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
 
         const topStatesNotNull = topStates.filter(state => state.state !== null);
 
-        // 10. Customer Acquisition Over Time
+        // Customer Acquisition Over Time
         const customerAcquisitionResult = await client.query(
             `SELECT DATE_TRUNC('month', created_at) AS month, COUNT(client_id) AS new_clients
              FROM clients
@@ -145,7 +145,7 @@ export async function GET(req: NextRequest) {
              JOIN product_variations pv ON oi.variation_id = pv.variation_id
              GROUP BY pv.talla
              ORDER BY total_sold DESC
-             LIMIT 5`
+             LIMIT 10`
         );
         const topSizes = topSizesResult.rows;
 
@@ -156,7 +156,7 @@ export async function GET(req: NextRequest) {
              JOIN product_variations pv ON oi.variation_id = pv.variation_id
              GROUP BY pv.color
              ORDER BY total_sold DESC
-             LIMIT 5`
+             LIMIT 10`
         );
         const topColors = topColorsResult.rows;
 
@@ -171,6 +171,31 @@ export async function GET(req: NextRequest) {
             acc[row.shipping_status] = row.count;
             return acc;
         }, { local: 0, nacional: 0, collectif: 0 });
+
+        // Most Viewed Products: Count of product views by product_id
+        const mostViewedProductsResult = await client.query(
+            `SELECT entity_id AS product_id, COUNT(entity_id) AS views
+             FROM logs
+             WHERE action_type = 'product_view'
+             GROUP BY entity_id
+             ORDER BY views DESC`
+        );
+        const mostViewedProducts = mostViewedProductsResult.rows;
+
+        // Most Added to Cart Variations: Count of add-to-cart actions by variation_id
+        const mostAddedToCartProductsResult = await client.query(
+            `SELECT 
+    variation_id, 
+    product_size, 
+    product_color, 
+    COUNT(variation_id) AS add_to_cart_count
+FROM logs
+WHERE action_type = 'add_to_cart'
+GROUP BY variation_id, product_size, product_color
+ORDER BY add_to_cart_count DESC;`
+        );
+        const mostAddedToCartProducts = mostAddedToCartProductsResult.rows;
+
 
 
         // Compile all stats into a single response object
@@ -194,6 +219,8 @@ export async function GET(req: NextRequest) {
             topSizes,
             topColors,
             ordersByShippingStatus,
+            mostViewedProducts,
+            mostAddedToCartProducts,
         };
 
         return NextResponse.json(statistics);
