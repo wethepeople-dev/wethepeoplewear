@@ -170,7 +170,7 @@ export default function Home() {
               </div>
               <h3 className="mb-2 text-2xl font-bold text-white">AUTENTICIDAD</h3>
               <p className="text-gray-100 px-3">
-                Diseñamos nuestras camisetas desde cero, por lo que sus diseños con únicos.
+                Diseñamos nuestras camisetas desde cero, por lo que sus diseños son únicos.
               </p>
             </div>
 
