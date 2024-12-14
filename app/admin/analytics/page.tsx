@@ -155,6 +155,8 @@ export default function Analytics() {
     const [mostViewedProducts, setMostViewedProducts] = useState<{ product_id: string; views: number; name: string }[]>([]);
     const [mostAddedToCartProducts, setMostAddedToCartProducts] = useState<{ variation_id: string; add_to_cart_count: number; name: string, product_size: string, product_color: string }[]>([]);
     const [loaded, setLoaded] = useState(false);
+    const [topSizes, setTopSizes] = useState<{ size: string; total_sold: number }[]>([]);
+    const [topColors, setTopColors] = useState<{ color: string; total_sold: number }[]>([]);
 
     useEffect(() => {
 
@@ -164,6 +166,24 @@ export default function Analytics() {
                 const data = await response.json();
                 setStats(data);
                 console.log(data);
+
+                // assign top sizes
+                const updatedTopSizes = data.topSizes.map((size: { size: string, total_sold: string }) => {
+                    return {
+                        size: size.size,
+                        total_sold: parseInt(size.total_sold)
+                    }
+                });
+                setTopSizes(updatedTopSizes);
+
+                // assign top colors
+                const updatedTopColors = data.topColors.map((color: { color: string, total_sold: string }) => {
+                    return {
+                        color: color.color,
+                        total_sold: parseInt(color.total_sold)
+                    }
+                });
+                setTopColors(updatedTopColors);
 
                 const responseProducts = await fetch('/api/products');
                 const dataProducts = await responseProducts.json();
@@ -457,7 +477,7 @@ export default function Analytics() {
                                         <ResponsiveContainer width="100%" height="100%">
                                             <PieChart>
                                                 <Pie
-                                                    data={stats?.topSizes}
+                                                    data={topSizes}
                                                     cx="50%"
                                                     cy="50%"
                                                     labelLine={false}
@@ -489,7 +509,7 @@ export default function Analytics() {
                                         <ResponsiveContainer width="100%" height="100%">
                                             <PieChart>
                                                 <Pie
-                                                    data={stats?.topColors}
+                                                    data={topColors}
                                                     cx="50%"
                                                     cy="50%"
                                                     labelLine={false}

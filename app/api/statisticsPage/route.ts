@@ -162,13 +162,13 @@ export async function GET(req: NextRequest) {
 
         // Orders by Shipping Status
         const ordersByShippingStatusResult = await client.query(
-            `SELECT shipping_status, COUNT(order_id) AS count
+            `SELECT shipping_method, COUNT(order_id) AS count
              FROM orders
-             WHERE shipping_status IN ('local', 'nacional', 'collectif')
-             GROUP BY shipping_status`
+             WHERE shipping_method IN ('local', 'nacional', 'collectif')
+             GROUP BY shipping_method`
         );
         const ordersByShippingStatus = ordersByShippingStatusResult.rows.reduce((acc, row) => {
-            acc[row.shipping_status] = row.count;
+            acc[row.shipping_method] = row.count;
             return acc;
         }, { local: 0, nacional: 0, collectif: 0 });
 
@@ -185,14 +185,14 @@ export async function GET(req: NextRequest) {
         // Most Added to Cart Variations: Count of add-to-cart actions by variation_id
         const mostAddedToCartProductsResult = await client.query(
             `SELECT 
-    variation_id, 
-    product_size, 
-    product_color, 
-    COUNT(variation_id) AS add_to_cart_count
-FROM logs
-WHERE action_type = 'add_to_cart'
-GROUP BY variation_id, product_size, product_color
-ORDER BY add_to_cart_count DESC;`
+                variation_id, 
+                product_size, 
+                product_color, 
+                COUNT(variation_id) AS add_to_cart_count
+            FROM logs
+            WHERE action_type = 'add_to_cart'
+            GROUP BY variation_id, product_size, product_color
+            ORDER BY add_to_cart_count DESC;`
         );
         const mostAddedToCartProducts = mostAddedToCartProductsResult.rows;
 

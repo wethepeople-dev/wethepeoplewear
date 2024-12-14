@@ -83,12 +83,19 @@ const formatDate = (dateString: string) => {
 
 // Helper function to generate the past 10 days
 const generatePast10Days = (): string[] => {
-    const days = [];
+    const days: string[] = [];
     const today = new Date();
+
+    // Use the same formatter as in formatDate
+    const formatter = new Intl.DateTimeFormat('es-MX', {
+        timeZone: 'America/Monterrey',
+        month: 'short',
+        day: 'numeric',
+    });
 
     for (let i = 0; i < 10; i++) {
         const date = subDays(today, i);
-        days.unshift(format(date, 'd MMM').toLowerCase()); // Format as "day month" (e.g., "2 nov")
+        days.unshift(formatter.format(date));
     }
 
     return days;
@@ -107,6 +114,7 @@ const groupProductsByDay = (orders: Order[]): GroupedProducts[] => {
         }
         grouped[formattedDate] += order.quantity;
     });
+
 
     // Generate past 10 days, including days without sales
     const past10Days = generatePast10Days();
@@ -137,6 +145,7 @@ export default function AdminDashboard() {
 
                 // Set sold products
                 const groupedProducts = groupProductsByDay(data.productsSoldByDay);
+                console.log(groupedProducts);
                 setSoldProducts(groupedProducts);
 
             }
