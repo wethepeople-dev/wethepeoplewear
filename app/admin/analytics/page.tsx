@@ -53,11 +53,11 @@ const topProducts = [
     { name: "Product D", sold: 543 },
     { name: "Product E", sold: 321 },
 ]
-const customerAcquisition = [
-    { month: "Jan", new_clients: 7 },
-    { month: "Feb", new_clients: 12 },
-    { month: "Mar", new_clients: 5 },
-    { month: "Abr", new_clients: 6 },
+const customerAcquisitionMock = [
+    { month: "Jan-24", new_clients: 7 },
+    { month: "Feb-24", new_clients: 12 },
+    { month: "Mar-24", new_clients: 5 },
+    { month: "Abr-24", new_clients: 6 },
 ]
 const topSizesData = [
     { size: "S", total_sold: 33 },
@@ -147,6 +147,25 @@ export interface Statistics {
     }[];
 }
 
+function formatClientData(data: { month: string; new_clients: number }[]) {
+    return data.map(item => {
+        // Create a Date object from the ISO string
+        const date = new Date(item.month);
+
+        // Extract the month and year in UTC to avoid timezone issues
+        const year = date.getUTCFullYear().toString().slice(-2);
+        const month = date.toLocaleString('en-US', {
+            month: 'short',
+            timeZone: 'UTC', // Ensure it's in UTC
+        });
+
+        return {
+            month: `${month}-${year}`,
+            new_clients: item.new_clients,
+        };
+    });
+}
+
 
 export default function Analytics() {
 
@@ -157,6 +176,7 @@ export default function Analytics() {
     const [loaded, setLoaded] = useState(false);
     const [topSizes, setTopSizes] = useState<{ size: string; total_sold: number }[]>([]);
     const [topColors, setTopColors] = useState<{ color: string; total_sold: number }[]>([]);
+    const [customerAcquisition, setCustomerAcquisition] = useState<{ month: string; new_clients: number }[]>([]);
 
     useEffect(() => {
 
@@ -166,6 +186,11 @@ export default function Analytics() {
                 const data = await response.json();
                 setStats(data);
                 console.log(data);
+
+                // format costumer acquisition
+                const formattedClientAcquisition = formatClientData(data.customerAcquisition);
+                console.log('formattedClientAcquisition', formattedClientAcquisition);
+                setCustomerAcquisition(formattedClientAcquisition);
 
                 // assign top sizes
                 const updatedTopSizes = data.topSizes.map((size: { size: string, total_sold: string }) => {
@@ -621,9 +646,10 @@ export default function Analytics() {
                             <Card className="mt-4">
                                 <CardHeader>
                                     <CardTitle>Customer Acquisition</CardTitle>
+                                    <CardDescription>Customers per month</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    {stats?.customerAcquisition.length === 0 ? (
+                                    {customerAcquisition.length === 0 ? (
                                         <div className="flex items-center justify-center h-14 text-muted-foreground">
                                             No data available
                                         </div>
@@ -638,10 +664,19 @@ export default function Analytics() {
                                             }}
                                         >
                                             <ResponsiveContainer width="100%" height="100%">
-                                                <LineChart data={stats?.customerAcquisition}>
-                                                    <CartesianGrid strokeDasharray="3 3" />
-                                                    <XAxis dataKey="month" />
-                                                    <YAxis />
+                                                <LineChart data={customerAcquisition}>
+                                                    <CartesianGrid />
+                                                    <YAxis
+                                                        tickLine={true}
+                                                        // axisLine={false}
+                                                        tickMargin={8}
+                                                    />
+                                                    <XAxis
+                                                        dataKey="month"
+                                                        tickLine={true}
+                                                        // axisLine={false}
+                                                        tickMargin={8}
+                                                    />
                                                     <ChartTooltip content={<ChartTooltipContent />} />
                                                     <Legend />
                                                     <Line type="monotone" dataKey="new_clients" stroke="var(--color-new_clients)" activeDot={{ r: 8 }} />
