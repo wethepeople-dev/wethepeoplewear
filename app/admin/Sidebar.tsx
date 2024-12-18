@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { BarChart3, LayoutDashboard, Settings, ShoppingCart, PackageSearch, NotebookText } from "lucide-react"
+import { BarChart3, LayoutDashboard, Settings, ShoppingCart, PackageSearch, NotebookText, BadgePercent } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -70,6 +70,7 @@ export default function Sidebar() {
                             { name: "Orders", icon: PackageSearch, href: "/admin/orders" },
                             { name: "Products", icon: ShoppingCart, href: "/admin/products" },
                             { name: "Analytics", icon: BarChart3, href: "/admin/analytics" },
+                            { name: "Discounts", icon: BadgePercent, href: "/admin/discounts" },
                             { name: "Blogs", icon: NotebookText, href: "/admin/blogs" },
                         ].map((item) => (
                             <Link
