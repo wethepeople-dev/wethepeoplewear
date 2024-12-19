@@ -312,22 +312,23 @@ export default function Carrito() {
             const checkStock = async () => {
                 try {
                     let removedItems = [];
-                    console.log('checking stock');
-                    console.log('cart:', cart);
+                    // console.log('checking stock');
+                    // console.log('cart:', cart);
                     for (const item of cart) {
                         const response = await fetch('/api/check-stock', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ variation_id: item.variacion.variation_id }),
+                            body: JSON.stringify({ variation_id: item.variacion.variation_id, product_id: item.productId }),
                         });
 
                         const data = await response.json();
-                        console.log('product:', item.nombre, 'stock:', data.stock_qty, 'qty:', item.cantidad);
+                        // console.log('product:', item.nombre, 'stock:', data.stock_qty, 'qty:', item.cantidad);
+                        console.log('data:', data);
 
-                        if (data.stock_qty < item.cantidad) {
-                            console.log('removing item:', item.nombre);
+                        if (data.stock_qty < item.cantidad || !data.active) {
+                            // console.log('removing item:', item.nombre);
                             removedItems.push(item);
                             // remove item from cart
                             removeCartItem(item.productId, item.variacion.talla, item.variacion.color);
@@ -335,7 +336,7 @@ export default function Carrito() {
                     }
 
                     if (removedItems.length > 0) {
-                        toast.error(`Algunos productos ya no están disponibles en la cantidad deseada y fueron removidos del carrito.`, {
+                        toast.error(`Algunos productos ya no están disponibles y fueron removidos del carrito.`, {
                             position: "bottom-right",
                             autoClose: 10000,
                             hideProgressBar: false,

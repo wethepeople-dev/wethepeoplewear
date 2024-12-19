@@ -37,6 +37,7 @@ interface Product {
     colores: string[];
     tallas: string[];
     release_date: string;
+    active: boolean;
     variations: ProductVariation[];
 }
 
@@ -63,7 +64,9 @@ export default function Catalogo() {
                 });
                 const data = await response.json();
                 console.log('fetched products:', data);
-                setProducts(data);
+                // filter only the products that have active field as true
+                const activeProducts = data.filter((product: Product) => product.active);
+                setProducts(activeProducts);
                 setLoadedProducts(true);
             } catch (error) {
                 console.error('Error fetching products:', error);

@@ -100,6 +100,7 @@ async function seedData(client) {
                 release_date DATE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                active BOOLEAN DEFAULT true, -- New column to indicate if the product is active
                 FOREIGN KEY (category_id) REFERENCES categories(category_id)
             );
         `;

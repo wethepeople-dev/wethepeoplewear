@@ -28,6 +28,7 @@ interface Product {
     colores: string[];
     tallas: string[];
     release_date: string;
+    active: boolean;
     variations: ProductVariation[];
 }
 
@@ -205,7 +206,7 @@ export default function SingleProduct({ params }: { params: { id: string } }) {
 
                     :
 
-                    producto == null ?
+                    producto == null || !producto.active ?
 
                         <div className="flex flex-col bg-white" style={{ height: '60vh' }}>
 
