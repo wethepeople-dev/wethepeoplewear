@@ -11,8 +11,21 @@ const fontSans = FontSans({
 })
 
 export const metadata: Metadata = {
-  title: "We The People Wear",
+  metadataBase: process.env.NEXT_PUBLIC_HOST ? new URL(process.env.NEXT_PUBLIC_HOST) : undefined,
+  // title: "We The People Wear | T-Shirts con diseños positivos",
+  title: {
+    default: "We The People Wear | T-Shirts con diseños positivos",
+    template: "%s | We The People Wear",
+  },
   description: "Graphic T-Shirts con diseños positivos, modernos e inspiradores",
+  openGraph: {
+    title: "We The People Wear | T-Shirts con diseños positivos",
+    description: "Graphic T-Shirts con diseños positivos, modernos e inspiradores",
+    type: "website",
+    locale: "es_ES",
+    url: process.env.NEXT_PUBLIC_HOST,
+    siteName: "We The People Wear",
+  },
 };
 
 export default function RootLayout({
