@@ -24,6 +24,7 @@ import Footer from "@/components/Footer";
 
 import { formatCurrency } from "@/lib/utils";
 
+
 interface ProductVariation {
   variation_id: string; // UUID
   product_id: string; // UUID
@@ -98,20 +99,6 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col">
-
-      {/* Open Graph */}
-      <meta property="og:url" content="https://wethepeoplewear.vercel.app" />
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content="We The People Wear" />
-      <meta property="og:description" content="Graphic T-Shirts con diseños positivos, modernos e inspiradores" />
-      <meta property="og:image" content="https://opengraph.b-cdn.net/production/documents/05115e13-7514-43df-b976-c0a17daa288d.jpg?token=Lk5kXZK3ALqlzpLulLg8PLZ420lDZ7oa9obmyVmJHHY&height=320&width=320&expires=33247408942" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta property="twitter:domain" content="wethepeoplewear.vercel.app" />
-      <meta property="twitter:url" content="https://wethepeoplewear.vercel.app" />
-      <meta name="twitter:title" content="We The People Wear" />
-      <meta name="twitter:description" content="Graphic T-Shirts con diseños positivos, modernos e inspiradores" />
-      <meta name="twitter:image" content="https://opengraph.b-cdn.net/production/documents/05115e13-7514-43df-b976-c0a17daa288d.jpg?token=Lk5kXZK3ALqlzpLulLg8PLZ420lDZ7oa9obmyVmJHHY&height=320&width=320&expires=33247408942" />
-
 
       {/* NAVBAR */}
       <Navbar />
