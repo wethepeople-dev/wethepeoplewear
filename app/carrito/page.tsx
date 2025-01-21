@@ -660,7 +660,7 @@ export default function Carrito() {
                                                     <SelectContent>
                                                         <SelectItem value="local">Local (Monterrey y área metropolitana) - $60</SelectItem>
                                                         <SelectItem value="nacional">Nacional (Todo México) - $150</SelectItem>
-                                                        <SelectItem value="collectif">Recoger en Collectif (Monterrey) - Gratis</SelectItem>
+                                                        {/* <SelectItem value="collectif">Recoger en Collectif (Monterrey) - Gratis</SelectItem> */}
                                                     </SelectContent>
 
                                                 </Select>
