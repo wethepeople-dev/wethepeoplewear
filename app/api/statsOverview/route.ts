@@ -112,16 +112,18 @@ export async function GET(req: NextRequest) {
         // Product variations with 0 stock
         const outOfStockVariationsResult = await client.query(
             `SELECT COUNT(*) AS out_of_stock_variations 
-             FROM product_variations 
-             WHERE stock_qty = 0`
+             FROM product_variations pv
+             INNER JOIN products p ON pv.product_id = p.product_id
+             WHERE pv.stock_qty = 0 AND p.active = true`
         );
         const outOfStockVariations = outOfStockVariationsResult.rows[0].out_of_stock_variations;
 
         // Products with 2 or less in stock
         const lowStockProductsResult = await client.query(
             `SELECT COUNT(*) AS low_stock_products 
-             FROM product_variations 
-             WHERE stock_qty <= 2`
+             FROM product_variations pv
+             INNER JOIN products p ON pv.product_id = p.product_id
+             WHERE pv.stock_qty <= 2 AND p.active = true`
         );
         const lowStockProducts = lowStockProductsResult.rows[0].low_stock_products;
 
