@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google"
 import "./globals.css";
 import { CartProvider } from "@/lib/CartContext";
+import { Analytics } from '@vercel/analytics/next';
 
 import { cn } from "@/lib/utils"
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       <CartProvider>
         <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
           {children}
+          <Analytics />
         </body>
       </CartProvider>
     </html>

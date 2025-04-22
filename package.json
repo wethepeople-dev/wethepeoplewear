@@ -33,6 +33,7 @@
     "@stripe/stripe-js": "^4.9.0",
     "@tanstack/react-table": "^8.20.5",
     "@types/nodemailer": "^6.4.16",
+    "@vercel/analytics": "^1.5.0",
     "@vercel/postgres": "^0.10.0",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
