@@ -16,7 +16,7 @@ import ContactForm from "@/components/ContactForm";
 const faqs = [
     {
         title: "¿Cómo puedo comprar una T-Shirt?",
-        desc: "Para comprar, por favor selecciona los productos que deseas comprar y agrégalos al carrito. Una vez que hayas terminado, ve al carrito y sigue los pasos para completar tu compra. También nos puedes encontrar a la venta en Collectif Concept Store o hacer tu pedido por Instagram (@wethepeople.wear).",
+        desc: "Para comprar, por favor selecciona los productos que deseas comprar y agrégalos al carrito. Una vez que hayas terminado, ve al carrito y sigue los pasos para completar tu compra. También puedes hacer tu pedido por Instagram (@wethepeople.wear).",
     },
     {
         title: "¿Cuánto tiempo tarda en llegar mi pedido?",
