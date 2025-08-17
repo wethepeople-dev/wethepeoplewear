@@ -72,10 +72,10 @@ export default function Home() {
   }, [api])
 
   const bestsellerIds = [
-    '988edf04-a24b-4c3f-ba61-770c12c7a853',
     '86f8c58e-0428-4c62-bc84-07787e1c2778',
-    '5544bd99-4da1-4ed8-b0cb-b84bad6e9015'
-  ]
+    '10a7ead9-701f-490a-8a1e-95e1e4009b4c',
+    '0cfb409f-dd54-4e64-8ab0-3f11181f5581'
+  ];
   // const bestsellers = productos.filter(p => bestsellerIds.includes(p.id))
   const [bestsellers, setBestsellers] = useState<Product[]>([]);
 
@@ -104,42 +104,50 @@ export default function Home() {
       <Navbar />
 
 
-      {/* FOTO y TEXTO */}
-      <div style={{ height: '92vh' }} className="mt-16">
-        <div className="mx-auto flex justify-center items-center h-full flex-col md:flex-row">
+      {/* HERO SECTION - BACK 2 SCHOOL PROMOTION */}
+      <div style={{ height: '93vh' }} className="mt-16 relative">
+        {/* Full screen background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/landing-promo.jpg)' }}
+        ></div>
 
-          {/* Left Side */}
-          <div className="flex flex-col justify-center items-center px-7 py-10 md:w-1/2">
-            <h1 className="text-5xl md:text-4xl lg:text-6xl xl:text-7xl font-black text-azulito-100 mb-4 uppercase text-center">
-              welcome to <br className="hidden md:block" /> your local <br className="hidden md:block" /> t-shirt shop
+        {/* Overlay for better text readability (optional) */}
+        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+
+        {/* Content container */}
+        <div className="relative z-10 flex justify-center items-center h-full">
+          {/* White promotional banner */}
+          <div className="bg-white p-8 md:p-10 lg:p-16 rounded-lg shadow-lg max-w-md md:max-w-3xl text-center">
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-azulito-100 mb-6 uppercase">
+              BACK 2 SCHOOL<br />SUMMER SALE
             </h1>
-            <p className="text-lg md:text-base lg:text-lg mb-8 text-center px-2 md:px-5 lg:px-10">
-              En We The People Wear buscamos inspirarte a perseguir tus sueños y elevamos tu estilo con las mejores T-Shirts. ¡Encuentra el diseño perfecto para ti!
+
+            {/* Price */}
+            <p className="text-4xl lg:text-5xl font-bold text-black mb-4">
+              3 x $999
             </p>
-            <Link href="/catalogo" className="text-black text-xl border-2 border-black bg-amarillito-100 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-500 font-bold rounded-full px-5 py-3 text-center inline-flex items-center">
+
+            {/* Description text */}
+            <p className="text-lg text-black mb-6 px-2">
+              ¡Elige tus 3 T-Shirts favoritas a un precio increíble! Corre que vuelan
+              <span className="block text-sm mt-1 text-gray-600">
+                (VÁLIDO HASTA AGOTAR EXISTENCIAS)
+              </span>
+            </p>
+
+            {/* CTA Button */}
+            <Link
+              href="/catalogo"
+              className="text-black text-lg md:text-xl border-2 border-black bg-amarillito-100 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-500 font-bold rounded-full px-6 py-3 text-center inline-flex items-center"
+            >
               Ver catálogo
               <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
               </svg>
             </Link>
-
           </div>
-
-          {/* Right Side */}
-          <div className="w-full md:w-1/2 bg-slate-200 h-full relative">
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/rack.jpg)' }}></div>
-          </div>
-          {/* <div className="w-full md:w-1/2 bg-slate-200 h-full relative">
-            <video
-              src="/other/intro.mov"  // Ruta de tu video
-              className="absolute inset-0 w-full h-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-          </div> */}
-
         </div>
       </div>
 

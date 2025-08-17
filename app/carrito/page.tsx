@@ -75,7 +75,6 @@ const shippingOptions = [
 export default function Carrito() {
 
     const { cart, getTotal, getCartQuantity, removeCartItem, emptyCart } = useCart();
-    const total = getTotal();
     const cartQuantity = getCartQuantity();
 
     const [loadedCart, setLoadedCart] = useState(false);
@@ -122,6 +121,14 @@ export default function Carrito() {
     }
 
     const validateCode = async () => {
+        // Prevent applying coupon codes when 3x999 promotion is active
+        if (cartCalculation.promotionApplied) {
+            setMessage('No se pueden aplicar cupones con la promoción 3x$999 activa.');
+            setIsCodeValid(false);
+            setDiscount(0);
+            return;
+        }
+
         setSearchingDiscount(true);
         try {
             const response = await fetch(`/api/validate-discounts`, {
@@ -212,6 +219,68 @@ export default function Carrito() {
         return isValid;
     };
 
+    const calculate3x999Promotion = (cart: any[]) => {
+        // 🎯 PROMOTION: 3 x $999 - REMOVE THIS SECTION TO DISABLE PROMOTION
+        const PROMOTION_ACTIVE = true; // Set to false to disable promotion
+        const PROMOTION_PRICE = 999;
+        const PROMOTION_QUANTITY = 3;
+
+        // Calculate total quantity of items in cart
+        const totalQuantity = cart.reduce((sum, item) => sum + item.cantidad, 0);
+
+        if (!PROMOTION_ACTIVE || totalQuantity < PROMOTION_QUANTITY) {
+            // Return original total if promotion is disabled or not enough items
+            const originalTotal = cart.reduce((sum, item) => sum + (item.variacion.precio * item.cantidad), 0);
+            return {
+                total: originalTotal,
+                promotionApplied: false,
+                promotionDetails: null
+            };
+        }
+
+        // Create array of all individual items with their prices
+        const allItems = [];
+        for (const item of cart) {
+            for (let i = 0; i < item.cantidad; i++) {
+                allItems.push({
+                    ...item,
+                    individualPrice: Number(item.variacion.precio) // Ensure it's a number
+                });
+            }
+        }
+
+        // Sort by price (cheapest first) for the promotion
+        allItems.sort((a, b) => a.individualPrice - b.individualPrice);
+
+        // Take the 3 cheapest items for promotion
+        const promotionItems = allItems.slice(0, PROMOTION_QUANTITY);
+        const remainingItems = allItems.slice(PROMOTION_QUANTITY);
+
+        // Calculate promotion savings
+        const originalPromotionPrice = promotionItems.reduce((sum, item) => sum + item.individualPrice, 0);
+        const promotionSavings = Math.max(0, originalPromotionPrice - PROMOTION_PRICE);
+
+        // Calculate remaining items total
+        const remainingTotal = remainingItems.reduce((sum, item) => sum + item.individualPrice, 0);
+
+        // Final total
+        const finalTotal = PROMOTION_PRICE + remainingTotal;
+
+        return {
+            total: finalTotal,
+            promotionApplied: true,
+            promotionDetails: {
+                originalPromotionPrice: Math.round(originalPromotionPrice),
+                promotionPrice: PROMOTION_PRICE,
+                savings: Math.round(promotionSavings),
+                promotionItemsCount: PROMOTION_QUANTITY,
+                remainingItemsCount: remainingItems.length,
+                remainingTotal: Math.round(remainingTotal)
+            }
+        };
+        // 🎯 END PROMOTION SECTION
+    };
+
     const handleFinalizarCompra = async () => {
 
         // checar campos del Envio
@@ -249,7 +318,7 @@ export default function Carrito() {
             });
 
             const order_info = {
-                total: total,
+                total: total, // This will now use the promotion-adjusted total
                 name,
                 email,
                 phone,
@@ -265,7 +334,9 @@ export default function Carrito() {
                 shipment_cost_id: tipoEnvio == 'local' ? 'shr_1QHuxw06GvttNHxdc6MS3BBL' : tipoEnvio == 'nacional' ? 'shr_1QHuyN06GvttNHxdv3PFRvz6' : '',
                 comments,
                 discount,
-                discountObject,
+                discountObject: cartCalculation.promotionApplied ? null : discountObject, // Disable other discounts when promotion is active
+                promotionApplied: cartCalculation.promotionApplied, // Add this for tracking
+                promotionDetails: cartCalculation.promotionDetails // Add this for order tracking
             }
 
             localStorage.setItem('orderInfo', JSON.stringify(order_info));
@@ -306,6 +377,10 @@ export default function Carrito() {
             }
         }
     }
+
+    const cartCalculation = calculate3x999Promotion(cart);
+    const total = cartCalculation.total;
+    const originalTotal = getTotal(); // Keep original for reference
 
     useEffect(() => {
         if (cart) {
@@ -430,70 +505,76 @@ export default function Carrito() {
 
                                             {/* Aplicar cupón */}
                                             <div className="flex gap-2 w-full sm:w-auto">
-                                                {isCodeValid ?
+                                                {cartCalculation.promotionApplied ? (
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-gray-800 font-bold">Ahorras {discount * 100}%</span>
+                                                        <span className="text-gray-800 font-bold text-sm">Promoción 3x$999 activa</span>
                                                     </div>
-                                                    :
-                                                    <Dialog>
-                                                        <DialogTrigger asChild>
-                                                            <Button variant="outline">
-                                                                <BadgePercent className="h-4 w-4 mr-2" />
-                                                                Aplicar cupón
-                                                            </Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent className="sm:max-w-md">
-                                                            <DialogHeader>
-                                                                <DialogTitle>Cupón de descuento</DialogTitle>
-                                                                <DialogDescription>
-                                                                    Ingresa el código de tu cupón para aplicar el descuento.
-                                                                </DialogDescription>
-                                                            </DialogHeader>
-                                                            <div className="flex items-center space-x-2">
-                                                                <div className="grid flex-1 gap-2">
-                                                                    <Label htmlFor="link" className="sr-only">
-                                                                        Link
-                                                                    </Label>
-                                                                    <Input
-                                                                        id="link"
-                                                                        defaultValue="Ingresa tu código..."
-                                                                        value={couponCode}
-                                                                        onChange={(e) => setCouponCode(e.target.value)}
-                                                                        disabled={searchingDiscount || isCodeValid}
-                                                                    />
-                                                                </div>
-                                                                <Button type="submit"
-                                                                    size="sm"
-                                                                    className="px-3"
-                                                                    onClick={validateCode}
-                                                                    disabled={searchingDiscount || couponCode.length <= 0 || isCodeValid}
-                                                                >
-                                                                    {
-                                                                        searchingDiscount ?
-                                                                            'Validando...'
-                                                                            :
-                                                                            isCodeValid ?
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mx-auto">
-                                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                                                </svg>
-                                                                                :
-                                                                                'Validar'
-                                                                    }
+                                                ) : (
+                                                    isCodeValid ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-gray-800 font-bold">Ahorras {discount * 100}%</span>
+                                                        </div>
+                                                    ) : (
+                                                        <Dialog>
+                                                            <DialogTrigger asChild>
+                                                                <Button variant="outline">
+                                                                    <BadgePercent className="h-4 w-4 mr-2" />
+                                                                    Aplicar cupón
                                                                 </Button>
-                                                            </div>
-                                                            <DialogFooter className="sm:justify-start">
-                                                                {message ?
-                                                                    isCodeValid ?
-                                                                        <p className="text-sm text-green-700">{message}</p>
+                                                            </DialogTrigger>
+                                                            <DialogContent className="sm:max-w-md">
+                                                                <DialogHeader>
+                                                                    <DialogTitle>Cupón de descuento</DialogTitle>
+                                                                    <DialogDescription>
+                                                                        Ingresa el código de tu cupón para aplicar el descuento.
+                                                                    </DialogDescription>
+                                                                </DialogHeader>
+                                                                <div className="flex items-center space-x-2">
+                                                                    <div className="grid flex-1 gap-2">
+                                                                        <Label htmlFor="link" className="sr-only">
+                                                                            Link
+                                                                        </Label>
+                                                                        <Input
+                                                                            id="link"
+                                                                            defaultValue="Ingresa tu código..."
+                                                                            value={couponCode}
+                                                                            onChange={(e) => setCouponCode(e.target.value)}
+                                                                            disabled={searchingDiscount || isCodeValid}
+                                                                        />
+                                                                    </div>
+                                                                    <Button type="submit"
+                                                                        size="sm"
+                                                                        className="px-3"
+                                                                        onClick={validateCode}
+                                                                        disabled={searchingDiscount || couponCode.length <= 0 || isCodeValid}
+                                                                    >
+                                                                        {
+                                                                            searchingDiscount ?
+                                                                                'Validando...'
+                                                                                :
+                                                                                isCodeValid ?
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 mx-auto">
+                                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                                                    </svg>
+                                                                                    :
+                                                                                    'Validar'
+                                                                        }
+                                                                    </Button>
+                                                                </div>
+                                                                <DialogFooter className="sm:justify-start">
+                                                                    {message ?
+                                                                        isCodeValid ?
+                                                                            <p className="text-sm text-green-700">{message}</p>
+                                                                            :
+                                                                            <p className="text-sm text-red-500">{message}</p>
                                                                         :
-                                                                        <p className="text-sm text-red-500">{message}</p>
-                                                                    :
-                                                                    <></>
-                                                                }
-                                                            </DialogFooter>
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                }
+                                                                        <></>
+                                                                    }
+                                                                </DialogFooter>
+                                                            </DialogContent>
+                                                        </Dialog>
+                                                    )
+                                                )}
                                             </div>
 
                                             {/* Vaciar carrito */}
@@ -537,23 +618,57 @@ export default function Carrito() {
                                     <Card className="bg-card rounded-lg shadow-lg border">
 
                                         <CardHeader className="bg-muted px-6 py-4 border-b pb-4">
-
                                             <div className="flex justify-between">
                                                 <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal">{cartQuantity} Productos</CardTitle>
-                                                <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal">{isCodeValid ? formatCurrency(total * (1 - discount)) : formatCurrency(total)} MXN</CardTitle>
+                                                <CardTitle className="lg:text-2xl md:text-lg text-lg font-normal">
+                                                    {isCodeValid ? formatCurrency(total * (1 - discount)) : formatCurrency(total)} MXN
+                                                </CardTitle>
                                             </div>
 
-                                            {/* codigo de descuento */}
-                                            {isCodeValid &&
-                                                <div className="flex justify-end">
+                                            {/* 3x999 Promotion Display */}
+                                            {cartCalculation.promotionApplied && !isCodeValid && cartCalculation.promotionDetails && (
+                                                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                                            ¡PROMOCIÓN APLICADA!
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-sm space-y-1">
+                                                        <div className="flex justify-between">
+                                                            <span>3 playeras más baratas:</span>
+                                                            <span className="font-semibold">$999</span>
+                                                        </div>
+                                                        {cartCalculation.promotionDetails.remainingItemsCount > 0 && (
+                                                            <div className="flex justify-between">
+                                                                <span>{cartCalculation.promotionDetails.remainingItemsCount} playera(s) adicional(es):</span>
+                                                                <span className="font-semibold">${cartCalculation.promotionDetails.remainingTotal}</span>
+                                                            </div>
+                                                        )}
+                                                        <div className="flex justify-between text-green-600 font-bold border-t pt-1">
+                                                            <span>Ahorras:</span>
+                                                            <span>${cartCalculation.promotionDetails.savings}</span>
+                                                        </div>
+                                                        <div className="flex justify-between text-xs text-gray-500">
+                                                            <span>Precio original:</span>
+                                                            <span className="line-through">${originalTotal}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Regular discount code display (when no 3x999 promotion or with coupon) */}
+                                            {isCodeValid && (
+                                                <div className="flex justify-end mt-2">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-muted-foreground">Total sin descuento:</span>
+                                                        <span className="text-muted-foreground">
+                                                            {cartCalculation.promotionApplied ? 'Total con promoción:' : 'Total sin descuento:'}
+                                                        </span>
                                                         <span className="font-semibold line-through">{formatCurrency(total)} MXN</span>
                                                     </div>
                                                 </div>
-                                            }
-
+                                            )}
                                         </CardHeader>
+
 
                                         {/* productos */}
                                         <div className="grid gap-6 p-6 max-h-[70vh] overflow-auto sticky top-0">

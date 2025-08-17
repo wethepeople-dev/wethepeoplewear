@@ -59,6 +59,14 @@ export default function CatalogoContent() {
     const [selectedColors, setSelectedColors] = useState<{ [key: string]: string }>({});
     const [loadedProducts, setLoadedProducts] = useState(false);
 
+    const bestsellerIds = [
+        '86f8c58e-0428-4c62-bc84-07787e1c2778',
+        '10a7ead9-701f-490a-8a1e-95e1e4009b4c',
+        '0cfb409f-dd54-4e64-8ab0-3f11181f5581',
+        '5158a252-c78f-45b4-a14b-414fa3d3dc42',
+        '5544bd99-4da1-4ed8-b0cb-b84bad6e9015'
+    ];
+
     // Fetch products
     useEffect(() => {
         const fetchProducts = async () => {
@@ -144,8 +152,11 @@ export default function CatalogoContent() {
                         {/* HERO */}
                         <div className="mx-auto lg:flex justify-center items-center flex-col py-12 pt-14 px-3 mb-8 bg-slate-100">
                             <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-azulito-100 mb-4 uppercase text-center">
-                                say hello to your <br className='hidden md:block' /> new favorite t-shirts!
+                                ESCUCHASTE BIEN, 3 X $999
                             </h1>
+                            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-center font-bold mb-6 text-azulito-100 uppercase">
+                                (PROMOCIÓN APLICADA EN EL PAGO)
+                            </p>
                         </div>
 
                         {/* Barra de opciones */}
@@ -275,15 +286,24 @@ export default function CatalogoContent() {
 
                             <>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-5 mb-20">
-
                                     {sortedProducts.map((product) => {
                                         const selectedColor = selectedColors[product.product_id] || product.colores[0];
                                         const selectedVariation = product.variations.find(v => v.color === selectedColor);
+                                        const isBestseller = bestsellerIds.includes(product.product_id);
 
                                         console.log('selectedVariation:', selectedVariation);
 
                                         return (
                                             <div key={product.product_id} className="relative overflow-hidden border bg-background shadow-lg transition-transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">
+                                                {/* Best Seller Banner */}
+                                                {isBestseller && (
+                                                    <div className="absolute top-0 left-0 z-10 w-32 h-32 overflow-hidden">
+                                                        <div className="bg-gradient-to-r from-yellow-600 via-yellow-300 to-yellow-600 text-black text-xs font-bold px-6 py-3 transform -rotate-45 translate-x-[-40px] translate-y-[27px] w-44 text-center">
+                                                            BEST SELLER
+                                                        </div>
+                                                    </div>
+                                                )}
+
                                                 <a href={`/catalogo/${product.product_id}`}>
                                                     <img
                                                         src={selectedVariation?.fotos[0]}
@@ -317,7 +337,6 @@ export default function CatalogoContent() {
                                             </div>
                                         );
                                     })}
-
                                 </div>
                             </>
 
