@@ -120,15 +120,19 @@ export const POST = async (request) => {
     // If promotion is applied, disable other discount codes
     const shouldApplyDiscountCode = !promotionResult.promotionApplied && body?.code;
 
+    // Check if free shipping is applied
+    const isFreeShipping = body?.orderInfo?.free_shipping === true;
+
     console.log('Promotion applied:', promotionResult.promotionApplied);
+    console.log('Free shipping applied:', isFreeShipping);
     console.log('Stripe products:', stripe_products);
 
     try {
         let session;
 
-        if (body?.orderInfo?.shipment_cost_id == '') {
-            console.log("body?.orderInfo?.shipment_cost_id", body?.orderInfo?.shipment_cost_id);
-            console.log('no id de envio');
+        // If free shipping is applied or no shipping method selected, don't include shipping
+        if (isFreeShipping || body?.orderInfo?.shipment_cost_id === '') {
+            console.log('Creating session without shipping cost');
             session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
                 line_items: stripe_products,
@@ -138,8 +142,7 @@ export const POST = async (request) => {
                 success_url: `${host}/success?session_id={CHECKOUT_SESSION_ID}`,
             });
         } else {
-            console.log("body?.orderInfo?.shipment_cost_id", body?.orderInfo?.shipment_cost_id);
-            console.log('si id de envio');
+            console.log('Creating session with shipping cost:', body?.orderInfo?.shipment_cost_id);
             session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
                 line_items: stripe_products,

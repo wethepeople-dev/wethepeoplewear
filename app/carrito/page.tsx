@@ -1,3 +1,4 @@
+// app/carrito/page.tsx
 'use client'
 
 import Footer from "@/components/Footer";
@@ -57,6 +58,7 @@ interface DiscountCode {
     active: boolean;       // Whether the code is active
     stripe_validated: boolean; // Whether it's validated by Stripe
     created_at: string;    // Timestamp of when the code was created
+    is_free_shipping?: boolean; // New property for free shipping codes
 }
 
 const shippingOptions = [
@@ -138,11 +140,22 @@ export default function Carrito() {
 
             if (response.ok) {
                 const data = await response.json();
-                if (data.active && data.stripe_validated) {
-                    setMessage(`Código válido. Descuento del ${data.percentage}% aplicado.`);
-                    setIsCodeValid(true);
-                    setDiscount(data.percentage / 100);
-                    setDiscountObject(data);
+                if (data.active || data.is_free_shipping) {
+                    if (data.is_free_shipping) {
+                        setMessage('Código válido. ¡Envío gratis aplicado!');
+                        setIsCodeValid(true);
+                        setDiscount(0); // No percentage discount
+                        setDiscountObject(data);
+                    } else if (data.stripe_validated) {
+                        setMessage(`Código válido. Descuento del ${data.percentage}% aplicado.`);
+                        setIsCodeValid(true);
+                        setDiscount(data.percentage / 100);
+                        setDiscountObject(data);
+                    } else {
+                        setMessage('El código no está activo o no es válido.');
+                        setIsCodeValid(false);
+                        setDiscount(0);
+                    }
                     setSearchingDiscount(false);
                 } else {
                     setMessage('El código no está activo o no es válido.');
@@ -317,6 +330,9 @@ export default function Carrito() {
                 }
             });
 
+            // Check if free shipping coupon is applied
+            const isFreeShipping = discountObject && discountObject.is_free_shipping;
+
             const order_info = {
                 total: total, // This will now use the promotion-adjusted total
                 name,
@@ -330,13 +346,14 @@ export default function Carrito() {
                 postalCode,
                 shipping_status: 'processing',
                 shipping_method: tipoEnvio,
-                shipping_cost: tipoEnvio == 'local' ? 60 : tipoEnvio == 'nacional' ? 150 : 0,
-                shipment_cost_id: tipoEnvio == 'local' ? 'shr_1QHuxw06GvttNHxdc6MS3BBL' : tipoEnvio == 'nacional' ? 'shr_1QHuyN06GvttNHxdv3PFRvz6' : '',
+                shipping_cost: isFreeShipping ? 0 : tipoEnvio == 'local' ? 60 : tipoEnvio == 'nacional' ? 150 : 0,
+                shipment_cost_id: isFreeShipping ? '' : tipoEnvio == 'local' ? 'shr_1QHuxw06GvttNHxdc6MS3BBL' : tipoEnvio == 'nacional' ? 'shr_1QHuyN06GvttNHxdv3PFRvz6' : '',
                 comments,
                 discount,
                 discountObject: cartCalculation.promotionApplied ? null : discountObject, // Disable other discounts when promotion is active
                 promotionApplied: cartCalculation.promotionApplied, // Add this for tracking
-                promotionDetails: cartCalculation.promotionDetails // Add this for order tracking
+                promotionDetails: cartCalculation.promotionDetails, // Add this for order tracking
+                free_shipping: isFreeShipping // Add flag for free shipping
             }
 
             localStorage.setItem('orderInfo', JSON.stringify(order_info));
@@ -349,7 +366,7 @@ export default function Carrito() {
                     body: JSON.stringify({
                         products: temp_prods,
                         orderInfo: order_info,
-                        code: discountObject ? discountObject.code : null,
+                        code: discountObject && !discountObject.is_free_shipping ? discountObject.code : null,
                     })
                 });
 
@@ -652,6 +669,20 @@ export default function Carrito() {
                                                             <span>Precio original:</span>
                                                             <span className="line-through">${originalTotal}</span>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Free Shipping Notification - ADD THIS HERE */}
+                                            {isCodeValid && discountObject?.is_free_shipping && (
+                                                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                                            ¡ENVÍO GRATIS!
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-sm">
+                                                        <p>Tu cupón te ha otorgado envío gratuito.</p>
                                                     </div>
                                                 </div>
                                             )}

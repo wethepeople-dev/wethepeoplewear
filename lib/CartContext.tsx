@@ -18,6 +18,16 @@ export interface CartItem {
     variacion: Variacion;
 }
 
+interface DiscountCode {
+    code_id: string;       // UUID
+    code: string;          // The discount code
+    percentage: number;    // Discount percentage
+    active: boolean;       // Whether the code is active
+    stripe_validated: boolean; // Whether it's validated by Stripe
+    created_at: string;    // Timestamp of when the code was created
+    is_free_shipping?: boolean; // New property for free shipping codes
+}
+
 interface CartContextType {
     // cart
     cart: CartItem[];
